@@ -1,0 +1,11 @@
+.root {
+  height: 10vh;
+}
+
+.column {
+  transition: transform 0.5s, width 0.5s, height 0.5s;
+}
+
+.tick {
+  transition: transform 0.5s;
+}

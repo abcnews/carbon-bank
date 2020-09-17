@@ -1,0 +1,22 @@
+.stage {
+  svg {
+    display: block;
+  }
+}
+
+.blob {
+  transition: scale 0.5s;
+}
+
+.budget {
+  stroke-dasharray: 2 5;
+  fill: none;
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+.used {
+  stroke: #000;
+  stroke-width: 2px;
+  fill: rgba(255, 0, 0, 0.2);
+}
