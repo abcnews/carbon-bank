@@ -3,10 +3,10 @@ import { transition } from 'd3-transition';
 import { ScaleLinear } from 'd3-scale';
 import React, { useEffect, useRef } from 'react';
 import styles from './styles.scss';
-import { Data, Datum } from '../../common.d';
+import { EmissionsData, EmissionsDatum } from '../../common.d';
 
 interface ColumnsProps {
-  data: Data;
+  data: EmissionsData;
   xScale: ScaleLinear<number, number>;
   yScale: ScaleLinear<number, number>;
   colour?: string;
@@ -22,7 +22,7 @@ const Columns: React.FC<ColumnsProps> = ({ data, xScale, yScale }) => {
     }
 
     select(g.current)
-      .selectAll<SVGRectElement, Datum>('.column')
+      .selectAll<SVGRectElement, EmissionsDatum>('.column')
       .data(data, d => d.year)
       .join(
         enter =>

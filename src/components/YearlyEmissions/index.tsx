@@ -1,12 +1,12 @@
 import React from 'react';
 import styles from './styles.scss';
-import { line, area } from 'd3-shape';
+
 import { scaleLinear, scaleBand } from 'd3-scale';
 import { ticks } from 'd3-array';
-import { max } from '../../utils';
-import { Data } from '../../common.d';
+import { generateSeries, max } from '../../utils';
+import { EmissionsData } from '../../common.d';
 import useDimensions from 'react-cool-dimensions';
-import Columns from '../Columns';
+import { AxisBottom, AxisLeft } from '@visx/axis';
 
 type Margins = {
   top: number;
@@ -15,8 +15,15 @@ type Margins = {
   left: number;
 };
 
+type EmissionsSeries = {
+  data: EmissionsData;
+  meta: {
+    color: string;
+  };
+};
+
 interface YearlyEmissionsProps {
-  data: Data;
+  series: EmissionsSeries[];
   xAxisExtent: [number, number];
 }
 
@@ -30,21 +37,16 @@ const margins: Margins = {
 const tickSize = 6;
 const xAxisLabelWidth: number = 60;
 
-const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ data, xAxisExtent }) => {
+const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, xAxisExtent }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
+
   const xScale = scaleLinear()
-    .domain([xAxisExtent[0], xAxisExtent[1]])
+    .domain(xAxisExtent)
     .range([0, width - margins.right - margins.left]);
 
-  const xTicks = ticks(
-    xAxisExtent[0],
-    xAxisExtent[1],
-    Math.floor((width - margins.right - margins.left) / xAxisLabelWidth)
-  );
-
   const yScale = scaleLinear()
-    .range([height - margins.top - margins.bottom, 0])
-    .domain([0, max(data, d => d.emissions)]);
+    .domain([0, 36153261645])
+    .range([height - margins.top - margins.bottom, 0]);
 
   const barWidth = (xScale(1) - xScale(0)) / 2;
 
@@ -52,42 +54,31 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ data, xAxisExtent }) 
     <div ref={ref} className={styles.root}>
       <svg width={width} height={height}>
         <g transform={`translate(${margins.left} ${margins.top})`}>
-          {data.map((d, i) => (
-            <rect
-              key={d.year}
-              className={styles.column}
-              stroke="#fff"
-              strokeWidth="0"
-              fill="#000"
-              style={{ transform: `translate(${xScale(d.year)}px, 0)` }}
-              width={barWidth}
-              y={yScale(d.emissions)}
-              height={height - margins.top - margins.bottom - yScale(d.emissions)}
-              data-year={d.year}
-            />
+          {series.map(({ data, meta }, i) => (
+            <g key={i}>
+              {data.map((d, i) => (
+                <rect
+                  key={d.year}
+                  className={styles.column}
+                  stroke="#fff"
+                  strokeWidth="0"
+                  fill={meta.color}
+                  style={{ transform: `translate(${xScale(d.year) - barWidth / 2}px, 0)` }}
+                  width={barWidth}
+                  y={yScale(d.emissions)}
+                  height={height - margins.top - margins.bottom - yScale(d.emissions)}
+                  data-year={d.year}
+                />
+              ))}
+            </g>
           ))}
         </g>
-        <g>
-          <line
-            x1={xScale(xScale.domain()[0])}
-            x2={xScale(xScale.domain()[1])}
-            y1={height - margins.bottom}
-            y2={height - margins.bottom}
-            stroke="currentColor"
-          />
-          <g className={styles.ticks}>
-            {xTicks.map(tick => (
-              <g key={tick} className={styles.tick} style={{ transform: `translate(${xScale(tick)}px,0)` }}>
-                <line y1={height - margins.bottom} y2={height - margins.bottom + tickSize} stroke="currentColor" />
-                <text dy={20} textAnchor="middle" y={height - margins.bottom}>
-                  {tick}
-                </text>
-              </g>
-            ))}
-          </g>
+        <g transform={`translate(${margins.left} ${height - margins.bottom})`}>
+          <AxisBottom scale={xScale} tickFormat={val => String(val)} />
         </g>
-
-        {/* <Columns data={data} xScale={xScale} yScale={yScale} /> */}
+        <g transform={`translate(${margins.left} ${margins.top})`}>
+          <AxisLeft scale={yScale} />
+        </g>
       </svg>
     </div>
   );

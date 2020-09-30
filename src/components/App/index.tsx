@@ -1,73 +1,61 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './styles.scss';
 import data from '../../data.tsv';
-import Bank, { BankProps } from '../Bank';
-import Columns from '../Columns';
+import Bank from '../Bank';
+import { marks } from '../../constants';
 import YearlyEmissions from '../YearlyEmissions';
-import useDimensions from 'react-cool-dimensions';
+import Scrollyteller, { PanelDefinition } from '@abcnews/scrollyteller';
+import { PanelData } from '../../common.d';
+import { generateSeries } from '../../utils';
 
 interface AppProps {
-  projectName: string;
+  panels: PanelDefinition<PanelData>[];
 }
 
-const App: React.FC<AppProps> = ({ projectName }) => {
-  const [startYear, setStartYear] = useState(1990);
+const App: React.FC<AppProps> = ({ panels }) => {
+  const [current, setCurrent] = useState<PanelData | null>(null);
+  const [next, setNext] = useState<PanelData | null>(null);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [startYear, setStartYear] = useState(2017);
+
+  window.setStartYear = setStartYear;
+
   const [budget, setBudget] = useState(1800);
-  const [xAxisExtent, setXAxisExtent] = useState<[number, number]>([1990, 2020]);
 
-  const [bankProps, setBankProps] = useState<BankProps>({
-    budget,
-    blobs: [
-      {
-        size: 1
-      }
-    ]
-  });
-
-  // useEffect(() => {
-  //   const timeout = setInterval(
-  //     () => setXAxisExtent([xAxisExtent[0], xAxisExtent[1] === 2050 ? 2020 : xAxisExtent[1] + 10]),
-  //     1000
-  //   );
-  //   return () => {
-  //     clearInterval(timeout);
-  //   };
-  // });
-
+  const [xAxisExtent, setXAxisExtent] = useState<[number, number]>([1900, 2100]);
   const budgetUsed = data.reduce((t, d) => (d.year <= startYear ? t + d.emissions : t), 0) / 1000000000;
-  console.log('bankProps :>> ', bankProps);
+
+  const remainingBudget = (budget - budgetUsed) * 1000000000;
+
+  const series2 = {
+    data: generateSeries(remainingBudget, data[data.length - 1].emissions).map((d, i) => ({
+      emissions: d,
+      year: i + 2018
+    })),
+    meta: { color: 'red' }
+  };
+
   return (
-    <div className={styles.root}>
-      <label>
-        Start reducing emissions in year: {startYear}
-        <input type="range" min="1950" max="2017" onChange={ev => setStartYear(+ev.target.value)} value={startYear} />
-      </label>
-      <p>Remaining budget: {Math.round(budget - budgetUsed)}</p>
-      <label>
-        Total emissions budget: {budget}
-        <input type="range" min="1800" max="2500" onChange={ev => setBudget(+ev.target.value)} value={budget} />
-      </label>
-      <button
-        onClick={ev => setBankProps(JSON.parse(ev.currentTarget.dataset.config || ''))}
-        data-config={JSON.stringify({ budget, blobs: [{ size: 0.5 }] })}
-      >
-        Small
-      </button>
-      <button
-        onClick={ev => setBankProps(JSON.parse(ev.currentTarget.dataset.config || ''))}
-        data-config={JSON.stringify({ budget, blobs: [{ size: 1 }, { size: 0, fill: 'red' }] })}
-      >
-        Big
-      </button>
-      <button
-        onClick={ev => setBankProps(JSON.parse(ev.currentTarget.dataset.config || ''))}
-        data-config={JSON.stringify({ budget, blobs: [{ size: 1 }, { size: 0.4, fill: 'green', label: 'Green!' }] })}
-      >
-        More
-      </button>
-      <Bank {...bankProps} />
-      <YearlyEmissions data={data} xAxisExtent={xAxisExtent} />
-    </div>
+    <Scrollyteller
+      panels={panels}
+      onMarker={current => {
+        setCurrent(current);
+        setNext(current.next || current);
+      }}
+      onProgress={m => setProgress(m.pctAboveFold)}
+    >
+      <div className={styles.root}>
+        {current && progress && (
+          <Bank
+            budget={budget}
+            progress={progress}
+            begin={marks[current.index].blobs}
+            end={next && marks[next.index].blobs}
+          />
+        )}
+        <YearlyEmissions series={[{ data, meta: { color: 'black' } }, series2]} xAxisExtent={xAxisExtent} />
+      </div>
+    </Scrollyteller>
   );
 };
 

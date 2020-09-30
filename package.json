@@ -35,7 +35,9 @@
     "react-test-renderer": "^16.13.1"
   },
   "dependencies": {
+    "@abcnews/mount-utils": "^2.0.0",
     "@abcnews/scrollyteller": "^3.0.1",
+    "@visx/axis": "^1.0.0",
     "d3-array": "^2.7.1",
     "d3-scale": "^3.2.2",
     "d3-selection": "^2.0.0",

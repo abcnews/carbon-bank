@@ -6,3 +6,8 @@ declare module '*data.tsv' {
 declare module 'svg-path-reverse' {
   export function reverse(path: string): string;
 }
+
+interface Window {
+  __ODYSSEY__?: any;
+  setStartYear: any;
+}

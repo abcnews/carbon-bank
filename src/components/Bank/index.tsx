@@ -1,13 +1,14 @@
 import React from 'react';
 import styles from './styles.scss';
-import Blob from '../Blob';
+import LiquidBlob from '../LiquidBlob';
 import { scaleSqrt } from 'd3-scale';
 import { arc } from 'd3-shape';
 import useDimensions from 'react-cool-dimensions';
 
 export type BlobSpec = {
   size: number;
-  id?: string;
+  opacity?: number;
+  id: string;
   fill?: string;
   stroke?: string;
   strokeDasharray?: string;
@@ -15,53 +16,56 @@ export type BlobSpec = {
 };
 
 export type BankProps = {
-  budget: number;
-  blobs: BlobSpec[];
+  budget: number; // The number that defines 100% for the rendered
+  begin: BlobSpec[];
+  end: BlobSpec[] | null;
+  progress: number;
 };
 
-const Bank: React.FC<BankProps> = ({ blobs, budget }) => {
-  const { ref, width } = useDimensions<HTMLDivElement>();
+const interp = (start: number | undefined, end: number | undefined, progress: number): number | undefined =>
+  typeof start === 'undefined' || typeof end === 'undefined' ? start : start + (end - start) * progress;
 
-  const margin: number = 10;
+const Bank: React.FC<BankProps> = ({ begin, end, progress, budget }) => {
+  const { ref, width, height } = useDimensions<HTMLDivElement>();
+  const verticalSpaceAvailable = 0.7;
+  const dim = Math.min(width, height * verticalSpaceAvailable);
+  const cx = width / 2;
+  const cy = (height * verticalSpaceAvailable) / 2;
+  const scale = scaleSqrt().domain([0, budget]).range([0, 1]);
+  const blobs = begin.map(current => {
+    const next = end && end.find(d => d.id === current.id);
+    if (!next || progress < 0) return current;
+    const result: BlobSpec = {
+      ...current,
+      size: interp(current.size, next.size, progress) || current.size,
+      opacity: interp(current.opacity, next.opacity, progress)
+    };
+    return result;
+  });
 
-  const scale = scaleSqrt()
-    .domain([0, budget * 1.2])
-    .range([0, 1]);
-
-  const progress = arc()
-    .innerRadius(scale(budget))
-    .outerRadius(scale(budget))
-    .startAngle(0)
-    .endAngle(Math.PI / 3);
+  console.log('begin, end :>> ', begin, end);
 
   return (
     <div ref={ref} className={styles.stage}>
-      <svg width={width} height={width}>
+      <svg width={width} height={height}>
         <defs>
-          {blobs.map(({ id, size, fill, stroke, strokeDasharray, label }, i) => (
-            <Blob
-              id={'blob-' + (id || i)}
-              key={id || i}
-              attrs={{ fill, stroke, strokeDasharray }}
-              cx={width / 2}
-              cy={width / 2}
-              r={((scale(budget) * width) / 2) * size + 10}
-              scale={1}
-            />
+          {blobs.map(({ id, size }) => (
+            <LiquidBlob id={'blob-' + id} key={id} cx={cx} cy={cy} r={((scale(budget) * dim) / 2) * scale(size) + 10} />
           ))}
         </defs>
 
-        {blobs.map(({ id, size, fill, stroke, strokeDasharray, label }, i) => (
-          <g key={id || i}>
-            <Blob
-              attrs={{ fill, stroke, strokeDasharray }}
-              cx={width / 2}
-              cy={width / 2}
-              r={(scale(budget) * width) / 2}
-              scale={size}
+        {blobs.map(({ id, size, fill, stroke, strokeDasharray, opacity, label }, i) => (
+          <g key={id}>
+            <LiquidBlob
+              showControlPoints={false}
+              attrs={{ fill, stroke, strokeDasharray, opacity }}
+              cx={cx}
+              cy={cy}
+              r={((scale(budget) * dim) / 2) * scale(size)}
             />
+
             <text textAnchor="middle" fill="pink">
-              <textPath startOffset="23%" href={'#blob-' + (id || i)}>
+              <textPath startOffset="48%" href={'#blob-' + (id || i)}>
                 {label}
               </textPath>
             </text>
