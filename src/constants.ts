@@ -1,60 +1,61 @@
 // Blobs
 
-import { BlobSpec } from './components/Bank';
+import { BlobSpec, LimitSpec } from './components/Bank';
+import { EmissionsSeries } from './components/YearlyEmissions';
+import data from './data.tsv';
 
-type Mark = {
-  label: string;
-  blobs: BlobSpec[];
+type BlobUpdate = {
+  emissions?: number;
+  opacity?: number;
 };
 
+type Mark = {
+  blobs: { [key: string]: BlobUpdate };
+  series?: EmissionsSeries[];
+  limits?: number[];
+};
+
+export const limits: LimitSpec[] = [
+  { emissions: 600, label: '0.5 degrees' },
+  { emissions: 1200, label: '1 degree' },
+  { emissions: 1800, label: '1.5 degrees' }
+];
+
+export const blobs: BlobSpec[] = [
+  { id: 'coal', size: 20 },
+  { id: 'sink', size: 80, fill: '#0A594D', opacity: 1 }
+];
 export const marks: Mark[] = [
   {
-    label: '1',
-    blobs: [{ id: 'coal', size: 20 }]
-  },
+    blobs: { coal: { emissions: 20 } },
+    series: [
   {
-    label: '2',
-    blobs: [
-      { id: 'sink', size: 80, fill: '#0A594D', opacity: 1 },
-      { id: 'coal', size: 100 }
+        data: data,
+        meta: {
+          color: '#000'
+        }
+      }
     ]
   },
   {
-    label: '3',
-    blobs: [
-      { id: 'sink', size: 200, fill: '#0A594D', opacity: 1 },
-      { id: 'coal', size: 100 }
-    ]
+    blobs: { sink: { emissions: 80 }, coal: { emissions: 100 } }
   },
   {
-    label: '4',
-    blobs: [
-      { id: 'sink', size: 200, fill: '#0A594D', opacity: 0 },
-      { id: 'coal', size: 100 }
-    ]
+    blobs: { sink: { emissions: 200 } }
   },
   {
-    label: '5',
-    blobs: [
-      { id: 'coal', size: 100 },
-      { id: 'halfdeg', size: 105, strokeDasharray: '3 3', fill: 'none', stroke: '#aaa', label: '0.5 degrees' }
-    ]
+    blobs: {}
   },
   {
-    label: '6',
-    blobs: [
-      { id: 'coal', size: 100 },
-      { id: 'halfdeg', size: 600, strokeDasharray: '3 3', fill: 'none', stroke: '#aaa', label: '0.5 degrees' },
-      { id: 'onedeg', size: 1200, strokeDasharray: '3 3', fill: 'none', stroke: '#888', label: '1 degree' }
-    ]
+    blobs: {},
+    limits: [0]
   },
   {
-    label: '7',
-    blobs: [
-      { id: 'coal', size: 200 },
-      { id: 'halfdeg', size: 600, strokeDasharray: '3 3', fill: 'none', stroke: '#aaa', label: '0.5 degrees' },
-      { id: 'onedeg', size: 1200, strokeDasharray: '3 3', fill: 'none', stroke: '#888', label: '1 degree' },
-      { id: 'onepointfivedeg', size: 1800, strokeDasharray: '3 3', fill: 'none', stroke: '#888', label: '1.5 degree' }
-    ]
+    blobs: {},
+    limits: [0, 1]
+  },
+  {
+    blobs: { coal: { emissions: 200 } },
+    limits: [0, 1, 2]
   }
 ];
