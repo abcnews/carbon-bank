@@ -13,3 +13,10 @@
 .tick {
   transition: transform 0.5s;
 }
+
+.label {
+  border: 1px solid #999;
+  border-radius: 3px;
+  transform: translate(-50%, -110%);
+  padding: 0 3px;
+}

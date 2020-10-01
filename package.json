@@ -43,9 +43,11 @@
     "d3-selection": "^2.0.0",
     "d3-shape": "^2.0.0",
     "d3-transition": "^2.0.0",
+    "nanoid": "^3.1.12",
     "react": "^16.13.1",
     "react-cool-dimensions": "^1.1.4",
     "react-dom": "^16.13.1",
+    "react-transition-group": "^4.4.1",
     "react-use-dimensions": "^1.2.1",
     "svg-path-reverse": "^1.2.0",
     "svgpath": "^2.3.0"

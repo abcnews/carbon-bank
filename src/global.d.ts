@@ -10,4 +10,5 @@ declare module 'svg-path-reverse' {
 interface Window {
   __ODYSSEY__?: any;
   setStartYear: any;
+  setBudget: any;
 }

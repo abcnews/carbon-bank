@@ -1,9 +1,6 @@
 import React from 'react';
 import styles from './styles.scss';
-
-import { scaleLinear, scaleBand } from 'd3-scale';
-import { ticks } from 'd3-array';
-import { generateSeries, max } from '../../utils';
+import { scaleLinear } from 'd3-scale';
 import { EmissionsData } from '../../common.d';
 import useDimensions from 'react-cool-dimensions';
 import { AxisBottom, AxisLeft } from '@visx/axis';
@@ -15,7 +12,7 @@ type Margins = {
   left: number;
 };
 
-type EmissionsSeries = {
+export type EmissionsSeries = {
   data: EmissionsData;
   meta: {
     color: string;
@@ -50,8 +47,35 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, xAxisExtent }
 
   const barWidth = (xScale(1) - xScale(0)) / 2;
 
+  const labels = [
+    {
+      text: '2017',
+      x: xScale(2017),
+      y: yScale(series[0].data.find(d => d.year === 2017)?.emissions || 0)
+    }
+  ];
+
   return (
     <div ref={ref} className={styles.root}>
+      <div
+        style={{
+          position: 'absolute',
+          width: `${width}px`,
+          height: `${height}px`,
+          top: `${margins.top}px`,
+          left: `${margins.left}px`
+        }}
+      >
+        {labels.map(({ text, x, y }, i) => (
+          <div
+            className={styles.label}
+            key={`label-${i}`}
+            style={{ position: 'absolute', top: `${y}px`, left: `${x}px` }}
+          >
+            {text}
+          </div>
+        ))}
+      </div>
       <svg width={width} height={height}>
         <g transform={`translate(${margins.left} ${margins.top})`}>
           {series.map(({ data, meta }, i) => (
