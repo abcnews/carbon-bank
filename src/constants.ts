@@ -9,10 +9,13 @@ type BlobUpdate = {
   opacity?: number;
 };
 
-type Mark = {
-  blobs: { [key: string]: BlobUpdate };
+export type Mark = {
+  carbon: BlobSpec;
+  sink?: BlobSpec;
+  future?: BlobSpec;
   series?: EmissionsSeries[];
   limits?: number[];
+  labels?: string[];
 };
 
 export const limits: LimitSpec[] = [
@@ -21,15 +24,22 @@ export const limits: LimitSpec[] = [
   { emissions: 1800, label: '1.5 degrees' }
 ];
 
-export const blobs: BlobSpec[] = [
-  { id: 'coal', size: 20 },
-  { id: 'sink', size: 80, fill: '#0A594D', opacity: 1 }
-];
 export const marks: Mark[] = [
   {
-    blobs: { coal: { emissions: 20 } },
-    series: [
+    labels: ['carbon'],
+    carbon: { id: 'carbon', emissions: 600 }
+  },
   {
+    labels: ['carbon'],
+    limits: [0, 1, 2],
+    carbon: { id: 'carbon', emissions: 500 }
+  },
+  {
+    carbon: { id: 'carbon', emissions: 50 },
+    sink: { id: 'sink', emissions: 20 },
+    future: { id: 'future', emissions: 20 },
+    series: [
+      {
         data: data,
         meta: {
           color: '#000'
@@ -38,24 +48,8 @@ export const marks: Mark[] = [
     ]
   },
   {
-    blobs: { sink: { emissions: 80 }, coal: { emissions: 100 } }
-  },
-  {
-    blobs: { sink: { emissions: 200 } }
-  },
-  {
-    blobs: {}
-  },
-  {
-    blobs: {},
-    limits: [0]
-  },
-  {
-    blobs: {},
-    limits: [0, 1]
-  },
-  {
-    blobs: { coal: { emissions: 200 } },
-    limits: [0, 1, 2]
+    carbon: { id: 'carbon', emissions: 20 },
+    sink: { id: 'sink', emissions: 20 },
+    future: { id: 'future', emissions: 20 }
   }
 ];

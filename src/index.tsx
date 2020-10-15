@@ -3,13 +3,11 @@ import { render } from 'react-dom';
 import App from './components/App';
 import { loadScrollyteller, ScrollytellerDefinition } from '@abcnews/scrollyteller';
 import { PanelData } from './common.d';
-let scrollyData: ScrollytellerDefinition<PanelData>;
 const PROJECT_NAME: string = 'carbon-bank';
+let scrollyData: ScrollytellerDefinition<PanelData>;
 
 function renderApp() {
-  if (!scrollyData) {
-    scrollyData = loadScrollyteller('', 'u-full');
-  }
+  scrollyData = scrollyData || loadScrollyteller<PanelData>('', 'u-full');
 
   scrollyData.panels = scrollyData.panels
     .map((d, index) => ({
@@ -37,7 +35,7 @@ function init() {
 if (module.hot) {
   module.hot.accept('./components/App', () => {
     try {
-      init();
+      renderApp();
     } catch (err) {
       import('./components/ErrorBox').then(({ default: ErrorBox }) => {
         render(<ErrorBox error={err} />, scrollyData.mountNode);

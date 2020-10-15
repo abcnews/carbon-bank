@@ -1,0 +1,24 @@
+.root {
+  width: 100%;
+  height: 100%;
+}
+
+.carbonLabel {
+  display: block;
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  font-size: 4rem;
+  transform: rotate(-8deg);
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.carbonLabel::after {
+  content: '⤻';
+  transform: rotate(42deg);
+  position: absolute;
+  top: 2rem;
+  font-size: 15rem;
+  left: 40%;
+}

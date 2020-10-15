@@ -13,24 +13,35 @@ interface BankLimitProps {
   labelOffset?: number;
 }
 
-const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true, duration = 0, labelOffset = 5 }) => {
+const BankLimit: React.FC<BankLimitProps> = ({
+  r,
+  cx,
+  cy,
+  label,
+  visible = true,
+  duration = 1000,
+  labelOffset = 5
+}) => {
   const [id] = useState(nanoid);
+  const circumference = 2 * Math.PI * r;
+  const dashLength = Math.ceil(circumference / 4);
+  const dasharray = ['0', String(Math.ceil(circumference))].concat(new Array(dashLength).fill('2 2')).join(' ');
   return (
     <Transition in={visible} timeout={duration}>
       {state => {
         return (
           <g>
-            <circle
-              style={{
-                opacity: ['entering', 'entered'].includes(state) ? 1 : 0,
-                transition: `opacity ${duration}ms ease-in-out`
-              }}
-              cx={cx}
-              cy={cy}
-              r={r}
-              strokeDasharray="2 2"
+            <path
+              transform={`translate(${cx} ${cy})`}
+              d={`M 0 ${-r} A ${r} ${r} 0 1 1 0 ${r} A ${r} ${r} 0 1 1 0 ${-r}`}
+              strokeDasharray={dasharray}
               stroke="#ccc"
               fill="none"
+              style={{
+                opacity: ['entering', 'entered'].includes(state) ? 1 : 0,
+                strokeDashoffset: ['entering', 'entered'].includes(state) ? -circumference : 0,
+                transition: `opacity ${duration}ms ease-in-out, stroke-dashoffset ${duration * 3}ms ease-in-out`
+              }}
             />
             <path
               transform={`translate(${cx} ${cy})`}
