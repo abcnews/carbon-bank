@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './styles.scss';
 import { ScaleLinear, scaleLinear } from 'd3-scale';
-import { EmissionsData } from '../../common.d';
+import { EmissionsData, EmissionsDatum } from '../../common.d';
 import useDimensions from 'react-cool-dimensions';
 import { AnimatedAxis, AnimatedGridRows } from '@visx/react-spring';
-import { useSprings, animated } from 'react-spring';
+import { useSprings, animated, useTransition } from 'react-spring';
 import { max } from '../../utils';
 
 type Margins = {
@@ -47,20 +47,18 @@ type SeriesProps = {
 const Series: React.FC<SeriesProps> = ({ data, meta: { color }, xScale, yScale, xAxisExtent, barWidth }) => {
   const visibleData = data.filter(d => d.year >= xAxisExtent[0] && d.year <= xAxisExtent[1]);
 
-  const springs = useSprings(
-    visibleData.length,
-    visibleData.map(d => {
-      return {
-        from: { alignContent: yScale(0), height: 0 },
-        to: { alignContent: yScale(d.emissions), height: yScale.range()[0] - yScale(d.emissions) },
-        trail: 1000 / visibleData.length
-      };
-    })
-  );
+  const springs = useTransition(visibleData, d => d.year, {
+    from: { height: 0, top: yScale(0) },
+    update: d => ({
+      height: yScale(0) - yScale(d.emissions),
+      top: yScale(d.emissions)
+    }),
+    unique: true
+  });
 
   return (
     <g>
-      {springs.map(({ height, alignContent }, i) => (
+      {springs.map(({ props: { top, height } }, i) => (
         <animated.rect
           key={i}
           className={styles.column}
@@ -69,7 +67,7 @@ const Series: React.FC<SeriesProps> = ({ data, meta: { color }, xScale, yScale, 
           fill={color}
           style={{ transform: `translate(${xScale(visibleData[i].year) - barWidth / 2}px, 0)` }}
           width={barWidth}
-          y={alignContent}
+          y={top}
           height={height}
           data-year={visibleData[i].year}
         />

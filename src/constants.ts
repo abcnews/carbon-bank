@@ -10,9 +10,7 @@ type BlobUpdate = {
 };
 
 export type Mark = {
-  carbon: BlobSpec;
-  sink?: BlobSpec;
-  future?: BlobSpec;
+  blobs: BlobSpec[];
   series?: EmissionsSeries[];
   limits?: number[];
   labels?: string[];
@@ -27,17 +25,29 @@ export const limits: LimitSpec[] = [
 export const marks: Mark[] = [
   {
     labels: ['carbon'],
-    carbon: { id: 'carbon', emissions: 600 }
+    blobs: [{ id: 'carbon', emissions: 20 }]
   },
   {
-    labels: ['carbon'],
-    limits: [0, 1, 2],
-    carbon: { id: 'carbon', emissions: 500 }
+    blobs: [{ id: 'carbon', emissions: 200 }]
   },
   {
-    carbon: { id: 'carbon', emissions: 50 },
-    sink: { id: 'sink', emissions: 20 },
-    future: { id: 'future', emissions: 20 },
+    blobs: [
+      { id: 'sink', emissions: 200 },
+      { id: 'carbon', emissions: 100 }
+    ]
+  },
+  {
+    blobs: [{ id: 'carbon', emissions: 100 }]
+  },
+  {
+    blobs: [{ id: 'carbon', emissions: 100 }]
+  },
+  {
+    blobs: [
+      { id: 'carbon', emissions: 50 },
+      { id: 'sink', emissions: 20 },
+      { id: 'future', emissions: 20 }
+    ],
     series: [
       {
         data: data,
@@ -48,8 +58,10 @@ export const marks: Mark[] = [
     ]
   },
   {
-    carbon: { id: 'carbon', emissions: 20 },
-    sink: { id: 'sink', emissions: 20 },
-    future: { id: 'future', emissions: 20 }
+    blobs: [
+      { id: 'carbon', emissions: 20 },
+      { id: 'sink', emissions: 20 },
+      { id: 'future', emissions: 20 }
+    ]
   }
 ];

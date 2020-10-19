@@ -3,7 +3,7 @@ import styles from './styles.scss';
 import LiquidBlob from '../LiquidBlob';
 import { scaleSqrt } from 'd3-scale';
 import useDimensions from 'react-cool-dimensions';
-import { useSpring, animated } from 'react-spring';
+import { useSpring, animated, useTransition } from 'react-spring';
 import { limits } from '../../constants';
 import BankLimit from '../BankLimit';
 
@@ -27,12 +27,13 @@ export type LimitSpec = {
 export type BankProps = {
   budget: number; // The number that defines 100% for the rendered blob
   limits: number[];
-  carbon: BlobSpec;
+  blobs: BlobSpec[];
+  carbon?: BlobSpec;
   sink?: BlobSpec;
   future?: BlobSpec;
 };
 
-const Bank: React.FC<BankProps> = ({ budget, carbon, future, sink, limits: visibleLimits }) => {
+const Bank: React.FC<BankProps> = ({ blobs, budget, limits: visibleLimits }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
   const verticalSpaceAvailable = 0.8;
   const dim = Math.min(width, height * verticalSpaceAvailable);
@@ -41,9 +42,13 @@ const Bank: React.FC<BankProps> = ({ budget, carbon, future, sink, limits: visib
   const scale = scaleSqrt().domain([0, budget]).range([0, 1]);
 
   // Springy things
-  const sprungCarbon = useSpring({ r: (scale(carbon.emissions) * dim) / 2 });
-  const sprungSink = useSpring({ r: (scale(sink?.emissions || 0) * dim) / 2 });
-  const sprungFuture = useSpring({ r: (scale(future?.emissions || 0) * dim) / 2 });
+  const blobTransitions = useTransition(blobs, blob => blob.id, {
+    enter: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2 }),
+    from: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 1 }),
+    update: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2 }),
+    leave: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 0 }),
+    unique: true
+  });
 
   return (
     <div ref={ref} className={styles.stage}>
@@ -59,9 +64,17 @@ const Bank: React.FC<BankProps> = ({ budget, carbon, future, sink, limits: visib
           />
         ))}
 
-        <AnimatedLiquidBlob cx={cx} cy={cy} r={sprungCarbon.r} />
-        {sprungSink.r && <LiquidBlob cx={cx} cy={cy} r={sprungSink.r} attrs={{ fill: '#0A594D' }} />}
-        {sprungFuture.r && <LiquidBlob cx={cx} cy={cy} r={sprungFuture.r} />}
+        {blobTransitions.map(({ item, key, props, props: { scale, opacity } }) => {
+          return (
+            <AnimatedLiquidBlob
+              key={key}
+              cx={cx}
+              cy={cy}
+              r={scale as number}
+              attrs={{ opacity: opacity?.getValue() as number, fill: key === 'sink' ? 'green' : 'black' }}
+            />
+          );
+        })}
       </svg>
     </div>
   );

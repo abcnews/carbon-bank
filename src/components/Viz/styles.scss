@@ -5,20 +5,21 @@
 
 .carbonLabel {
   display: block;
+  color: #ab78d9;
+  font-family: ABCSans, Arial, Helvetica, sans-serif;
   position: absolute;
-  top: 15%;
-  left: 10%;
-  font-size: 4rem;
-  transform: rotate(-8deg);
-  opacity: 0;
-  transition: opacity 1s;
+  bottom: calc(80vh / 2 + 20vh + 4rem);
+  left: 50%;
+  font-size: clamp(1.2rem, 8vw, 2rem);
+  transform: rotate(-8deg) translate(-75%);
+  white-space: nowrap;
 }
 
 .carbonLabel::after {
   content: '⤻';
-  transform: rotate(42deg);
+  transform: rotate(52deg);
   position: absolute;
   top: 2rem;
-  font-size: 15rem;
-  left: 40%;
+  font-size: 4rem;
+  left: 33%;
 }
