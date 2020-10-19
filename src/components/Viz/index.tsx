@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAnimateProps } from 'react-animate-props';
 import { usePrevious } from '../../utils';
 import YearlyEmissions from '../YearlyEmissions';
@@ -11,10 +11,10 @@ import { Mark } from '../../constants';
 interface VizProps {
   current: Mark;
   next: Mark;
-  progress: number;
+  progress?: number;
 }
 
-const Viz: React.FC<VizProps> = ({ current, progress }) => {
+const Viz: React.FC<VizProps> = ({ current }) => {
   const previous = usePrevious<Mark>(current);
 
   const [startYear, setStartYear] = useState(2017);
@@ -32,7 +32,6 @@ const Viz: React.FC<VizProps> = ({ current, progress }) => {
     })),
     meta: { color: 'red' }
   };
-  const duration = 3000;
 
   return (
     <div className={styles.root}>

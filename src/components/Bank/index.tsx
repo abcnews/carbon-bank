@@ -3,8 +3,11 @@ import styles from './styles.scss';
 import LiquidBlob from '../LiquidBlob';
 import { scaleSqrt } from 'd3-scale';
 import useDimensions from 'react-cool-dimensions';
+import { useSpring, animated } from 'react-spring';
 import { limits } from '../../constants';
 import BankLimit from '../BankLimit';
+
+const AnimatedLiquidBlob = animated(LiquidBlob);
 
 export type BlobSpec = {
   id: string;
@@ -31,11 +34,16 @@ export type BankProps = {
 
 const Bank: React.FC<BankProps> = ({ budget, carbon, future, sink, limits: visibleLimits }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
-  const verticalSpaceAvailable = 0.7;
+  const verticalSpaceAvailable = 0.8;
   const dim = Math.min(width, height * verticalSpaceAvailable);
   const cx = width / 2;
   const cy = (height * verticalSpaceAvailable) / 2;
   const scale = scaleSqrt().domain([0, budget]).range([0, 1]);
+
+  // Springy things
+  const sprungCarbon = useSpring({ r: (scale(carbon.emissions) * dim) / 2 });
+  const sprungSink = useSpring({ r: (scale(sink?.emissions || 0) * dim) / 2 });
+  const sprungFuture = useSpring({ r: (scale(future?.emissions || 0) * dim) / 2 });
 
   return (
     <div ref={ref} className={styles.stage}>
@@ -50,9 +58,10 @@ const Bank: React.FC<BankProps> = ({ budget, carbon, future, sink, limits: visib
             visible={visibleLimits.includes(i)}
           />
         ))}
-        <LiquidBlob cx={cx} cy={cy} r={(scale(carbon.emissions) * dim) / 2} />
-        {sink && <LiquidBlob cx={cx} cy={cy} r={(scale(sink.emissions) * dim) / 2} attrs={{ fill: '#0A594D' }} />}
-        {future && <LiquidBlob cx={cx} cy={cy} r={(scale(future.emissions) * dim) / 2} />}
+
+        <AnimatedLiquidBlob cx={cx} cy={cy} r={sprungCarbon.r} />
+        {sprungSink.r && <LiquidBlob cx={cx} cy={cy} r={sprungSink.r} attrs={{ fill: '#0A594D' }} />}
+        {sprungFuture.r && <LiquidBlob cx={cx} cy={cy} r={sprungFuture.r} />}
       </svg>
     </div>
   );
