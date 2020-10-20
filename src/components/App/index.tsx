@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { marks, Mark } from '../../constants';
 import Scrollyteller, { PanelDefinition } from '@abcnews/scrollyteller';
 import { PanelData } from '../../common.d';
+import './styles.scss';
 
 import Viz from '../Viz';
 

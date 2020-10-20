@@ -58,20 +58,23 @@ const Series: React.FC<SeriesProps> = ({ data, meta: { color }, xScale, yScale, 
 
   return (
     <g>
-      {springs.map(({ props: { top, height } }, i) => (
-        <animated.rect
-          key={i}
-          className={styles.column}
-          stroke="#fff"
-          strokeWidth="0"
-          fill={color}
-          style={{ transform: `translate(${xScale(visibleData[i].year) - barWidth / 2}px, 0)` }}
-          width={barWidth}
-          y={top}
-          height={height}
-          data-year={visibleData[i].year}
-        />
-      ))}
+      {springs.map(
+        ({ item, props: { top, height } }, i) =>
+          item && (
+            <animated.rect
+              key={i}
+              className={styles.column}
+              stroke="#fff"
+              strokeWidth="0"
+              fill={color}
+              style={{ transform: `translate(${xScale(item.year) - barWidth / 2}px, 0)` }}
+              width={barWidth}
+              y={top}
+              height={height}
+              data-year={item.year}
+            />
+          )
+      )}
     </g>
   );
 };
@@ -80,7 +83,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, xAxisExtent }
   const { ref, width, height } = useDimensions<HTMLDivElement>();
 
   const xScale = scaleLinear()
-    .domain(xAxisExtent)
+    .domain([xAxisExtent[0] - 1, xAxisExtent[1] + 1])
     .range([0, width - margins.right - margins.left]);
 
   const yScale = scaleLinear()

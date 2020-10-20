@@ -52,8 +52,11 @@ const Viz: React.FC<VizProps> = ({ current }) => {
           )
       )}
 
-      {current.series && (
-        <YearlyEmissions series={[{ data, meta: { color: 'black' } }, series2]} xAxisExtent={xAxisExtent} />
+      {current.chart && (
+        <YearlyEmissions
+          series={[{ data, meta: { color: 'black' } }, series2]}
+          xAxisExtent={current.chart.xAxisExtent}
+        />
       )}
     </div>
   );

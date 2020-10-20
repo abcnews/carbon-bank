@@ -39,13 +39,16 @@ const Bank: React.FC<BankProps> = ({ blobs, budget, limits: visibleLimits }) => 
   const dim = Math.min(width, height * verticalSpaceAvailable);
   const cx = width / 2;
   const cy = (height * verticalSpaceAvailable) / 2;
-  const scale = scaleSqrt().domain([0, budget]).range([0, 1]);
+  const scale = scaleSqrt()
+    .domain([0, budget * 1.2])
+    .range([0, 1]);
 
   // Springy things
   const blobTransitions = useTransition(blobs, blob => blob.id, {
-    enter: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2 }),
-    from: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 1 }),
-    update: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2 }),
+    initial: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 0 }),
+    enter: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 1 }),
+    from: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 0 }),
+    update: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 1 }),
     leave: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 0 }),
     unique: true
   });
@@ -53,6 +56,19 @@ const Bank: React.FC<BankProps> = ({ blobs, budget, limits: visibleLimits }) => 
   return (
     <div ref={ref} className={styles.stage}>
       <svg width={width} height={height}>
+        {blobTransitions.map(({ item, key, props, props: { scale, opacity } }) => {
+          return (
+            <animated.g style={{ opacity: opacity }} key={key}>
+              <AnimatedLiquidBlob
+                cx={cx}
+                cy={cy}
+                r={scale as number}
+                attrs={{ fill: key === 'sink' ? '#0A594D' : '#000' }}
+              />
+            </animated.g>
+          );
+        })}
+
         {limits.map(({ emissions, label }, i) => (
           <BankLimit
             key={`id-${i}`}
@@ -63,18 +79,6 @@ const Bank: React.FC<BankProps> = ({ blobs, budget, limits: visibleLimits }) => 
             visible={visibleLimits.includes(i)}
           />
         ))}
-
-        {blobTransitions.map(({ item, key, props, props: { scale, opacity } }) => {
-          return (
-            <AnimatedLiquidBlob
-              key={key}
-              cx={cx}
-              cy={cy}
-              r={scale as number}
-              attrs={{ opacity: opacity?.getValue() as number, fill: key === 'sink' ? 'green' : 'black' }}
-            />
-          );
-        })}
       </svg>
     </div>
   );

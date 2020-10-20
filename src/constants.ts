@@ -11,7 +11,12 @@ type BlobUpdate = {
 
 export type Mark = {
   blobs: BlobSpec[];
-  series?: EmissionsSeries[];
+  chart?: {
+    xAxisExtent: [number, number];
+    stopAt?: number;
+    labelYears?: number[];
+    extend?: 'steady' | 'reduce';
+  };
   limits?: number[];
   labels?: string[];
 };
@@ -40,22 +45,32 @@ export const marks: Mark[] = [
     blobs: [{ id: 'carbon', emissions: 100 }]
   },
   {
-    blobs: [{ id: 'carbon', emissions: 100 }]
+    blobs: [{ id: 'carbon', emissions: 600 }],
+    limits: [0]
   },
   {
-    blobs: [
-      { id: 'carbon', emissions: 50 },
-      { id: 'sink', emissions: 20 },
-      { id: 'future', emissions: 20 }
-    ],
-    series: [
-      {
-        data: data,
-        meta: {
-          color: '#000'
-        }
-      }
-    ]
+    blobs: [{ id: 'carbon', emissions: 600 }],
+    limits: [0, 1]
+  },
+  {
+    blobs: [{ id: 'carbon', emissions: 1200 }],
+    limits: [0, 1, 2]
+  },
+  {
+    blobs: [{ id: 'carbon', emissions: 50 }],
+    chart: {
+      xAxisExtent: [1850, 2020],
+      labelYears: [1920],
+      stopAt: 1920
+    }
+  },
+  {
+    blobs: [{ id: 'carbon', emissions: 50 }],
+    chart: {
+      xAxisExtent: [1900, 2150],
+      labelYears: [1970],
+      stopAt: 1970
+    }
   },
   {
     blobs: [
