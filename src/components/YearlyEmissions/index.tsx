@@ -2,10 +2,12 @@ import React from 'react';
 import styles from './styles.scss';
 import { ScaleLinear, scaleLinear } from 'd3-scale';
 import { EmissionsData, EmissionsDatum } from '../../common.d';
+import data from '../../data.tsv';
 import useDimensions from 'react-cool-dimensions';
 import { AnimatedAxis, AnimatedGridRows } from '@visx/react-spring';
 import { useSprings, animated, useTransition } from 'react-spring';
-import { max } from '../../utils';
+import { generateSeries, max } from '../../utils';
+import { budget } from '../../constants';
 
 type Margins = {
   top: number;
@@ -23,10 +25,12 @@ export type EmissionsSeries = {
   meta: EmissionsSeriesMeta;
 };
 
-interface YearlyEmissionsProps {
-  series: EmissionsSeries[];
+export type YearlyEmissionsProps = {
   xAxisExtent: [number, number];
-}
+  stopAt?: number;
+  labelYears?: number[];
+  extend?: 'steady' | 'reduce';
+};
 
 const margins: Margins = {
   top: 10,
@@ -79,8 +83,39 @@ const Series: React.FC<SeriesProps> = ({ data, meta: { color }, xScale, yScale, 
   );
 };
 
-const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, xAxisExtent }) => {
+const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, extend }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
+
+  const end = stopAt || xAxisExtent[1];
+
+  // Calculate the budget
+  const budgetUsed = data.reduce((t, d) => (d.year <= end ? t + d.emissions : t), 0) / 1000000000;
+  const remainingBudget = (budget - budgetUsed) * 1000000000;
+
+  // Create the series
+
+  // Start with the real series trimmed to the years of interest
+  const series = [
+    {
+      data: data.filter(d => d.year >= xAxisExtent[0] && d.year <= (stopAt || xAxisExtent[1])),
+      meta: {
+        color: '#000'
+      }
+    }
+  ];
+
+  const peak = series[0].data[series[0].data.length - 1].emissions;
+
+  // Next extend if we want it
+  if (extend) {
+    series.push({
+      data: generateSeries(remainingBudget, peak, extend === 'reduce').map((d, i) => ({
+        emissions: d,
+        year: i + end + 1
+      })),
+      meta: { color: 'red' }
+    });
+  }
 
   const xScale = scaleLinear()
     .domain([xAxisExtent[0] - 1, xAxisExtent[1] + 1])

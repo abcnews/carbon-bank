@@ -3,10 +3,8 @@ import { useAnimateProps } from 'react-animate-props';
 import { usePrevious } from '../../utils';
 import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
-import data from '../../data.tsv';
-import { generateSeries } from '../../utils';
 import styles from './styles.scss';
-import { Mark } from '../../constants';
+import { Mark, budget } from '../../constants';
 import { useTransition, animated, config } from 'react-spring';
 
 interface VizProps {
@@ -23,22 +21,6 @@ const Viz: React.FC<VizProps> = ({ current }) => {
     leave: { opacity: 0 }
   });
 
-  const [startYear, setStartYear] = useState(2017);
-  const [budget, setBudget] = useState(1800);
-  const [xAxisExtent, setXAxisExtent] = useState<[number, number]>([1900, 2100]);
-
-  const budgetUsed = data.reduce((t, d) => (d.year <= startYear ? t + d.emissions : t), 0) / 1000000000;
-
-  const remainingBudget = (budget - budgetUsed) * 1000000000;
-
-  const series2 = {
-    data: generateSeries(remainingBudget, data[data.length - 1].emissions).map((d, i) => ({
-      emissions: d,
-      year: i + startYear + 1
-    })),
-    meta: { color: 'red' }
-  };
-
   return (
     <div className={styles.root}>
       <Bank budget={budget} limits={current.limits || []} blobs={current.blobs} />
@@ -52,12 +34,7 @@ const Viz: React.FC<VizProps> = ({ current }) => {
           )
       )}
 
-      {current.chart && (
-        <YearlyEmissions
-          series={[{ data, meta: { color: 'black' } }, series2]}
-          xAxisExtent={current.chart.xAxisExtent}
-        />
-      )}
+      {current.chart && <YearlyEmissions {...current.chart} />}
     </div>
   );
 };

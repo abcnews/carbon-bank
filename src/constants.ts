@@ -1,7 +1,5 @@
-// Blobs
-
 import { BlobSpec, LimitSpec } from './components/Bank';
-import { EmissionsSeries } from './components/YearlyEmissions';
+import { EmissionsSeries, YearlyEmissionsProps } from './components/YearlyEmissions';
 import data from './data.tsv';
 
 type BlobUpdate = {
@@ -11,15 +9,12 @@ type BlobUpdate = {
 
 export type Mark = {
   blobs: BlobSpec[];
-  chart?: {
-    xAxisExtent: [number, number];
-    stopAt?: number;
-    labelYears?: number[];
-    extend?: 'steady' | 'reduce';
-  };
+  chart?: YearlyEmissionsProps;
   limits?: number[];
   labels?: string[];
 };
+
+export const budget = 1800;
 
 export const limits: LimitSpec[] = [
   { emissions: 600, label: '0.5 degrees' },
@@ -70,6 +65,15 @@ export const marks: Mark[] = [
       xAxisExtent: [1900, 2150],
       labelYears: [1970],
       stopAt: 1970
+    }
+  },
+  {
+    blobs: [{ id: 'carbon', emissions: 50 }],
+    chart: {
+      xAxisExtent: [1900, 2150],
+      labelYears: [1970],
+      stopAt: 1970,
+      extend: 'reduce'
     }
   },
   {

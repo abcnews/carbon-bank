@@ -6,9 +6,9 @@ export const min = (data, accessor = d => d) =>
 export const max = (data, accessor = d => d) =>
   data.reduce((max, d) => (accessor(d) > max ? accessor(d) : max), -Infinity);
 
-export const generateSeries = (budget: number, peak: number) => {
-  const years = (budget * 2) / peak;
-  const slope = (peak - 0) / (0 - years);
+export const generateSeries = (allowedEmissions: number, peak: number, reduce: boolean = true) => {
+  const years = reduce ? (allowedEmissions * 2) / peak : allowedEmissions / peak;
+  const slope = reduce ? peak / -years : 1;
   const series: number[] = [];
   for (let i = 1; i <= years; i++) {
     series.push(i * slope + peak);
