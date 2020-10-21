@@ -1,11 +1,10 @@
 import React from 'react';
 import styles from './styles.scss';
 import { ScaleLinear, scaleLinear } from 'd3-scale';
-import { EmissionsData, EmissionsDatum } from '../../common.d';
+import { EmissionsData } from '../../common.d';
 import data from '../../data.tsv';
 import useDimensions from 'react-cool-dimensions';
-import { AnimatedAxis, AnimatedGridRows } from '@visx/react-spring';
-import { useSprings, animated, useTransition } from 'react-spring';
+import { animated, useTransition } from 'react-spring';
 import { generateSeries, max } from '../../utils';
 import { budget } from '../../constants';
 
@@ -122,7 +121,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
     .range([0, width - margins.right - margins.left]);
 
   const yScale = scaleLinear()
-    .domain([0, max(series.map(d => max(d.data.map(d => d.emissions))))])
+    .domain([0, 35000000000])
     .range([height - margins.top - margins.bottom, 0]);
 
   const yTickValues = [15, 25, 35].map(d => d * 1000000000);
@@ -159,15 +158,16 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
         ))}
       </div>
       <svg width={width} height={height}>
-        <AnimatedGridRows
-          animationTrajectory="min"
-          scale={yScale}
-          width={width - margins.left - margins.right}
-          left={margins.left}
-          top={margins.top}
-          stroke="#ccc"
-          tickValues={yTickValues}
-        />
+        {yTickValues.map((tickValue, i) => (
+          <line
+            key={i}
+            x1={margins.left}
+            x2={width - margins.left}
+            y1={yScale(tickValue) + margins.top}
+            y2={yScale(tickValue) + margins.top}
+            stroke="#ccc"
+          />
+        ))}
 
         {height > 0 && (
           <g transform={`translate(${margins.left} ${margins.top})`}>
@@ -185,51 +185,59 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
           </g>
         )}
 
-        <AnimatedAxis
-          top={height - margins.bottom}
-          left={margins.left}
-          animationTrajectory="min"
-          orientation="bottom"
-          scale={xScale}
-          tickFormat={val => String(val)}
-        />
-        <AnimatedAxis
-          animationTrajectory="min"
-          top={margins.top}
-          left={margins.left}
-          orientation="left"
-          scale={yScale}
-          tickFormat={val => String(val.valueOf() / 1000000000)}
-          label="Gt"
-          tickLength={0}
-          tickValues={yTickValues}
-          tickLabelProps={() =>
-            ({
-              fontFamily: 'sans-serif',
-              textAnchor: 'end',
-              x: -2,
-              y: '0.30em'
-            } as const)
-          }
-        />
-        <AnimatedAxis
-          animationTrajectory="min"
-          top={margins.top}
-          left={width - margins.right}
-          orientation="right"
-          scale={yScale}
-          tickFormat={val => String(val.valueOf() / 1000000000)}
-          tickLength={0}
-          tickValues={yTickValues}
-          tickLabelProps={() =>
-            ({
-              fontFamily: 'sans-serif',
-              textAnchor: 'start',
-              x: 2,
-              y: '0.30em'
-            } as const)
-          }
-        />
+        <g className={styles.axisX}>
+          <line
+            transform={`translate(${margins.left}, ${height - margins.bottom})`}
+            x1={width - margins.left - margins.right}
+          />
+          {xScale.ticks().map((tickValue, i) => (
+            <g
+              key={i}
+              className={styles.tickX}
+              transform={`translate(${xScale(tickValue) + margins.left}, ${height - margins.bottom})`}
+            >
+              <line y2={6} />
+              <text y="17" textAnchor="middle">
+                {tickValue}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        <g className={styles.axisY}>
+          <line transform={`translate(${margins.left}, ${margins.top})`} y2={height - margins.top - margins.bottom} />
+          {yTickValues.map((tickValue, i) => (
+            <g
+              key={i}
+              className={styles.tickY}
+              transform={`translate(${margins.left - 6}, ${yScale(tickValue) + margins.top})`}
+            >
+              <line x2={6} />
+              <text x="-2" dy="0.3em" textAnchor="end">
+                {String(tickValue.valueOf() / 1000000000)}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        <g className={styles.axisY}>
+          <line
+            transform={`translate(${width - margins.right}, ${margins.top})`}
+            y2={height - margins.top - margins.bottom}
+          />
+          {yTickValues.map((tickValue, i) => (
+            <g
+              key={i}
+              className={styles.tickY}
+              transform={`translate(${width - margins.right}, ${yScale(tickValue) + margins.top})`}
+            >
+              <line x2={6} />
+              <text x="8" dy="0.3em" textAnchor="start">
+                {String(tickValue.valueOf() / 1000000000)}
+              </text>
+            </g>
+          ))}
+        </g>
       </svg>
     </div>
   );

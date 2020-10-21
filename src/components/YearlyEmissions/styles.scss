@@ -12,3 +12,15 @@
   transform: translate(-50%, -110%);
   padding: 0 3px;
 }
+
+.axisY,
+.axisX,
+.tickX {
+  line {
+    stroke: #222;
+    stroke-width: 1px;
+  }
+  text {
+    font-family: ABCSans, Arial, Helvetica, sans-serif;
+  }
+}
