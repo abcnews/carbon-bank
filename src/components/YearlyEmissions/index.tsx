@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './styles.scss';
 import { ScaleLinear, scaleLinear } from 'd3-scale';
+import { greatest } from 'd3-array';
 import { EmissionsData } from '../../common.d';
 import data from '../../data.tsv';
 import useDimensions from 'react-cool-dimensions';
@@ -38,50 +39,6 @@ const margins: Margins = {
   left: 30
 };
 
-type SeriesProps = {
-  data: EmissionsData;
-  meta: EmissionsSeriesMeta;
-  xScale: ScaleLinear<number, number>;
-  yScale: ScaleLinear<number, number>;
-  xAxisExtent: [number, number];
-  barWidth: number;
-};
-
-const Series: React.FC<SeriesProps> = ({ data, meta: { color }, xScale, yScale, xAxisExtent, barWidth }) => {
-  const visibleData = data.filter(d => d.year >= xAxisExtent[0] && d.year <= xAxisExtent[1]);
-
-  const springs = useTransition(visibleData, d => d.year, {
-    from: { height: 0, top: yScale(0) },
-    update: d => ({
-      height: yScale(0) - yScale(d.emissions),
-      top: yScale(d.emissions)
-    }),
-    unique: true
-  });
-
-  return (
-    <g>
-      {springs.map(
-        ({ item, props: { top, height } }, i) =>
-          item && (
-            <animated.rect
-              key={i}
-              className={styles.column}
-              stroke="#fff"
-              strokeWidth="0"
-              fill={color}
-              style={{ transform: `translate(${xScale(item.year) - barWidth / 2}px, 0)` }}
-              width={barWidth}
-              y={top}
-              height={height}
-              data-year={item.year}
-            />
-          )
-      )}
-    </g>
-  );
-};
-
 const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, extend }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
 
@@ -92,71 +49,121 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
   const remainingBudget = (budget - budgetUsed) * 1000000000;
 
   // Create the series
+  const bars: { emissions: number; color: string; year: number }[] = [];
 
   // Start with the real series trimmed to the years of interest
-  const series = [
-    {
-      data: data.filter(d => d.year >= xAxisExtent[0] && d.year <= (stopAt || xAxisExtent[1])),
-      meta: {
-        color: '#000'
-      }
-    }
-  ];
+  data
+    .filter(d => d.year >= xAxisExtent[0] && d.year <= (stopAt || xAxisExtent[1]))
+    .forEach(d => {
+      bars.push({ ...d, color: '#000' });
+    });
 
-  const peak = series[0].data[series[0].data.length - 1].emissions;
+  // What's the peak of 'real' emissions?
+  const peak = greatest(bars, d => d.emissions)?.emissions || 0;
 
   // Next extend if we want it
   if (extend) {
-    series.push({
-      data: generateSeries(remainingBudget, peak, extend === 'reduce').map((d, i) => ({
+    generateSeries(remainingBudget, peak, extend === 'reduce')
+      .map((d, i) => ({
         emissions: d,
         year: i + end + 1
-      })),
-      meta: { color: 'red' }
-    });
+      }))
+      .forEach(d => {
+        bars.push({ ...d, color: 'red' });
+      });
   }
 
-  const xScale = scaleLinear()
-    .domain([xAxisExtent[0] - 1, xAxisExtent[1] + 1])
-    .range([0, width - margins.right - margins.left]);
+  const xScale = useMemo(
+    () =>
+      scaleLinear()
+        .domain([xAxisExtent[0] - 1, xAxisExtent[1] + 1])
+        .range([0, width - margins.right - margins.left]),
+    [xAxisExtent, width, margins]
+  );
 
-  const yScale = scaleLinear()
-    .domain([0, 35000000000])
-    .range([height - margins.top - margins.bottom, 0]);
+  const yScale = useMemo(
+    () =>
+      scaleLinear()
+        .domain([0, 35000000000])
+        .range([height - margins.top - margins.bottom, 0]),
+    [xAxisExtent, height, margins]
+  );
+
+  const barWidth = useMemo(() => (xScale(1) - xScale(0)) / 2, [xScale]);
+
+  console.log('render');
+
+  // Bar transitions
+  const barSprings = useTransition(bars, ({ color, year }) => color + year, {
+    from: d => ({
+      height: 0,
+      width: barWidth,
+      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
+      fill: d.color
+    }),
+    initial: d => ({
+      height: 0,
+      width: barWidth,
+      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
+      fill: d.color
+    }),
+    leave: d => ({
+      height: 0,
+      width: barWidth,
+      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
+      fill: d.color
+    }),
+    enter: d => ({
+      height: yScale(0) - yScale(d.emissions),
+      width: barWidth,
+      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
+      fill: d.color
+    }),
+    update: d => ({
+      height: yScale(0) - yScale(d.emissions),
+      width: barWidth,
+      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
+      fill: d.color
+    }),
+    unique: true
+  });
 
   const yTickValues = [15, 25, 35].map(d => d * 1000000000);
 
-  const barWidth = (xScale(1) - xScale(0)) / 2;
+  const labels = [];
+  // [
+  //   {
+  //     text: '2017',
+  //     x: xScale(2017),
+  //     y: yScale(series[0].data.find(d => d.year === 2017)?.emissions || 0)
+  //   }
+  // ];
 
-  const labels = [
-    {
-      text: '2017',
-      x: xScale(2017),
-      y: yScale(series[0].data.find(d => d.year === 2017)?.emissions || 0)
-    }
-  ];
+  const renderedLabels = (
+    <div
+      style={{
+        position: 'absolute',
+        width: `${width}px`,
+        height: `${height}px`,
+        top: `${margins.top}px`,
+        left: `${margins.left}px`
+      }}
+    >
+      {labels.map(({ text, x, y }, i) => (
+        <div
+          className={styles.label}
+          key={`label-${i}`}
+          style={{ position: 'absolute', top: `${y}px`, left: `${x}px` }}
+        >
+          {text}
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div ref={ref} className={styles.root}>
-      <div
-        style={{
-          position: 'absolute',
-          width: `${width}px`,
-          height: `${height}px`,
-          top: `${margins.top}px`,
-          left: `${margins.left}px`
-        }}
-      >
-        {labels.map(({ text, x, y }, i) => (
-          <div
-            className={styles.label}
-            key={`label-${i}`}
-            style={{ position: 'absolute', top: `${y}px`, left: `${x}px` }}
-          >
-            {text}
-          </div>
-        ))}
-      </div>
+      {renderedLabels}
       <svg width={width} height={height}>
         {yTickValues.map((tickValue, i) => (
           <line
@@ -171,17 +178,21 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
 
         {height > 0 && (
           <g transform={`translate(${margins.left} ${margins.top})`}>
-            {series.map(({ data, meta }, i) => (
-              <Series
-                key={i}
-                data={data}
-                meta={meta}
-                xScale={xScale}
-                yScale={yScale}
-                xAxisExtent={xAxisExtent}
-                barWidth={barWidth}
-              />
-            ))}
+            {barSprings.map(
+              ({ item, key, props: { height, width, fill, transform } }) =>
+                item && (
+                  <animated.rect
+                    key={key}
+                    className={styles.column}
+                    strokeWidth="0"
+                    data-year={item.year}
+                    height={height}
+                    width={width}
+                    fill={fill}
+                    transform={transform}
+                  />
+                )
+            )}
           </g>
         )}
 

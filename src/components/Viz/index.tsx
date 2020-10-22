@@ -20,7 +20,7 @@ const Viz: React.FC<VizProps> = ({ current }) => {
     enter: { opacity: 1 },
     leave: { opacity: 0 }
   });
-
+  console.log('viz');
   return (
     <div className={styles.root}>
       <Bank budget={budget} limits={current.limits || []} blobs={current.blobs} />

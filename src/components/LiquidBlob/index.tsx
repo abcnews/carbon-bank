@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-interface LiquidBlobProps {
+export type LiquidBlobProps = {
   id?: string;
   cx: number;
   cy: number;
@@ -14,7 +14,7 @@ interface LiquidBlobProps {
     strokeDasharray?: string;
     fill?: string;
   };
-}
+};
 
 const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, showControlPoints = false }) => {
   const [tick, setTick] = useState(Math.PI);

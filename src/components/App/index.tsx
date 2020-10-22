@@ -29,8 +29,8 @@ const App: React.FC<AppProps> = ({ panels }) => {
   };
 
   return (
-    <Scrollyteller panels={panels} onMarker={onMarker} onProgress={onProgress}>
-      {current && <Viz current={current} next={next} progress={progress} />}
+    <Scrollyteller panels={panels} onMarker={onMarker}>
+      {current && <Viz current={current} next={next} />}
     </Scrollyteller>
   );
 };
