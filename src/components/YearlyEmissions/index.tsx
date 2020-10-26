@@ -5,9 +5,12 @@ import { greatest } from 'd3-array';
 import { EmissionsData } from '../../common.d';
 import data from '../../data.tsv';
 import useDimensions from 'react-cool-dimensions';
-import { animated, useTransition } from 'react-spring';
+import { NodeGroup } from 'react-move';
 import { generateSeries, max } from '../../utils';
 import { budget } from '../../constants';
+import { interpolate, interpolateTransformSvg } from 'd3-interpolate';
+import { easeExpInOut } from 'd3-ease';
+import { animated, useTransition } from 'react-spring';
 
 type Margins = {
   top: number;
@@ -91,43 +94,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
 
   const barWidth = useMemo(() => (xScale(1) - xScale(0)) / 2, [xScale]);
 
-  console.log('render');
-
-  // Bar transitions
-  const barSprings = useTransition(bars, ({ color, year }) => color + year, {
-    from: d => ({
-      height: 0,
-      width: barWidth,
-      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
-      fill: d.color
-    }),
-    initial: d => ({
-      height: 0,
-      width: barWidth,
-      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
-      fill: d.color
-    }),
-    leave: d => ({
-      height: 0,
-      width: barWidth,
-      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
-      fill: d.color
-    }),
-    enter: d => ({
-      height: yScale(0) - yScale(d.emissions),
-      width: barWidth,
-      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
-      fill: d.color
-    }),
-    update: d => ({
-      height: yScale(0) - yScale(d.emissions),
-      width: barWidth,
-      transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
-      fill: d.color
-    }),
-    unique: true
-  });
-
+  const xTickValues = xScale.ticks();
   const yTickValues = [15, 25, 35].map(d => d * 1000000000);
 
   const labels = [];
@@ -161,6 +128,65 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
     </div>
   );
 
+  const barTransitions = useTransition(height > 0 ? bars : [], {
+    expires: false,
+    keys: d => '' + d.year + d.color,
+
+    leave: d => {
+      return {
+        height: 0,
+        width: barWidth,
+        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
+        fill: d.color
+      };
+    },
+    from: d => {
+      return {
+        height: 0,
+        width: barWidth,
+        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
+        fill: d.color
+      };
+    },
+    enter: d => {
+      return {
+        height: yScale(0) - yScale(d.emissions),
+        width: barWidth,
+        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
+        fill: d.color
+      };
+    },
+    update: d => {
+      return {
+        height: yScale(0) - yScale(d.emissions),
+        width: barWidth,
+        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
+        fill: d.color
+      };
+    }
+  });
+
+  const axisTransition = useTransition(height > 0 ? xTickValues : [], {
+    expires: false,
+    key: d => d,
+    from: tickValue => ({
+      opacity: 0,
+      transform: `translate(${xScale(tickValue) + margins.left}px, ${height - margins.bottom}px)`
+    }),
+    enter: tickValue => ({
+      opacity: 1,
+      transform: `translate(${xScale(tickValue) + margins.left}px, ${height - margins.bottom}px)`
+    }),
+    update: tickValue => ({
+      opacity: 1,
+      transform: `translate(${xScale(tickValue) + margins.left}px, ${height - margins.bottom}px)`
+    }),
+    leave: tickValue => ({
+      opacity: 0,
+      transform: `translate(${xScale(tickValue) + margins.left}px, ${height - margins.bottom}px)`
+    })
+  });
+
   return (
     <div ref={ref} className={styles.root}>
       {renderedLabels}
@@ -178,21 +204,20 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
 
         {height > 0 && (
           <g transform={`translate(${margins.left} ${margins.top})`}>
-            {barSprings.map(
-              ({ item, key, props: { height, width, fill, transform } }) =>
-                item && (
-                  <animated.rect
-                    key={key}
-                    className={styles.column}
-                    strokeWidth="0"
-                    data-year={item.year}
-                    height={height}
-                    width={width}
-                    fill={fill}
-                    transform={transform}
-                  />
-                )
-            )}
+            {barTransitions((props, item) => {
+              // console.log('props :>> ', props);
+              return (
+                <animated.rect
+                  className={styles.column}
+                  strokeWidth="0"
+                  height={props.height}
+                  width={props.width}
+                  fill={props.fill}
+                  transform={props.transform}
+                  data-year={item.year}
+                />
+              );
+            })}
           </g>
         )}
 
@@ -201,18 +226,16 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
             transform={`translate(${margins.left}, ${height - margins.bottom})`}
             x1={width - margins.left - margins.right}
           />
-          {xScale.ticks().map((tickValue, i) => (
-            <g
-              key={i}
-              className={styles.tickX}
-              transform={`translate(${xScale(tickValue) + margins.left}, ${height - margins.bottom})`}
-            >
-              <line y2={6} />
-              <text y="17" textAnchor="middle">
-                {tickValue}
-              </text>
-            </g>
-          ))}
+          {axisTransition((props, tickValue) => {
+            return (
+              <animated.g className={styles.tickX} style={props}>
+                <line y2={6} />
+                <text y="17" textAnchor="middle">
+                  {tickValue}
+                </text>
+              </animated.g>
+            );
+          })}
         </g>
 
         <g className={styles.axisY}>

@@ -24,12 +24,14 @@ export const usePrevious = <T>(value: T) => {
   // The ref object is a generic container whose current property is mutable ...
   // ... and can hold any value, similar to an instance property on a class
   const ref = useRef(value);
+  const ref2 = useRef(value);
 
   // Store current value in ref
   useEffect(() => {
+    ref2.current = ref.current;
     ref.current = value;
   }, [value]); // Only re-run if value changes
 
-  // Return previous value (happens before update in useEffect above)
-  return ref.current;
+  // Return previous value
+  return ref2.current;
 };

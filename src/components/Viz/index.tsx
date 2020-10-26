@@ -13,22 +13,28 @@ interface VizProps {
   progress?: number;
 }
 
-const Viz: React.FC<VizProps> = ({ current }) => {
-  const previous = usePrevious<Mark>(current);
-  const carbonLabel = useTransition(current.labels?.includes('carbon'), null, {
+const Viz: React.FC<VizProps> = ({ current, progress }) => {
+  // const previous = usePrevious<Mark>(current);
+
+  const carbonLabel = useTransition(current.labels?.includes('carbon'), {
     from: { opacity: 0 },
     enter: { opacity: 1 },
     leave: { opacity: 0 }
   });
-  console.log('viz');
+
   return (
     <div className={styles.root}>
-      <Bank budget={budget} limits={current.limits || []} blobs={current.blobs} />
+      <Bank
+        budget={budget}
+        limits={current.limits || []}
+        blobs={current.blobs}
+        progress={current.useProgress ? progress : false}
+      />
 
-      {carbonLabel.map(
-        ({ item, key, props }) =>
+      {carbonLabel(
+        (props, item) =>
           item && (
-            <animated.div key={key} className={styles.carbonLabel} style={props}>
+            <animated.div className={styles.carbonLabel} style={props}>
               This is carbon
             </animated.div>
           )

@@ -9,6 +9,7 @@ type BlobUpdate = {
 
 export type Mark = {
   blobs: BlobSpec[];
+  useProgress?: boolean;
   chart?: YearlyEmissionsProps;
   limits?: number[];
   labels?: string[];
@@ -24,30 +25,37 @@ export const limits: LimitSpec[] = [
 
 export const marks: Mark[] = [
   {
+    useProgress: true,
     labels: ['carbon'],
     blobs: [{ id: 'carbon', emissions: 20 }]
   },
   {
+    useProgress: true,
     blobs: [{ id: 'carbon', emissions: 200 }]
   },
   {
+    useProgress: true,
     blobs: [
       { id: 'sink', emissions: 200 },
       { id: 'carbon', emissions: 100 }
     ]
   },
   {
+    useProgress: true,
     blobs: [{ id: 'carbon', emissions: 100 }]
   },
   {
+    useProgress: true,
     blobs: [{ id: 'carbon', emissions: 600 }],
     limits: [0]
   },
   {
+    useProgress: true,
     blobs: [{ id: 'carbon', emissions: 600 }],
     limits: [0, 1]
   },
   {
+    useProgress: true,
     blobs: [{ id: 'carbon', emissions: 1200 }],
     limits: [0, 1, 2]
   },

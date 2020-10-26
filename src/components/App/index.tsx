@@ -20,7 +20,7 @@ const App: React.FC<AppProps> = ({ panels }) => {
   const onMarker = (data: PanelData) => {
     // Get the data that relates to this mark
     setCurrent(marks[data.index]);
-    // Set data for the next mark, but default to the current mark if there is no next
+    // // Set data for the next mark, but default to the current mark if there is no next
     setNext(data.next ? marks[data.next?.index] : current);
   };
 
@@ -29,8 +29,8 @@ const App: React.FC<AppProps> = ({ panels }) => {
   };
 
   return (
-    <Scrollyteller panels={panels} onMarker={onMarker}>
-      {current && <Viz current={current} next={next} />}
+    <Scrollyteller panels={panels} onMarker={onMarker} onProgress={onProgress}>
+      {current && <Viz current={current} next={next} progress={progress} />}
     </Scrollyteller>
   );
 };
