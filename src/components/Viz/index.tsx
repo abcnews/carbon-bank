@@ -13,7 +13,7 @@ interface VizProps {
   progress?: number;
 }
 
-const Viz: React.FC<VizProps> = ({ current, progress }) => {
+const Viz: React.FC<VizProps> = ({ current, next, progress }) => {
   // const previous = usePrevious<Mark>(current);
 
   const carbonLabel = useTransition(current.labels?.includes('carbon'), {

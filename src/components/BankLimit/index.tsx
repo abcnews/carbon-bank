@@ -16,12 +16,12 @@ interface BankLimitProps {
 
 const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true, labelOffset = 5 }) => {
   const [id] = useState(nanoid);
+  const circumference = 2 * Math.PI * r;
   const transitions = useTransition(visible, {
     from: d => ({ opacity: 0 }),
     enter: d => ({ opacity: 1 }),
     leave: d => ({ opacity: 0 })
   });
-  const circumference = 2 * Math.PI * r;
   const dashLength = Math.ceil(circumference / 4);
   const dasharray = ['0', String(Math.ceil(circumference))].concat(new Array(dashLength).fill('2 2')).join(' ');
   return (
