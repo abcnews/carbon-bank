@@ -6,7 +6,6 @@ import useDimensions from 'react-cool-dimensions';
 import { useSpring, animated, useTransition } from 'react-spring';
 import { limits } from '../../constants';
 import BankLimit from '../BankLimit';
-import { usePrevious } from '../../utils';
 
 const AnimatedLiquidBlob = animated(LiquidBlob);
 
@@ -29,14 +28,12 @@ export type BankProps = {
   budget: number; // The number that defines 100% for the rendered blob
   limits: number[];
   blobs: BlobSpec[];
+  nextBlobs: BlobSpec[];
   progress?: number | false;
 };
 
-const Bank: React.FC<BankProps> = ({ blobs, budget, limits: visibleLimits, progress }) => {
+const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLimits, progress }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
-  const oldBlobs = usePrevious(blobs);
-  const oldLimits = usePrevious(visibleLimits);
-
   const verticalSpaceAvailable = 0.8;
   const dim = Math.min(width, height * verticalSpaceAvailable);
   const cx = width / 2;
@@ -52,13 +49,15 @@ const Bank: React.FC<BankProps> = ({ blobs, budget, limits: visibleLimits, progr
     enter: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 1 }),
     from: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 0 }),
     update: blob => {
-      const oldBlob = oldBlobs.find(d => d.id === blob.id);
+      const nextBlob = nextBlobs.find(d => d.id === blob.id);
 
-      return oldBlob && progress && progress > 0
-        ? {
-            scale: (scale(oldBlob.emissions + (blob.emissions - oldBlob.emissions) * progress) * dim) / 2,
-            opacity: 1
-          }
+      return progress && progress > 0
+        ? nextBlob
+          ? {
+              scale: (scale(blob.emissions + (nextBlob.emissions - blob.emissions) * progress) * dim) / 2,
+              opacity: 1
+            }
+          : { scale: (scale(blob.emissions) * dim) / 2, opacity: 1 - progress }
         : { scale: (scale(blob.emissions) * dim) / 2, opacity: 1 };
     },
     leave: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 0 })

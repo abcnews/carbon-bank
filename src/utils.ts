@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import data from './data.tsv';
 
 export const min = (data, accessor = d => d) =>
   data.reduce((min, d) => (accessor(d) < min ? accessor(d) : min), Infinity);
@@ -19,19 +19,4 @@ export const generateSeries = (allowedEmissions: number, peak: number, reduce: b
 export const interpolate = (start: number, end: number | undefined, progress: number): number =>
   typeof start === 'undefined' || typeof end === 'undefined' ? start : start + (end - start) * progress;
 
-// Use previous value
-export const usePrevious = <T>(value: T) => {
-  // The ref object is a generic container whose current property is mutable ...
-  // ... and can hold any value, similar to an instance property on a class
-  const ref = useRef(value);
-  const ref2 = useRef(value);
-
-  // Store current value in ref
-  useEffect(() => {
-    ref2.current = ref.current;
-    ref.current = value;
-  }, [value]); // Only re-run if value changes
-
-  // Return previous value
-  return ref2.current;
-};
+export const emissionsTo = (y: number) => data.reduce((t, { year, emissions }) => (year > y ? t : t + emissions), 0);

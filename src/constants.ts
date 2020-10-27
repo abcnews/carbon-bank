@@ -26,11 +26,9 @@ export const limits: LimitSpec[] = [
 export const marks: Mark[] = [
   {
     useProgress: true,
-    labels: ['carbon'],
     blobs: [{ id: 'carbon', emissions: 20 }]
   },
   {
-    useProgress: true,
     blobs: [{ id: 'carbon', emissions: 200 }]
   },
   {
@@ -46,6 +44,11 @@ export const marks: Mark[] = [
   },
   {
     useProgress: true,
+    blobs: [{ id: 'carbon', emissions: 100 }],
+    limits: [0]
+  },
+  {
+    useProgress: true,
     blobs: [{ id: 'carbon', emissions: 600 }],
     limits: [0]
   },
@@ -55,12 +58,12 @@ export const marks: Mark[] = [
     limits: [0, 1]
   },
   {
-    useProgress: true,
     blobs: [{ id: 'carbon', emissions: 1200 }],
     limits: [0, 1, 2]
   },
   {
-    blobs: [{ id: 'carbon', emissions: 50 }],
+    blobs: [{ id: 'carbon', emissions: 1200 }],
+    limits: [2],
     chart: {
       xAxisExtent: [1850, 2020],
       labelYears: [1920],
@@ -69,6 +72,7 @@ export const marks: Mark[] = [
   },
   {
     blobs: [{ id: 'carbon', emissions: 50 }],
+    limits: [2],
     chart: {
       xAxisExtent: [1900, 2150],
       labelYears: [1970],
@@ -76,7 +80,11 @@ export const marks: Mark[] = [
     }
   },
   {
-    blobs: [{ id: 'carbon', emissions: 50 }],
+    blobs: [
+      { id: 'future', emissions: 100 },
+      { id: 'carbon', emissions: 50 }
+    ],
+    limits: [2],
     chart: {
       xAxisExtent: [1900, 2150],
       labelYears: [1970],
@@ -89,6 +97,7 @@ export const marks: Mark[] = [
       { id: 'carbon', emissions: 20 },
       { id: 'sink', emissions: 20 },
       { id: 'future', emissions: 20 }
-    ]
+    ],
+    limits: [2]
   }
 ];

@@ -28,11 +28,14 @@ export type EmissionsSeries = {
   meta: EmissionsSeriesMeta;
 };
 
+export type XAxisExtent = [number | undefined, number | undefined];
+export type ExtendMethod = 'steady' | 'reduce';
+
 export type YearlyEmissionsProps = {
-  xAxisExtent: [number, number];
+  xAxisExtent: XAxisExtent;
   stopAt?: number;
   labelYears?: number[];
-  extend?: 'steady' | 'reduce';
+  extend?: ExtendMethod;
 };
 
 const margins: Margins = {
@@ -45,7 +48,7 @@ const margins: Margins = {
 const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, extend }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
 
-  const end = stopAt || xAxisExtent[1];
+  const end = stopAt || xAxisExtent[1] || Infinity;
 
   // Calculate the budget
   const budgetUsed = data.reduce((t, d) => (d.year <= end ? t + d.emissions : t), 0) / 1000000000;
@@ -56,7 +59,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
 
   // Start with the real series trimmed to the years of interest
   data
-    .filter(d => d.year >= xAxisExtent[0] && d.year <= (stopAt || xAxisExtent[1]))
+    .filter(d => d.year >= (xAxisExtent[0] || 0) && d.year <= end)
     .forEach(d => {
       bars.push({ ...d, color: '#000' });
     });
@@ -79,7 +82,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
   const xScale = useMemo(
     () =>
       scaleLinear()
-        .domain([xAxisExtent[0] - 1, xAxisExtent[1] + 1])
+        .domain([(xAxisExtent[0] || data[0].year) - 1, (xAxisExtent[1] || bars[bars.length - 1].year) + 1])
         .range([0, width - margins.right - margins.left]),
     [xAxisExtent, width, margins]
   );

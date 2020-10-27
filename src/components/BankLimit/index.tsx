@@ -18,16 +18,16 @@ const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true,
   const [id] = useState(nanoid);
   const circumference = 2 * Math.PI * r;
   const transitions = useTransition(visible, {
-    from: d => ({ opacity: 0 }),
-    enter: d => ({ opacity: 1 }),
-    leave: d => ({ opacity: 0 })
+    from: d => ({ opacity: 0, strokeDashoffset: 0 }),
+    enter: d => ({ opacity: 1, strokeDashoffset: -circumference }),
+    leave: d => ({ opacity: 0, strokeDashoffset: -circumference })
   });
   const dashLength = Math.ceil(circumference / 4);
   const dasharray = ['0', String(Math.ceil(circumference))].concat(new Array(dashLength).fill('2 2')).join(' ');
   return (
     <>
       {transitions(
-        ({ opacity }, item) =>
+        ({ opacity, strokeDashoffset }, item) =>
           item && (
             <g>
               <animated.path
@@ -37,9 +37,7 @@ const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true,
                 stroke="#444"
                 strokeWidth="2"
                 fill="none"
-                style={{
-                  strokeDashoffset: opacity?.to(value => -circumference * ((value as number) || 0))
-                }}
+                style={{ strokeDashoffset, opacity }}
               />
               <path
                 transform={`translate(${cx} ${cy})`}
