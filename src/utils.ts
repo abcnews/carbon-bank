@@ -1,3 +1,5 @@
+import { PanelData } from './common.d';
+import { Mark } from './constants';
 import data from './data.tsv';
 
 export const min = (data, accessor = d => d) =>
@@ -20,3 +22,74 @@ export const interpolate = (start: number, end: number | undefined, progress: nu
   typeof start === 'undefined' || typeof end === 'undefined' ? start : start + (end - start) * progress;
 
 export const emissionsTo = (y: number) => data.reduce((t, { year, emissions }) => (year > y ? t : t + emissions), 0);
+
+export const panelDataToMark = (panelData: PanelData) => {
+  const mark: Mark = { blobs: [{ id: 'carbon', emissions: 0 }], useProgress: true };
+
+  // Should vis be tied to scroll?
+  mark.useProgress = panelData.useprogress || mark.useProgress;
+
+  // Limits
+  mark.limits = panelData.limits
+    ? Array.isArray(panelData.limits)
+      ? panelData.limits
+      : [panelData.limits]
+    : mark.limits;
+
+  // BLOBS
+
+  // The carbon blob
+  if (panelData.carbon) {
+    const carbonBlob = mark.blobs.find(d => d.id === 'carbon');
+    if (carbonBlob) {
+      carbonBlob.emissions = panelData.carbon;
+    } else {
+      mark.blobs.push({ id: 'carbon', emissions: panelData.carbon });
+    }
+  }
+
+  // The sink blob
+  if (panelData.sink) {
+    const sinkBlob = mark.blobs.find(d => d.id === 'sink');
+    if (sinkBlob) {
+      sinkBlob.emissions = panelData.sink;
+    } else {
+      mark.blobs.unshift({ id: 'sink', emissions: panelData.sink });
+    }
+  }
+
+  // CHART
+
+  // xAxisExtent
+  if (panelData.xmin || panelData.xmax) {
+    // If we have a chart, don't use progress
+    mark.useProgress = false;
+    const minYear = panelData.xmin || 0;
+    const maxYear = panelData.xmax || 2157;
+
+    if (mark.chart) {
+      mark.chart.minYear = minYear;
+      mark.chart.maxYear = maxYear;
+    } else {
+      mark.chart = { minYear, maxYear };
+    }
+  }
+
+  // Label years
+  if (panelData.labelyear && mark.chart) {
+    const labelYears = Array.isArray(panelData.labelyear) ? panelData.labelyear : [panelData.labelyear];
+    mark.chart.labelYears = labelYears;
+  }
+
+  // stopAt
+  if (panelData.stopat && mark.chart) {
+    mark.chart.stopAt = panelData.stopat;
+  }
+
+  // Method for auto-extending into future
+  if (panelData.extend && mark.chart) {
+    mark.chart.extend = panelData.extend;
+  }
+
+  return mark;
+};

@@ -1,25 +1,26 @@
 import React from 'react';
 import { render } from 'react-dom';
 import App from './components/App';
-import { loadScrollyteller, ScrollytellerDefinition } from '@abcnews/scrollyteller';
+import { loadScrollyteller, PanelDefinition, ScrollytellerDefinition } from '@abcnews/scrollyteller';
 import { PanelData } from './common.d';
+import { panelDataToMark } from './utils';
+import { Mark } from './constants';
 const PROJECT_NAME: string = 'carbon-bank';
 let scrollyData: ScrollytellerDefinition<PanelData>;
 
 function renderApp() {
   scrollyData = scrollyData || loadScrollyteller<PanelData>('', 'u-full');
-
-  scrollyData.panels = scrollyData.panels
-    .map((d, index) => ({
+  const panels: PanelDefinition<Mark>[] = scrollyData.panels
+    .map(d => ({
       ...d,
-      data: { ...d.data, index }
+      data: panelDataToMark(d.data)
     }))
     .map((d, index, arr) => ({
       ...d,
       data: { ...d.data, next: arr[index + 1]?.data }
     }));
 
-  render(<App panels={scrollyData.panels} />, scrollyData.mountNode);
+  render(<App panels={panels} />, scrollyData.mountNode);
 }
 
 init();

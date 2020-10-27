@@ -26,13 +26,13 @@ export type LimitSpec = {
 
 export type BankProps = {
   budget: number; // The number that defines 100% for the rendered blob
-  limits: number[];
+  limits: number[] | undefined;
   blobs: BlobSpec[];
   nextBlobs: BlobSpec[];
   progress?: number | false;
 };
 
-const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLimits, progress }) => {
+const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLimits = [], progress }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
   const verticalSpaceAvailable = 0.8;
   const dim = Math.min(width, height * verticalSpaceAvailable);

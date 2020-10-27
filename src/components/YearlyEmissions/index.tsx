@@ -32,7 +32,8 @@ export type XAxisExtent = [number | undefined, number | undefined];
 export type ExtendMethod = 'steady' | 'reduce';
 
 export type YearlyEmissionsProps = {
-  xAxisExtent: XAxisExtent;
+  minYear: number;
+  maxYear: number;
   stopAt?: number;
   labelYears?: number[];
   extend?: ExtendMethod;
@@ -45,46 +46,52 @@ const margins: Margins = {
   left: 30
 };
 
-const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, extend }) => {
+const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, stopAt, extend }) => {
+  console.time('YearlyEmissions');
   const { ref, width, height } = useDimensions<HTMLDivElement>();
 
-  const end = stopAt || xAxisExtent[1] || Infinity;
+  const end = stopAt || maxYear || Infinity;
 
   // Calculate the budget
   const budgetUsed = data.reduce((t, d) => (d.year <= end ? t + d.emissions : t), 0) / 1000000000;
   const remainingBudget = (budget - budgetUsed) * 1000000000;
 
   // Create the series
-  const bars: { emissions: number; color: string; year: number }[] = [];
+  const bars = useMemo(() => {
+    // Start with the real series trimmed to the years of interest
+    const bars = data.filter(d => d.year >= minYear && d.year <= end).map(d => ({ ...d, color: '#000' }));
 
-  // Start with the real series trimmed to the years of interest
-  data
-    .filter(d => d.year >= (xAxisExtent[0] || 0) && d.year <= end)
-    .forEach(d => {
-      bars.push({ ...d, color: '#000' });
-    });
+    // What's the final year of of 'real' emissions?
+    const peak = greatest(bars, d => d.year)?.emissions || 0;
 
-  // What's the peak of 'real' emissions?
-  const peak = greatest(bars, d => d.emissions)?.emissions || 0;
-
-  // Next extend if we want it
-  if (extend) {
-    generateSeries(remainingBudget, peak, extend === 'reduce')
-      .map((d, i) => ({
-        emissions: d,
-        year: i + end + 1
-      }))
-      .forEach(d => {
-        bars.push({ ...d, color: 'red' });
-      });
-  }
+    // Next extend if we want it
+    if (extend) {
+      generateSeries(remainingBudget, peak, extend === 'reduce')
+        .map((d, i) => ({
+          emissions: d,
+          year: i + end + 1
+        }))
+        .forEach(d => {
+          if (d.year <= maxYear) bars.push({ ...d, color: 'red' });
+        });
+    }
+    return bars;
+  }, [minYear, maxYear, stopAt, extend, remainingBudget]);
 
   const xScale = useMemo(
     () =>
       scaleLinear()
-        .domain([(xAxisExtent[0] || data[0].year) - 1, (xAxisExtent[1] || bars[bars.length - 1].year) + 1])
+        .domain([Math.max(minYear || data[0].year) - 1, Math.min(maxYear || bars[bars.length - 1].year) + 1])
         .range([0, width - margins.right - margins.left]),
-    [xAxisExtent, width, margins]
+    [minYear, maxYear, width, margins]
+  );
+
+  const delayScale = useMemo(
+    () =>
+      scaleLinear()
+        .domain([Math.max(minYear || data[0].year) - 1, Math.min(maxYear || bars[bars.length - 1].year) + 1])
+        .range([0, 1]),
+    [minYear, maxYear]
   );
 
   const yScale = useMemo(
@@ -92,12 +99,12 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
       scaleLinear()
         .domain([0, 35000000000])
         .range([height - margins.top - margins.bottom, 0]),
-    [xAxisExtent, height, margins]
+    [height, margins]
   );
 
   const barWidth = useMemo(() => (xScale(1) - xScale(0)) / 2, [xScale]);
 
-  const xTickValues = xScale.ticks();
+  const xTickValues = useMemo(() => xScale.ticks(), [xScale]);
   const yTickValues = [15, 25, 35].map(d => d * 1000000000);
 
   const labels = [];
@@ -130,25 +137,27 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
       ))}
     </div>
   );
-
+  console.timeLog('YearlyEmissions', 'before barTransitions');
   const barTransitions = useTransition(height > 0 ? bars : [], {
-    expires: false,
     keys: d => '' + d.year + d.color,
-
     leave: d => {
       return {
-        height: 0,
+        height: yScale(0) - yScale(d.emissions),
         width: barWidth,
-        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
-        fill: d.color
+        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
+        fill: d.color,
+        opacity: 0,
+        delay: (1 - delayScale(d.year)) * 2000
       };
     },
     from: d => {
       return {
-        height: 0,
+        height: yScale(0) - yScale(d.emissions),
         width: barWidth,
-        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(0)})`,
-        fill: d.color
+        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
+        fill: d.color,
+        opacity: 0,
+        delay: delayScale(d.year) * 2000
       };
     },
     enter: d => {
@@ -156,7 +165,9 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
         height: yScale(0) - yScale(d.emissions),
         width: barWidth,
         transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
-        fill: d.color
+        fill: d.color,
+        opacity: 1,
+        delay: delayScale(d.year) * 2000
       };
     },
     update: d => {
@@ -164,11 +175,13 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
         height: yScale(0) - yScale(d.emissions),
         width: barWidth,
         transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
-        fill: d.color
+        fill: d.color,
+        opacity: 1,
+        delay: delayScale(d.year) * 2000
       };
     }
   });
-
+  console.timeLog('YearlyEmissions', 'beforeAxisTransitions');
   const axisTransition = useTransition(height > 0 ? xTickValues : [], {
     expires: false,
     key: d => d,
@@ -190,6 +203,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
     })
   });
 
+  console.timeEnd('YearlyEmissions');
   return (
     <div ref={ref} className={styles.root}>
       {renderedLabels}
@@ -217,6 +231,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ xAxisExtent, stopAt, 
                   width={props.width}
                   fill={props.fill}
                   transform={props.transform}
+                  opacity={props.opacity}
                   data-year={item.year}
                 />
               );

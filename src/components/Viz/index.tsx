@@ -9,21 +9,20 @@ import { emissionsTo } from '../../utils';
 
 interface VizProps {
   current: Mark;
-  next: Mark;
   progress?: number;
 }
 
-const Viz: React.FC<VizProps> = ({ current, next, progress }) => {
-  const carbonLabel = useTransition(progress && progress < 0, {
+const Viz: React.FC<VizProps> = ({ current, progress }) => {
+  const carbonLabel = useTransition(current.labels?.includes('carbon'), {
     from: { opacity: 0 },
     enter: { opacity: 1 },
     leave: { opacity: 0 }
   });
 
   // This is what's specified in the data
-  const limits = current.limits || [];
+  const limits = current.limits;
   const from = current.blobs;
-  const to = next?.blobs || [];
+  const to = current.next?.blobs || current.blobs;
 
   // If we have a chart too, we want to auto-add (or override) some blob values.
   if (current.chart && current.chart.stopAt) {
@@ -35,7 +34,7 @@ const Viz: React.FC<VizProps> = ({ current, next, progress }) => {
       if (futureBlob) futureBlob.emissions = budget;
     }
   }
-
+  console.log('render Viz');
   return (
     <div className={styles.root}>
       <Bank
@@ -50,7 +49,7 @@ const Viz: React.FC<VizProps> = ({ current, next, progress }) => {
         (props, item) =>
           item && (
             <animated.div className={styles.carbonLabel} style={props}>
-              This is carbon
+              This is carbon dioxide
             </animated.div>
           )
       )}
