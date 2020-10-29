@@ -1,5 +1,5 @@
 import { PanelData } from './common.d';
-import { Mark } from './constants';
+import { Mark, presets } from './constants';
 import data from './data.tsv';
 
 export const min = (data, accessor = d => d) =>
@@ -24,7 +24,11 @@ export const interpolate = (start: number, end: number | undefined, progress: nu
 export const emissionsTo = (y: number) => data.reduce((t, { year, emissions }) => (year > y ? t : t + emissions), 0);
 
 export const panelDataToMark = (panelData: PanelData) => {
-  const mark: Mark = { blobs: [{ id: 'carbon', emissions: 0 }], useProgress: true };
+  // Presets
+  const mark: Mark = {
+    ...{ blobs: [{ id: 'carbon', emissions: 0 }], useProgress: true },
+    ...(panelData.preset && presets[panelData.preset] ? presets[panelData.preset] : {})
+  };
 
   // Should vis be tied to scroll?
   mark.useProgress = panelData.useprogress || mark.useProgress;
@@ -35,6 +39,9 @@ export const panelDataToMark = (panelData: PanelData) => {
       ? panelData.limits
       : [panelData.limits]
     : mark.limits;
+
+  // Other custom labels
+  mark.labels = Array.isArray(panelData.labels) ? panelData.labels : panelData.labels ? [panelData.labels] : [];
 
   // BLOBS
 

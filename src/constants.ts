@@ -23,3 +23,5 @@ export const limits: LimitSpec[] = [
   { emissions: 1200, label: '1 degree' },
   { emissions: 1800, label: '1.5 degrees' }
 ];
+
+export const presets: { [key: string]: Mark } = {};

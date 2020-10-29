@@ -13,7 +13,7 @@ interface VizProps {
 }
 
 const Viz: React.FC<VizProps> = ({ current, progress }) => {
-  const carbonLabel = useTransition(current.labels?.includes('carbon'), {
+  const carbonLabel = useTransition(current.labels?.includes('carbon') && progress && progress < 0, {
     from: { opacity: 0 },
     enter: { opacity: 1 },
     leave: { opacity: 0 }
@@ -34,7 +34,7 @@ const Viz: React.FC<VizProps> = ({ current, progress }) => {
       if (futureBlob) futureBlob.emissions = budget;
     }
   }
-  console.log('render Viz');
+
   return (
     <div className={styles.root}>
       <Bank

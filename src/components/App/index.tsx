@@ -20,7 +20,7 @@ const App: React.FC<AppProps> = ({ panels }) => {
     [current?.useProgress]
   );
 
-  const currentProgress = current?.useProgress && progress && progress > 0 ? progress : undefined;
+  const currentProgress = current?.useProgress && progress ? progress : undefined;
 
   return (
     <Scrollyteller panels={panels} onMarker={onMarker} onProgress={onProgress} theme="light">

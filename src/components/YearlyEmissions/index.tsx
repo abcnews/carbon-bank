@@ -1,15 +1,12 @@
 import React, { useMemo } from 'react';
 import styles from './styles.scss';
-import { ScaleLinear, scaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 import { greatest } from 'd3-array';
 import { EmissionsData } from '../../common.d';
 import data from '../../data.tsv';
 import useDimensions from 'react-cool-dimensions';
-import { NodeGroup } from 'react-move';
 import { generateSeries, max } from '../../utils';
 import { budget } from '../../constants';
-import { interpolate, interpolateTransformSvg } from 'd3-interpolate';
-import { easeExpInOut } from 'd3-ease';
 import { animated, useTransition } from 'react-spring';
 
 type Margins = {
@@ -46,8 +43,7 @@ const margins: Margins = {
   left: 30
 };
 
-const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, stopAt, extend }) => {
-  console.time('YearlyEmissions');
+const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, stopAt, extend, labelYears }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
 
   const end = stopAt || maxYear || Infinity;
@@ -91,7 +87,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
       scaleLinear()
         .domain([Math.max(minYear || data[0].year) - 1, Math.min(maxYear || bars[bars.length - 1].year) + 1])
         .range([0, 1]),
-    [minYear, maxYear]
+    [minYear, maxYear, bars]
   );
 
   const yScale = useMemo(
@@ -107,36 +103,32 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
   const xTickValues = useMemo(() => xScale.ticks(), [xScale]);
   const yTickValues = [15, 25, 35].map(d => d * 1000000000);
 
-  const labels = [];
-  // [
-  //   {
-  //     text: '2017',
-  //     x: xScale(2017),
-  //     y: yScale(series[0].data.find(d => d.year === 2017)?.emissions || 0)
-  //   }
-  // ];
+  const labelTransitions = useTransition(labelYears && height > 0 ? labelYears : [], {
+    from: d => ({
+      opacity: 0,
+      left: xScale(d),
+      top: yScale(bars.find(b => b.year === d)?.emissions || 0)
+    }),
+    enter: d => ({
+      opacity: 1,
+      left: xScale(d),
+      top: yScale(bars.find(b => b.year === d)?.emissions || 0),
+      delay: delayScale(d) * 2000
+    }),
+    update: d => ({
+      opacity: 1,
+      left: xScale(d),
+      top: yScale(bars.find(b => b.year === d)?.emissions || 0),
+      delay: 0
+    }),
+    leave: d => ({
+      opacity: 0,
+      left: xScale(d),
+      top: yScale(bars.find(b => b.year === d)?.emissions || 0),
+      delay: delayScale(d) * 2000
+    })
+  });
 
-  const renderedLabels = (
-    <div
-      style={{
-        position: 'absolute',
-        width: `${width}px`,
-        height: `${height}px`,
-        top: `${margins.top}px`,
-        left: `${margins.left}px`
-      }}
-    >
-      {labels.map(({ text, x, y }, i) => (
-        <div
-          className={styles.label}
-          key={`label-${i}`}
-          style={{ position: 'absolute', top: `${y}px`, left: `${x}px` }}
-        >
-          {text}
-        </div>
-      ))}
-    </div>
-  );
   console.timeLog('YearlyEmissions', 'before barTransitions');
   const barTransitions = useTransition(height > 0 ? bars : [], {
     keys: d => '' + d.year + d.color,
@@ -156,8 +148,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
         width: barWidth,
         transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
         fill: d.color,
-        opacity: 0,
-        delay: delayScale(d.year) * 2000
+        opacity: 0
       };
     },
     enter: d => {
@@ -177,11 +168,11 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
         transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
         fill: d.color,
         opacity: 1,
-        delay: delayScale(d.year) * 2000
+        delay: 0
       };
     }
   });
-  console.timeLog('YearlyEmissions', 'beforeAxisTransitions');
+
   const axisTransition = useTransition(height > 0 ? xTickValues : [], {
     expires: false,
     key: d => d,
@@ -203,10 +194,8 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
     })
   });
 
-  console.timeEnd('YearlyEmissions');
   return (
     <div ref={ref} className={styles.root}>
-      {renderedLabels}
       <svg width={width} height={height}>
         {yTickValues.map((tickValue, i) => (
           <line
@@ -291,6 +280,21 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
           ))}
         </g>
       </svg>
+      <div
+        style={{
+          position: 'absolute',
+          width: `${width - margins.left - margins.right}px`,
+          height: `${height - margins.top - margins.bottom}px`,
+          top: `${margins.top}px`,
+          left: `${margins.left}px`
+        }}
+      >
+        {labelTransitions((style, year) => (
+          <animated.div className={styles.label} key={`label-${year}`} style={style}>
+            {year}
+          </animated.div>
+        ))}
+      </div>
     </div>
   );
 };
