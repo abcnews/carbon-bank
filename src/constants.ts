@@ -25,3 +25,5 @@ export const limits: LimitSpec[] = [
 ];
 
 export const presets: { [key: string]: Mark } = {};
+
+export const animationDuration = 750;

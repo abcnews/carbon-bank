@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { PanelData } from './common.d';
 import { Mark, presets } from './constants';
 import data from './data.tsv';
@@ -99,4 +100,16 @@ export const panelDataToMark = (panelData: PanelData) => {
   }
 
   return mark;
+};
+
+// Hook
+
+export const usePrevious = <T extends unknown>(value: T) => {
+  const ref = useRef(value);
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
 };

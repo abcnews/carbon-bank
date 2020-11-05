@@ -5,9 +5,10 @@ import { greatest } from 'd3-array';
 import { EmissionsData } from '../../common.d';
 import data from '../../data.tsv';
 import useDimensions from 'react-cool-dimensions';
-import { generateSeries, max } from '../../utils';
-import { budget } from '../../constants';
-import { animated, useTransition } from 'react-spring';
+import { generateSeries, max, usePrevious } from '../../utils';
+import { animationDuration, budget } from '../../constants';
+import { NodeGroup } from 'react-move';
+import { interpolate, interpolateTransformSvg } from 'd3-interpolate';
 
 type Margins = {
   top: number;
@@ -82,6 +83,8 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
     [minYear, maxYear, width, margins]
   );
 
+  const xScaleOld = usePrevious(xScale);
+
   const delayScale = useMemo(
     () =>
       scaleLinear()
@@ -102,97 +105,10 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
 
   const xTickValues = useMemo(() => xScale.ticks(), [xScale]);
   const yTickValues = [15, 25, 35].map(d => d * 1000000000);
+  const attribInterpolator = (begValue, endValue, attr) =>
+    attr === 'transform' ? interpolateTransformSvg(begValue, endValue) : interpolate(begValue, endValue);
 
-  const labelTransitions = useTransition(labelYears && height > 0 ? labelYears : [], {
-    from: d => ({
-      opacity: 0,
-      left: xScale(d),
-      top: yScale(bars.find(b => b.year === d)?.emissions || 0)
-    }),
-    enter: d => ({
-      opacity: 1,
-      left: xScale(d),
-      top: yScale(bars.find(b => b.year === d)?.emissions || 0),
-      delay: delayScale(d) * 2000
-    }),
-    update: d => ({
-      opacity: 1,
-      left: xScale(d),
-      top: yScale(bars.find(b => b.year === d)?.emissions || 0),
-      delay: 0
-    }),
-    leave: d => ({
-      opacity: 0,
-      left: xScale(d),
-      top: yScale(bars.find(b => b.year === d)?.emissions || 0),
-      delay: delayScale(d) * 2000
-    })
-  });
-
-  console.timeLog('YearlyEmissions', 'before barTransitions');
-  const barTransitions = useTransition(height > 0 ? bars : [], {
-    keys: d => '' + d.year + d.color,
-    leave: d => {
-      return {
-        height: yScale(0) - yScale(d.emissions),
-        width: barWidth,
-        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
-        fill: d.color,
-        opacity: 0,
-        delay: (1 - delayScale(d.year)) * 2000
-      };
-    },
-    from: d => {
-      return {
-        height: yScale(0) - yScale(d.emissions),
-        width: barWidth,
-        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
-        fill: d.color,
-        opacity: 0
-      };
-    },
-    enter: d => {
-      return {
-        height: yScale(0) - yScale(d.emissions),
-        width: barWidth,
-        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
-        fill: d.color,
-        opacity: 1,
-        delay: delayScale(d.year) * 2000
-      };
-    },
-    update: d => {
-      return {
-        height: yScale(0) - yScale(d.emissions),
-        width: barWidth,
-        transform: `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
-        fill: d.color,
-        opacity: 1,
-        delay: 0
-      };
-    }
-  });
-
-  const axisTransition = useTransition(height > 0 ? xTickValues : [], {
-    expires: false,
-    key: d => d,
-    from: tickValue => ({
-      opacity: 0,
-      transform: `translate(${xScale(tickValue) + margins.left}px, ${height - margins.bottom}px)`
-    }),
-    enter: tickValue => ({
-      opacity: 1,
-      transform: `translate(${xScale(tickValue) + margins.left}px, ${height - margins.bottom}px)`
-    }),
-    update: tickValue => ({
-      opacity: 1,
-      transform: `translate(${xScale(tickValue) + margins.left}px, ${height - margins.bottom}px)`
-    }),
-    leave: tickValue => ({
-      opacity: 0,
-      transform: `translate(${xScale(tickValue) + margins.left}px, ${height - margins.bottom}px)`
-    })
-  });
+  const barTransform = d => `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`;
 
   return (
     <div ref={ref} className={styles.root}>
@@ -210,21 +126,58 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
 
         {height > 0 && (
           <g transform={`translate(${margins.left} ${margins.top})`}>
-            {barTransitions((props, item) => {
-              // console.log('props :>> ', props);
-              return (
-                <animated.rect
-                  className={styles.column}
-                  strokeWidth="0"
-                  height={props.height}
-                  width={props.width}
-                  fill={props.fill}
-                  transform={props.transform}
-                  opacity={props.opacity}
-                  data-year={item.year}
-                />
-              );
-            })}
+            <NodeGroup
+              data={bars}
+              keyAccessor={d => `${d.year} - ${d.color}`}
+              start={d => ({
+                height: yScale(0) - yScale(d.emissions),
+                width: barWidth,
+                transform: `translate(${xScaleOld(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
+                opacity: 0
+              })}
+              enter={d => [
+                {
+                  height: [yScale(0) - yScale(d.emissions)],
+                  width: [barWidth],
+                  transform: barTransform(d),
+                  opacity: [1],
+                  timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
+                }
+              ]}
+              update={d => ({
+                height: [yScale(0) - yScale(d.emissions)],
+                width: [barWidth],
+                transform: [barTransform(d)],
+                opacity: [1],
+                timing: { duration: animationDuration }
+              })}
+              leave={d => ({
+                height: [yScale(0) - yScale(d.emissions)],
+                width: [barWidth],
+                transform: [barTransform(d)],
+                opacity: [0],
+                timing: { duration: animationDuration }
+              })}
+              interpolation={attribInterpolator}
+            >
+              {nodes => (
+                <>
+                  {nodes.map(({ key, data, state }) => (
+                    <rect
+                      key={key}
+                      className={styles.column}
+                      strokeWidth="0"
+                      height={state.height}
+                      width={state.width}
+                      fill={data.color}
+                      transform={state.transform}
+                      opacity={state.opacity}
+                      data-year={data.year}
+                    />
+                  ))}
+                </>
+              )}
+            </NodeGroup>
           </g>
         )}
 
@@ -233,16 +186,43 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
             transform={`translate(${margins.left}, ${height - margins.bottom})`}
             x1={width - margins.left - margins.right}
           />
-          {axisTransition((props, tickValue) => {
-            return (
-              <animated.g className={styles.tickX} style={props}>
-                <line y2={6} />
-                <text y="17" textAnchor="middle">
-                  {tickValue}
-                </text>
-              </animated.g>
-            );
-          })}
+          <NodeGroup
+            data={height ? xTickValues : []}
+            keyAccessor={d => d}
+            start={d => ({
+              opacity: 0,
+              transform: `translate(${xScaleOld(d) + margins.left}, ${height - margins.bottom})`
+            })}
+            enter={d => ({
+              opacity: [1],
+              transform: [`translate(${xScale(d) + margins.left}, ${height - margins.bottom})`],
+              timing: { duration: animationDuration }
+            })}
+            update={d => ({
+              opacity: [1],
+              transform: [`translate(${xScale(d) + margins.left}, ${height - margins.bottom})`],
+              timing: { duration: animationDuration }
+            })}
+            leave={d => ({
+              opacity: [0],
+              transform: [`translate(${xScale(d) + margins.left}, ${height - margins.bottom})`],
+              timing: { duration: animationDuration }
+            })}
+            interpolation={attribInterpolator}
+          >
+            {nodes => (
+              <>
+                {nodes.map(({ key, data, state: { opacity, transform } }) => (
+                  <g key={key} className={styles.tickX} transform={transform} style={{ opacity }}>
+                    <line y2={6} />
+                    <text y="17" textAnchor="middle">
+                      {data}
+                    </text>
+                  </g>
+                ))}
+              </>
+            )}
+          </NodeGroup>
         </g>
 
         <g className={styles.axisY}>
@@ -289,11 +269,26 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
           left: `${margins.left}px`
         }}
       >
-        {labelTransitions((style, year) => (
-          <animated.div className={styles.label} key={`label-${year}`} style={style}>
-            {year}
-          </animated.div>
-        ))}
+        <NodeGroup
+          data={labelYears || []}
+          keyAccessor={d => d}
+          start={(d, i) => ({ opacity: 0 })}
+          enter={d => ({ opacity: [1], timing: { duration: animationDuration } })}
+          update={(d, i) => ({ timing: { duration: animationDuration } })}
+          leave={d => ({ opacity: [0], timing: { duration: animationDuration } })}
+        >
+          {nodes => {
+            return (
+              <>
+                {nodes.map(({ key, data, state }) => (
+                  <div className={styles.label} key={key} style={{ opacity: state.opacity }}>
+                    {data}
+                  </div>
+                ))}
+              </>
+            );
+          }}
+        </NodeGroup>
       </div>
     </div>
   );
