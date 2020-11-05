@@ -54,7 +54,6 @@
     "react-cool-dimensions": "^1.1.4",
     "react-dom": "^16.14.0",
     "react-move": "^6.4.0",
-    "react-spring": "^9.0.0-rc.3",
     "react-transition-group": "^4.4.1",
     "react-use-dimensions": "^1.2.1",
     "svg-path-reverse": "^1.2.0",

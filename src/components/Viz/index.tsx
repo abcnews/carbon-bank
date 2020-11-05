@@ -3,9 +3,8 @@ import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
 import styles from './styles.scss';
 import { Mark, budget } from '../../constants';
-import { useTransition, animated, config } from 'react-spring';
-
 import { emissionsTo } from '../../utils';
+import { Animate } from 'react-move';
 
 interface VizProps {
   current: Mark;
@@ -13,12 +12,6 @@ interface VizProps {
 }
 
 const Viz: React.FC<VizProps> = ({ current, progress }) => {
-  const carbonLabel = useTransition(current.labels?.includes('carbon') && progress && progress < 0, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 }
-  });
-
   // This is what's specified in the data
   const limits = current.limits;
   const from = current.blobs;
@@ -44,15 +37,18 @@ const Viz: React.FC<VizProps> = ({ current, progress }) => {
         nextBlobs={to}
         progress={current.useProgress ? progress : false}
       />
-
-      {carbonLabel(
-        (props, item) =>
-          item && (
-            <animated.div className={styles.carbonLabel} style={props}>
-              This is carbon dioxide
-            </animated.div>
-          )
-      )}
+      <Animate
+        show={!!(current.labels?.includes('carbon') && progress && progress < 0)}
+        start={{ opacity: 0 }}
+        enter={{ opacity: 1 }}
+        leave={{ opacity: 0 }}
+      >
+        {state => (
+          <div className={styles.carbonLabel} style={{ opacity: state.opacity }}>
+            This is carbon dioxide
+          </div>
+        )}
+      </Animate>
 
       {current.chart && <YearlyEmissions {...current.chart} />}
     </div>
