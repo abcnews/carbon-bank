@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
 import styles from './styles.scss';
@@ -40,8 +40,8 @@ const Viz: React.FC<VizProps> = ({ current, progress }) => {
       <Animate
         show={!!(current.labels?.includes('carbon') && progress && progress < 0)}
         start={{ opacity: 0 }}
-        enter={{ opacity: 1 }}
-        leave={{ opacity: 0 }}
+        enter={{ opacity: [1] }}
+        leave={{ opacity: [0] }}
       >
         {state => (
           <div className={styles.carbonLabel} style={{ opacity: state.opacity }}>
