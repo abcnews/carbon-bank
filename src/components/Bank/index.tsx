@@ -3,11 +3,9 @@ import styles from './styles.scss';
 import LiquidBlob from '../LiquidBlob';
 import { scaleSqrt } from 'd3-scale';
 import useDimensions from 'react-cool-dimensions';
-import { useSpring, animated, useTransition } from 'react-spring';
 import { limits } from '../../constants';
 import BankLimit from '../BankLimit';
-
-const AnimatedLiquidBlob = animated(LiquidBlob);
+import { NodeGroup } from 'react-move';
 
 export type BlobSpec = {
   id: string;
@@ -42,37 +40,38 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
     .domain([0, budget * 1.2])
     .range([0, 1]);
 
-  // Springy things
-  const blobTransitions = useTransition(blobs, {
-    keys: blob => blob.id,
-    initial: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 0 }),
-    enter: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 1 }),
-    from: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 0 }),
-    update: blob => {
-      const nextBlob = nextBlobs.find(d => d.id === blob.id);
-
-      return progress && progress > 0
-        ? nextBlob
-          ? {
-              scale: (scale(blob.emissions + (nextBlob.emissions - blob.emissions) * progress) * dim) / 2,
-              opacity: 1
-            }
-          : { scale: (scale(blob.emissions) * dim) / 2, opacity: 1 - progress }
-        : { scale: (scale(blob.emissions) * dim) / 2, opacity: 1 };
-    },
-    leave: ({ emissions }) => ({ scale: (scale(emissions) * dim) / 2, opacity: 0 })
-  });
-
   return (
     <div ref={ref} className={styles.stage}>
       <svg width={width} height={height}>
-        {blobTransitions(({ scale, opacity }, blob) => {
-          return (
-            <animated.g style={{ opacity: opacity }}>
-              <AnimatedLiquidBlob cx={cx} cy={cy} r={scale} attrs={{ fill: blob.id === 'sink' ? '#0A594D' : '#000' }} />
-            </animated.g>
-          );
-        })}
+        <NodeGroup
+          data={blobs}
+          keyAccessor={d => d.id}
+          start={blob => ({ r: (scale(blob.emissions) * dim) / 2, opacity: 1 })}
+          enter={blob => ({ r: (scale(blob.emissions) * dim) / 2, opacity: 1 })}
+          update={blob => {
+            const nextBlob = nextBlobs.find(d => d.id === blob.id);
+
+            return progress && progress > 0
+              ? nextBlob
+                ? {
+                    r: (scale(blob.emissions + (nextBlob.emissions - blob.emissions) * progress) * dim) / 2,
+                    opacity: 1
+                  }
+                : { scale: (scale(blob.emissions) * dim) / 2, opacity: 1 - progress }
+              : { scale: (scale(blob.emissions) * dim) / 2, opacity: 1 };
+          }}
+          leave={blob => ({ r: (scale(blob.emissions) * dim) / 2, opacity: 1 })}
+        >
+          {nodes => (
+            <>
+              {nodes.map(({ key, data, state: { opacity, r } }) => (
+                <g key={key} style={{ opacity }}>
+                  <LiquidBlob cx={cx} cy={cy} r={r} attrs={{ fill: data.id === 'sink' ? '#0A594D' : '#000' }} />
+                </g>
+              ))}
+            </>
+          )}
+        </NodeGroup>
 
         {limits.map(({ emissions, label }, i) => {
           return (
