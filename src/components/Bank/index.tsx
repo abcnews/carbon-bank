@@ -38,37 +38,39 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
   const cy = (height * verticalSpaceAvailable) / 2;
   const scale = scaleSqrt()
     .domain([0, budget * 1.2])
-    .range([0, 1]);
+    .range([0, dim]);
 
   return (
     <div ref={ref} className={styles.stage}>
       <svg width={width} height={height}>
         <NodeGroup
-          data={blobs}
+          data={dim > 0 ? blobs : []}
           keyAccessor={d => d.id}
-          start={blob => ({ r: (scale(blob.emissions) * dim) / 2, opacity: 1 })}
-          enter={blob => ({ r: (scale(blob.emissions) * dim) / 2, opacity: 1 })}
+          start={blob => ({ r: scale(blob.emissions) / 2, opacity: 1 })}
+          enter={blob => ({ r: scale(blob.emissions) / 2, opacity: 1 })}
           update={blob => {
             const nextBlob = nextBlobs.find(d => d.id === blob.id);
 
             return progress && progress > 0
               ? nextBlob
                 ? {
-                    r: (scale(blob.emissions + (nextBlob.emissions - blob.emissions) * progress) * dim) / 2,
-                    opacity: 1
+                    r: [scale(blob.emissions + (nextBlob.emissions - blob.emissions) * progress) / 2],
+                    opacity: [1]
                   }
-                : { scale: (scale(blob.emissions) * dim) / 2, opacity: 1 - progress }
-              : { scale: (scale(blob.emissions) * dim) / 2, opacity: 1 };
+                : { r: [scale(blob.emissions) / 2], opacity: [1 - progress] }
+              : { r: [scale(blob.emissions) / 2], opacity: [1] };
           }}
-          leave={blob => ({ r: (scale(blob.emissions) * dim) / 2, opacity: 1 })}
+          leave={blob => ({ r: [scale(blob.emissions) / 2], opacity: [1] })}
         >
           {nodes => (
             <>
-              {nodes.map(({ key, data, state: { opacity, r } }) => (
-                <g key={key} style={{ opacity }}>
-                  <LiquidBlob cx={cx} cy={cy} r={r} attrs={{ fill: data.id === 'sink' ? '#0A594D' : '#000' }} />
-                </g>
-              ))}
+              {nodes.map(({ key, data, state: { opacity, r } }) => {
+                return (
+                  <g key={key} style={{ opacity }}>
+                    <LiquidBlob cx={cx} cy={cy} r={r} attrs={{ fill: data.id === 'sink' ? '#0A594D' : '#000' }} />
+                  </g>
+                );
+              })}
             </>
           )}
         </NodeGroup>
@@ -77,7 +79,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
           return (
             <BankLimit
               key={`id-${i}`}
-              r={(scale(emissions) * dim) / 2}
+              r={scale(emissions) / 2}
               cx={cx}
               cy={cy}
               label={label}

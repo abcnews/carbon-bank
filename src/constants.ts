@@ -27,3 +27,5 @@ export const limits: LimitSpec[] = [
 export const presets: { [key: string]: Mark } = {};
 
 export const animationDuration = 750;
+
+export const SNAPSHOTS_LOCALSTORAGE_KEY = 'bank-viz-snap';
