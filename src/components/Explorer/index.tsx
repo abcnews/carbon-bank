@@ -7,6 +7,7 @@ import { decode, encode } from '@abcnews/base-36-props';
 import Viz from '../Viz';
 import { Mark, SNAPSHOTS_LOCALSTORAGE_KEY } from '../../constants';
 import styles from './styles.scss';
+import Toggle from '@atlaskit/toggle';
 
 interface ExplorerProps {}
 
@@ -31,6 +32,10 @@ const Explorer: React.FC<ExplorerProps> = () => {
   const [futureEmissions, setFutureEmissions] = useState(initialState.futureEmissions);
   const [limits, setLimits] = useState<number[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
+  const [xmin, setXmin] = useState<number>(1800);
+  const [xmax, setXmax] = useState<number>(2200);
+  const [stopAt, setStopAt] = useState<number>(2020);
+  const [extend, setExtend] = useState<'steady' | 'reduce' | undefined>(undefined);
 
   const [progress, setProgress] = useState(0);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
@@ -69,9 +74,17 @@ const Explorer: React.FC<ExplorerProps> = () => {
       { id: 'carbon', emissions: carbonEmissions }
     ],
     limits,
-    labels
+    labels,
+    chart: showChart
+      ? {
+          minYear: xmin,
+          maxYear: xmax,
+          extend,
+          stopAt
+        }
+      : undefined
   };
-  console.log('labels :>> ', labels);
+
   const replaceGraphicProps = (props: Mark) => {
     props.blobs.forEach(({ id, emissions }) => {
       id === 'sink' && setSinkEmissions(emissions);
@@ -82,16 +95,28 @@ const Explorer: React.FC<ExplorerProps> = () => {
     setLabels(props.labels || []);
   };
 
+  const encodedMarkerText = encode(marker);
+
   return (
     <div className={styles.root}>
       <div className={styles.graphic}>
-        <Viz current={marker} />
+        <div style={{ background: 'white', height: '100%' }}>
+          <Viz current={marker} />
+        </div>
       </div>
 
       <div className={styles.controls}>
+        <h2>Blobs</h2>
         <div>
           <label>Carbon blob ({carbonEmissions})</label>
-          <FieldRange min={0} max={2000} step={10} value={carbonEmissions} onChange={setCarbonEmissions} />
+          <FieldRange
+            isDisabled={showChart}
+            min={0}
+            max={2000}
+            step={10}
+            value={carbonEmissions}
+            onChange={setCarbonEmissions}
+          />
         </div>
         <div>
           <label>Sink blob ({sinkEmissions})</label>
@@ -99,7 +124,14 @@ const Explorer: React.FC<ExplorerProps> = () => {
         </div>
         <div>
           <label>Future blob ({futureEmissions})</label>
-          <FieldRange min={0} max={2000} step={10} value={futureEmissions} onChange={setFutureEmissions} />
+          <FieldRange
+            isDisabled={showChart && typeof extend !== 'undefined'}
+            min={0}
+            max={2000}
+            step={10}
+            value={futureEmissions}
+            onChange={setFutureEmissions}
+          />
         </div>
         <div key="limits">
           <label>Limits</label>
@@ -125,6 +157,72 @@ const Explorer: React.FC<ExplorerProps> = () => {
             onChange={event => setLimit(2, event.target.checked)}
           />
         </div>
+        <h2>Chart</h2>
+        <div style={{ boxSizing: 'content-box' }}>
+          <Toggle size="large" onChange={() => setShowChart(prev => !prev)} /> Show chart
+        </div>
+        <div>
+          <label>Min year ({xmin})</label>
+          <FieldRange
+            min={1800}
+            max={2200}
+            step={1}
+            value={xmin}
+            onChange={val => {
+              setXmin(val);
+              setXmax(Math.max(xmax, val + 10));
+              setStopAt(Math.max(stopAt, val));
+            }}
+          />
+        </div>
+
+        <div>
+          <label>Max year ({xmax})</label>
+          <FieldRange
+            min={1800}
+            max={2200}
+            step={1}
+            value={xmax}
+            onChange={val => {
+              setXmax(val);
+              setXmin(Math.min(xmin, val - 10));
+              setStopAt(Math.min(stopAt, val));
+            }}
+          />
+        </div>
+
+        <div>
+          <label>Stop the real-world series at ({stopAt})</label>
+          <FieldRange
+            min={1800}
+            max={2200}
+            step={1}
+            value={stopAt}
+            onChange={val => {
+              setStopAt(Math.max(Math.min(xmax, val), xmin));
+            }}
+          />
+        </div>
+
+        <div key="extend">
+          <label>Extend series</label>
+          <div className={styles.flexRow}>
+            <RadioGroup
+              name="extend"
+              value={String(extend)}
+              options={[
+                { label: 'None', value: 'undefined' },
+                { label: 'No change', value: 'steady' },
+                { label: 'Reduce', value: 'reduce' }
+              ]}
+              onChange={event => {
+                const val = event.currentTarget.value;
+                setExtend(val === 'steady' ? 'steady' : val === 'reduce' ? 'reduce' : undefined);
+              }}
+            />
+          </div>
+        </div>
+
         <div key="labels">
           <label>Labels</label>
           <Checkbox
@@ -135,7 +233,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
             onChange={event => setLabel('carbon', event.target.checked)}
           />
         </div>
-
+        <h2>Tools</h2>
         <label htmlFor="definitely-not-the-add-button">
           Snapshots
           <button
@@ -178,11 +276,25 @@ const Explorer: React.FC<ExplorerProps> = () => {
           ))}
         </ul>
 
-        <h2>Simulate</h2>
         <div key="progress">
-          <label>Progress</label>
-          <FieldRange min={0} max={1} step={0.01} value={progress} onChange={setProgress} />
+          <label>Simulate progress ({progress})</label>
+          <FieldRange min={-0.5} max={1} step={0.01} value={progress} onChange={setProgress} />
         </div>
+        <details>
+          <summary>
+            Encoded Marker
+            <button onClick={() => navigator.clipboard.writeText(encodedMarkerText)}>Copy to clipboard</button>
+          </summary>
+          <pre>{encodedMarkerText}</pre>
+        </details>
+        <p>
+          <a
+            href={`https://fallback-automation.drzax.now.sh/api?url=${document.location.href}&selector=%5Bdata-preset%5D&width=600`}
+            download="fallback.png"
+          >
+            Download Fallback Image
+          </a>
+        </p>
       </div>
     </div>
   );

@@ -59,19 +59,21 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
     const bars = data.filter(d => d.year >= minYear && d.year <= end).map(d => ({ ...d, color: '#000' }));
 
     // What's the final year of of 'real' emissions?
-    const peak = greatest(bars, d => d.year)?.emissions || 0;
+    const peak = greatest(bars, d => d.year);
 
     // Next extend if we want it
+
     if (extend) {
-      generateSeries(remainingBudget, peak, extend === 'reduce')
+      generateSeries(remainingBudget, peak?.emissions || 0, extend === 'reduce')
         .map((d, i) => ({
           emissions: d,
-          year: i + end + 1
+          year: i + (peak?.year || 0) + 1
         }))
         .forEach(d => {
           if (d.year <= maxYear) bars.push({ ...d, color: 'red' });
         });
     }
+
     return bars;
   }, [minYear, maxYear, stopAt, extend, remainingBudget]);
 
