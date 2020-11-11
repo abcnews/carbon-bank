@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const ADDITIONAL_ENTRY_POINTS = ['explorer'];
 
