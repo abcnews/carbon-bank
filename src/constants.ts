@@ -16,12 +16,12 @@ export type Mark = {
   next?: Mark;
 };
 
-export const budget = 1800;
+export const budget = 2118.671;
 
 export const limits: LimitSpec[] = [
-  { emissions: 600, label: '0.5 degrees' },
-  { emissions: 1200, label: '1 degree' },
-  { emissions: 1800, label: '1.5 degrees' }
+  { emissions: (budget * 1) / 3, label: '0.5 degrees' },
+  { emissions: (budget * 2) / 3, label: '1 degree' },
+  { emissions: budget, label: '1.5 degrees' }
 ];
 
 export const presets: { [key: string]: Mark } = {};

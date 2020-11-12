@@ -6,21 +6,24 @@ import { PanelData } from './common.d';
 import { panelDataToMark } from './utils';
 import { Mark } from './constants';
 const PROJECT_NAME: string = 'carbon-bank';
-let scrollyData: ScrollytellerDefinition<PanelData>;
+const tellers = ['a', 'b'];
+let scrollyData: { [key: string]: ScrollytellerDefinition<PanelData> } = {};
 
 function renderApp() {
-  scrollyData = scrollyData || loadScrollyteller<PanelData>('', 'u-full');
-  const panels: PanelDefinition<Mark>[] = scrollyData.panels
-    .map(d => ({
-      ...d,
-      data: panelDataToMark(d.data)
-    }))
-    .map((d, index, arr) => ({
-      ...d,
-      data: { ...d.data, next: arr[index + 1]?.data }
-    }));
+  tellers.forEach(name => {
+    scrollyData[name] = scrollyData[name] || loadScrollyteller<PanelData>(name, 'u-full');
+    const panels: PanelDefinition<Mark>[] = scrollyData[name].panels
+      .map(d => ({
+        ...d,
+        data: panelDataToMark(d.data)
+      }))
+      .map((d, index, arr) => ({
+        ...d,
+        data: { ...d.data, next: arr[index + 1]?.data }
+      }));
 
-  render(<App panels={panels} />, scrollyData.mountNode);
+    render(<App panels={panels} />, scrollyData[name].mountNode);
+  });
 }
 
 init();
@@ -39,7 +42,7 @@ if (module.hot) {
       renderApp();
     } catch (err) {
       import('./components/ErrorBox').then(({ default: ErrorBox }) => {
-        render(<ErrorBox error={err} />, scrollyData.mountNode);
+        tellers.forEach(name => render(<ErrorBox error={err} />, scrollyData[name].mountNode));
       });
     }
   });

@@ -44,12 +44,13 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
     <div ref={ref} className={styles.stage}>
       <svg width={width} height={height}>
         <NodeGroup
-          data={dim > 0 ? blobs : empty}
+          data={dim > 0 ? (progress ? [...blobs] : blobs) : empty}
           keyAccessor={d => d.id}
           start={(blob: BlobSpec) => ({ r: scale(blob.emissions), opacity: 1 })}
           enter={(blob: BlobSpec) => ({ r: [scale(blob.emissions)], opacity: [1] })}
           update={(blob: BlobSpec) => {
             const nextBlob = nextBlobs.find(d => d.id === blob.id);
+            console.log('blob.emissions, nextBlob :>> ', blob.emissions, nextBlob?.emissions);
             if (progress && progress > 0) {
               return nextBlob
                 ? {
