@@ -35,16 +35,17 @@ export type YearlyEmissionsProps = {
   stopAt?: number;
   labelYears?: number[];
   extend?: ExtendMethod;
+  steady?: number;
 };
 
 const margins: Margins = {
   top: 10,
-  right: 30,
+  right: 50,
   bottom: 25,
-  left: 30
+  left: 50
 };
 
-const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, stopAt, extend, labelYears }) => {
+const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, stopAt, extend, steady, labelYears }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
 
   const end = stopAt || maxYear || Infinity;
@@ -64,7 +65,18 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
     // Next extend if we want it
 
     if (extend) {
-      generateSeries(remainingBudget, peak?.emissions || 0, extend === 'reduce')
+      let budget = remainingBudget;
+      let series: number[] = [];
+
+      if (steady && steady > 0) {
+        let val = peak?.emissions || 0;
+        for (let i = 0; i < steady; i++) {
+          series.push(val);
+          budget -= val;
+        }
+      }
+      series
+        .concat(generateSeries(budget, peak?.emissions || 0, extend === 'reduce'))
         .map((d, i) => ({
           emissions: d,
           year: i + (peak?.year || 0) + 1
@@ -75,7 +87,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
     }
 
     return bars;
-  }, [minYear, maxYear, stopAt, extend, remainingBudget]);
+  }, [minYear, maxYear, stopAt, extend, steady, remainingBudget]);
 
   const xScale = useMemo(
     () =>

@@ -36,6 +36,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
   const [xmax, setXmax] = useState<number>(2200);
   const [stopAt, setStopAt] = useState<number>(2020);
   const [extend, setExtend] = useState<'steady' | 'reduce' | undefined>(undefined);
+  const [steady, setSteady] = useState<number>(0);
 
   const [progress, setProgress] = useState(0);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
@@ -80,7 +81,8 @@ const Explorer: React.FC<ExplorerProps> = () => {
           minYear: xmin,
           maxYear: xmax,
           extend,
-          stopAt
+          stopAt,
+          steady
         }
       : undefined
   };
@@ -218,6 +220,21 @@ const Explorer: React.FC<ExplorerProps> = () => {
               onChange={event => {
                 const val = event.currentTarget.value;
                 setExtend(val === 'steady' ? 'steady' : val === 'reduce' ? 'reduce' : undefined);
+              }}
+            />
+          </div>
+        </div>
+
+        <div key="steady">
+          <label>Steady ({steady})</label>
+          <div className={styles.flexRow}>
+            <FieldRange
+              min={0}
+              max={10}
+              step={1}
+              value={steady}
+              onChange={val => {
+                setSteady(val);
               }}
             />
           </div>
