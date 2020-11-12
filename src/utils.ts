@@ -99,6 +99,11 @@ export const panelDataToMark = (panelData: PanelData) => {
     mark.chart.extend = panelData.extend;
   }
 
+  // Method for auto-extending into future
+  if (panelData.steady && mark.chart) {
+    mark.chart.steady = panelData.steady;
+  }
+
   return mark;
 };
 

@@ -14,4 +14,5 @@ export type PanelData = {
   stopat?: number; // Chart: what year to stop the real-emissions series at
   extend?: ExtendMethod; // Chart: what method to use for extending into the future, either "reduce" or "steady"
   preset?: string;
+  steady?: number;
 };
