@@ -50,7 +50,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
           enter={(blob: BlobSpec) => ({ r: [scale(blob.emissions)], opacity: [1] })}
           update={(blob: BlobSpec) => {
             const nextBlob = nextBlobs.find(d => d.id === blob.id);
-            console.log('blob.emissions, nextBlob :>> ', blob.emissions, nextBlob?.emissions);
+
             if (progress && progress > 0) {
               return nextBlob
                 ? {

@@ -28,8 +28,12 @@ const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true,
         opacity: [1],
         strokeDashoffset: [-circumference]
       }}
+      update={{
+        opacity: [1],
+        strokeDashoffset: [-circumference]
+      }}
       leave={{
-        opacity: 0,
+        opacity: [0],
         strokeDashoffset: [-circumference]
       }}
     >
