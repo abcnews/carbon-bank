@@ -13,16 +13,6 @@ module.exports = {
       react: path.resolve('./node_modules/react')
     };
 
-    config.module.rules.push({
-      test: /\.[tc]sv$/,
-      loader: 'csv-loader',
-      options: {
-        dynamicTyping: true,
-        header: true,
-        skipEmptyLines: true
-      }
-    });
-
     return config;
   },
 

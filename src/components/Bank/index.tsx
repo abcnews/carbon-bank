@@ -38,31 +38,37 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
   const cy = (height * verticalSpaceAvailable) / 2;
   const scale = scaleSqrt()
     .domain([0, budget * 1.2])
-    .range([0, dim]);
-
+    .range([0, dim / 2]);
+  const empty: BlobSpec[] = [];
   return (
     <div ref={ref} className={styles.stage}>
       <svg width={width} height={height}>
         <NodeGroup
-          data={dim > 0 ? blobs : []}
+          data={dim > 0 ? blobs : empty}
           keyAccessor={d => d.id}
-          start={blob => ({ r: scale(blob.emissions) / 2, opacity: 1 })}
-          enter={blob => ({ r: scale(blob.emissions) / 2, opacity: 1 })}
-          update={blob => {
+          start={(blob: BlobSpec) => ({ r: scale(blob.emissions), opacity: 1 })}
+          enter={(blob: BlobSpec) => ({ r: [scale(blob.emissions)], opacity: [1] })}
+          update={(blob: BlobSpec) => {
             const nextBlob = nextBlobs.find(d => d.id === blob.id);
-
-            return progress && progress > 0
-              ? nextBlob
+            if (progress && progress > 0) {
+              return nextBlob
                 ? {
-                    r: [scale(blob.emissions + (nextBlob.emissions - blob.emissions) * progress) / 2],
+                    r: [scale(blob.emissions + (nextBlob.emissions - blob.emissions) * progress)],
                     opacity: [1]
                   }
-                : { r: [scale(blob.emissions) / 2], opacity: [1 - progress] }
-              : { r: [scale(blob.emissions) / 2], opacity: [1] };
+                : { r: [scale(blob.emissions)], opacity: [1 - progress] };
+            } else {
+              return { r: [scale(blob.emissions)], opacity: [1] };
+            }
           }}
-          leave={blob => ({ r: [scale(blob.emissions) / 2], opacity: [1] })}
+          leave={(blob: BlobSpec) => {
+            return {
+              r: [scale(blob.emissions)],
+              opacity: [0]
+            };
+          }}
         >
-          {nodes => (
+          {(nodes: { key: string; data: BlobSpec; state: { r: number; opacity: number } }[]) => (
             <>
               {nodes.map(({ key, data, state: { opacity, r } }) => {
                 return (
@@ -79,7 +85,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
           return (
             <BankLimit
               key={`id-${i}`}
-              r={scale(emissions) / 2}
+              r={scale(emissions)}
               cx={cx}
               cy={cy}
               label={label}
