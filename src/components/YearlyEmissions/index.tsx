@@ -110,8 +110,6 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
   const attribInterpolator = (begValue, endValue, attr) =>
     attr === 'transform' ? interpolateTransformSvg(begValue, endValue) : interpolate(begValue, endValue);
 
-  const barTransform = d => `translate(${xScale(d.year) - barWidth / 2}, ${yScale(d.emissions)})`;
-
   return (
     <div ref={ref} className={styles.root}>
       <svg width={width} height={height}>
@@ -130,36 +128,53 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
           <g transform={`translate(${margins.left} ${margins.top})`}>
             <NodeGroup
               data={bars}
-              keyAccessor={d => `${d.year} - ${d.color}`}
+              keyAccessor={d => d.year}
               start={d => ({
-                height: yScale(0) - yScale(d.emissions),
+                height: 0,
                 width: barWidth,
-                transform: `translate(${xScaleOld(d.year) - barWidth / 2}, ${yScale(d.emissions)})`,
+                x: xScaleOld(d.year) - barWidth / 2,
+                y: yScale(0),
                 opacity: 0
               })}
               enter={d => [
                 {
-                  height: [yScale(0) - yScale(d.emissions)],
                   width: [barWidth],
-                  transform: barTransform(d),
+                  x: [xScale(d.year) - barWidth / 2],
+                  timing: { duration: animationDuration }
+                },
+                {
+                  height: [yScale(0) - yScale(d.emissions)],
+                  y: [yScale(d.emissions)],
                   opacity: [1],
                   timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
                 }
               ]}
-              update={d => ({
-                height: [yScale(0) - yScale(d.emissions)],
-                width: [barWidth],
-                transform: [barTransform(d)],
-                opacity: [1],
-                timing: { duration: animationDuration }
-              })}
-              leave={d => ({
-                height: [yScale(0) - yScale(d.emissions)],
-                width: [barWidth],
-                transform: [barTransform(d)],
-                opacity: [0],
-                timing: { duration: animationDuration }
-              })}
+              update={d => [
+                {
+                  width: [barWidth],
+                  x: [xScale(d.year) - barWidth / 2],
+                  timing: { duration: animationDuration }
+                },
+                {
+                  height: [yScale(0) - yScale(d.emissions)],
+                  y: [yScale(d.emissions)],
+                  opacity: [1],
+                  timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
+                }
+              ]}
+              leave={d => [
+                {
+                  width: [barWidth],
+                  x: [xScale(d.year) - barWidth / 2],
+                  timing: { duration: animationDuration }
+                },
+                {
+                  height: [0],
+                  y: [yScale(0)],
+                  opacity: [0],
+                  timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
+                }
+              ]}
               interpolation={attribInterpolator}
             >
               {nodes => (
@@ -172,7 +187,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
                       height={state.height}
                       width={state.width}
                       fill={data.color}
-                      transform={state.transform}
+                      transform={`translate(${state.x}, ${state.y})`}
                       opacity={state.opacity}
                       data-year={data.year}
                     />

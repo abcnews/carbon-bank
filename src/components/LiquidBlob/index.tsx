@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export type LiquidBlobProps = {
   id?: string;
@@ -18,6 +18,7 @@ export type LiquidBlobProps = {
 
 const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, showControlPoints = false }) => {
   const [tick, setTick] = useState(Math.PI);
+  const blobRef = useRef<SVGPathElement>(null!);
 
   useEffect(() => {
     const frameID = requestAnimationFrame(() => setTick(tick + 0.01));
@@ -50,7 +51,7 @@ const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, show
 
   return (
     <>
-      <path id={id} {...attrs} d={segmentsToPathString(path)} />
+      <path ref={blobRef} id={id} {...attrs} d={segmentsToPathString(path)} />
       {showControlPoints && (
         <g>
           {lines.map((d, i) => (

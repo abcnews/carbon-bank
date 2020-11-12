@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import { Animate } from 'react-move';
+import { animationDuration } from '../../constants';
 
 interface BankLimitProps {
   r: number;
@@ -26,15 +27,18 @@ const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true,
       }}
       enter={{
         opacity: [1],
-        strokeDashoffset: [-circumference]
+        strokeDashoffset: [-circumference],
+        timing: { duration: animationDuration }
       }}
       update={{
         opacity: [1],
-        strokeDashoffset: [-circumference]
+        strokeDashoffset: [-circumference],
+        timing: { duration: animationDuration }
       }}
       leave={{
         opacity: [0],
-        strokeDashoffset: [-circumference]
+        strokeDashoffset: [-circumference],
+        timing: { duration: animationDuration }
       }}
     >
       {({ strokeDashoffset, opacity }) => (

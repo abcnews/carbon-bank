@@ -3,7 +3,7 @@ import styles from './styles.scss';
 import LiquidBlob from '../LiquidBlob';
 import { scaleSqrt } from 'd3-scale';
 import useDimensions from 'react-cool-dimensions';
-import { limits } from '../../constants';
+import { animationDuration, limits } from '../../constants';
 import BankLimit from '../BankLimit';
 import { NodeGroup } from 'react-move';
 
@@ -46,8 +46,16 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
         <NodeGroup
           data={dim > 0 ? (progress ? [...blobs] : blobs) : empty}
           keyAccessor={d => d.id}
-          start={(blob: BlobSpec) => ({ r: scale(blob.emissions), opacity: 1 })}
-          enter={(blob: BlobSpec) => ({ r: [scale(blob.emissions)], opacity: [1] })}
+          start={(blob: BlobSpec) => ({
+            r: scale(blob.emissions),
+            opacity: 1,
+            timing: { duration: animationDuration }
+          })}
+          enter={(blob: BlobSpec) => ({
+            r: [scale(blob.emissions)],
+            opacity: [1],
+            timing: { duration: animationDuration }
+          })}
           update={(blob: BlobSpec) => {
             const nextBlob = nextBlobs.find(d => d.id === blob.id);
 
@@ -55,17 +63,27 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
               return nextBlob
                 ? {
                     r: [scale(blob.emissions + (nextBlob.emissions - blob.emissions) * progress)],
-                    opacity: [1]
+                    opacity: [1],
+                    timing: { duration: animationDuration }
                   }
-                : { r: [scale(blob.emissions)], opacity: [1 - progress] };
+                : {
+                    r: [scale(blob.emissions)],
+                    opacity: [1 - progress],
+                    timing: { duration: animationDuration }
+                  };
             } else {
-              return { r: [scale(blob.emissions)], opacity: [1] };
+              return {
+                r: [scale(blob.emissions)],
+                opacity: [1],
+                timing: { duration: animationDuration }
+              };
             }
           }}
           leave={(blob: BlobSpec) => {
             return {
               r: [scale(blob.emissions)],
-              opacity: [0]
+              opacity: [0],
+              timing: { duration: animationDuration }
             };
           }}
         >
