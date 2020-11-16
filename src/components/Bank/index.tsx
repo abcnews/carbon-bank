@@ -92,7 +92,12 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
               {nodes.map(({ key, data, state: { opacity, r } }) => {
                 return (
                   <g key={key} style={{ opacity }}>
-                    <LiquidBlob cx={cx} cy={cy} r={r} attrs={{ fill: data.id === 'sink' ? '#0A594D' : '#000' }} />
+                    <LiquidBlob
+                      cx={cx}
+                      cy={cy}
+                      r={r}
+                      attrs={{ fill: data.id === 'sink' ? '#0A594D' : data.id === 'future' ? 'red' : '#000' }}
+                    />
                   </g>
                 );
               })}

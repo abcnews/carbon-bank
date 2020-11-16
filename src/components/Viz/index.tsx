@@ -11,7 +11,9 @@ interface VizProps {
   progress?: number;
 }
 
-const Viz: React.FC<VizProps> = ({ current, progress }) => {
+const Viz: React.FC<VizProps> = ({ current: _current, progress }) => {
+  const current = JSON.parse(JSON.stringify(_current));
+
   // This is what's specified in the data
   const limits = current.limits;
   const from = current.blobs;

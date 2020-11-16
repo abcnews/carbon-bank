@@ -1,3 +1,4 @@
+import { decode } from '@abcnews/base-36-props';
 import { useEffect, useRef } from 'react';
 import { PanelData } from './common.d';
 import { Mark, presets } from './constants';
@@ -26,9 +27,20 @@ export const emissionsTo = (y: number) => data.reduce((t, { year, emissions }) =
 
 export const panelDataToMark = (panelData: PanelData) => {
   // Presets
+  let preset: Mark | Object = {};
+  if (panelData.preset) {
+    try {
+      preset = decode(panelData.preset) as Mark;
+    } catch (e) {
+      if (presets[panelData.preset]) {
+        preset = presets[panelData.preset];
+      }
+    }
+  }
+
   const mark: Mark = {
     ...{ blobs: [{ id: 'carbon', emissions: 0 }], useProgress: true },
-    ...(panelData.preset && presets[panelData.preset] ? presets[panelData.preset] : {})
+    ...preset
   };
 
   // Should vis be tied to scroll?

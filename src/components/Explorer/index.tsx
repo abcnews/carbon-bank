@@ -41,9 +41,9 @@ const Explorer: React.FC<ExplorerProps> = () => {
   const [progress, setProgress] = useState(0);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
 
-  const createSnapshot = (name: string, urlQuery: string) => {
+  const createSnapshot = (name: string, marker: Mark) => {
     const nextSnapshots = {
-      [name]: urlQuery,
+      [name]: encode({ ...marker, showChart }),
       ...snapshots
     };
 
@@ -87,7 +87,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
       : undefined
   };
 
-  const replaceGraphicProps = (props: Mark) => {
+  const replaceGraphicProps = (props: Mark & { showChart?: boolean }) => {
     props.blobs.forEach(({ id, emissions }) => {
       id === 'sink' && setSinkEmissions(emissions);
       id === 'future' && setFutureEmissions(emissions);
@@ -95,6 +95,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
     });
     setLimits(props.limits || []);
     setLabels(props.labels || []);
+    setShowChart(props.showChart || false);
   };
 
   const encodedMarkerText = encode(marker);
@@ -161,7 +162,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
         </div>
         <h2>Chart</h2>
         <div style={{ boxSizing: 'content-box' }}>
-          <Toggle size="large" onChange={() => setShowChart(prev => !prev)} /> Show chart
+          <Toggle size="large" isChecked={showChart} onChange={() => setShowChart(prev => !prev)} /> Show chart
         </div>
         <div>
           <label>Min year ({xmin})</label>
@@ -263,7 +264,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
                 return alert(`Can't overwrite existing snapshot`);
               }
 
-              createSnapshot(name, encode(marker));
+              createSnapshot(name, marker);
             }}
           >
             add
@@ -293,10 +294,10 @@ const Explorer: React.FC<ExplorerProps> = () => {
           ))}
         </ul>
 
-        <div key="progress">
+        {/* <div key="progress">
           <label>Simulate progress ({progress})</label>
           <FieldRange min={-0.5} max={1} step={0.01} value={progress} onChange={setProgress} />
-        </div>
+        </div> */}
         <details>
           <summary>
             Encoded Marker
