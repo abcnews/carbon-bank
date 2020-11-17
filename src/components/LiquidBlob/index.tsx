@@ -90,7 +90,9 @@ type Segment = CurveSegment | MoveSegment;
 
 function draw(cx: number, cy: number, r: number, tick: number, wander: number = 0) {
   const kappa = (4 * (Math.sqrt(2) - 1)) / 3;
-  const perturbation = 0.1;
+  const min = 0.03;
+  const max = 0.12;
+  const perturbation = Math.min(max, Math.max(min, -min * (r / 1000) + max));
   const x = cx + wander * r * Math.sin(tick * 0.75);
   const y = cy + wander * r * Math.cos(tick * 1);
 
