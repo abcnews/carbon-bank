@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 export type LiquidBlobProps = {
   id?: string;
@@ -18,16 +18,28 @@ export type LiquidBlobProps = {
 
 const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, showControlPoints = false }) => {
   const [tick, setTick] = useState(Math.PI);
+  const tickRef = useRef<number>(Math.PI);
   const blobRef = useRef<SVGPathElement>(null!);
 
+  const p = useMemo(() => (tick: number) => draw(cx, cy, r, tick, 0.02), [cx, cy, r]);
+  const d = useMemo(() => (tick: number) => segmentsToPathString(p(tick)), [p]);
+
   useEffect(() => {
-    const frameID = requestAnimationFrame(() => setTick(tick + 0.01));
+    const update = () => {
+      tickRef.current += 0.01;
+      blobRef.current.setAttribute('d', d(tickRef.current));
+      frameID = requestAnimationFrame(update);
+      if (showControlPoints) {
+        setTick(tickRef.current);
+      }
+    };
+    let frameID = requestAnimationFrame(update);
     return () => {
       cancelAnimationFrame(frameID);
     };
-  });
+  }, [d, showControlPoints]);
 
-  const path = draw(cx, cy, r, tick);
+  const path = p(tick);
   let points: { cx: number; cy: number }[] = [];
   let lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
 
@@ -48,10 +60,10 @@ const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, show
     }
     start = seg.slice(-2) as [number, number];
   });
-
+  console.log('showControlPoints :>> ', showControlPoints);
   return (
     <>
-      <path ref={blobRef} id={id} {...attrs} d={segmentsToPathString(path)} />
+      <path ref={blobRef} id={id} {...attrs} d={d(tickRef.current)} />
       {showControlPoints && (
         <g>
           {lines.map((d, i) => (
@@ -79,8 +91,8 @@ type Segment = CurveSegment | MoveSegment;
 function draw(cx: number, cy: number, r: number, tick: number, wander: number = 0) {
   const kappa = (4 * (Math.sqrt(2) - 1)) / 3;
   const perturbation = 0.1;
-  const x = cx + wander * Math.sin(tick);
-  const y = cy + wander * Math.cos(tick * 2);
+  const x = cx + wander * r * Math.sin(tick * 0.75);
+  const y = cy + wander * r * Math.cos(tick * 1);
 
   const segments: Segment[] = [];
 
@@ -115,7 +127,7 @@ function draw(cx: number, cy: number, r: number, tick: number, wander: number = 
   ]);
 
   // 180-270
-  controlOffset = kappa + perturbation * Math.sin(tick * 2);
+  controlOffset = kappa + perturbation * Math.sin(tick / 2);
   segments.push([
     'C', //
     x + -controlOffset * r, //
