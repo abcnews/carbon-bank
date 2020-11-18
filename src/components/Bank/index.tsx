@@ -44,7 +44,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
     <div ref={ref} className={styles.stage}>
       <svg width={width} height={height}>
         <NodeGroup
-          data={dim > 0 ? (progress ? [...blobs] : blobs) : empty}
+          data={dim > 0 ? [...blobs] : empty}
           keyAccessor={d => d.id}
           start={(blob: BlobSpec) => ({
             r: scale(blob.emissions),
