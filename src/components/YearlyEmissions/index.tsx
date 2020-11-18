@@ -87,7 +87,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
     }
 
     return bars;
-  }, [minYear, maxYear, stopAt, extend, steady, remainingBudget]);
+  }, [minYear, maxYear, stopAt, extend, steady, remainingBudget, width, height]);
 
   const xScale = useMemo(
     () =>
@@ -136,79 +136,77 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
           />
         ))}
 
-        {height > 0 && (
-          <g transform={`translate(${margins.left} ${margins.top})`}>
-            <NodeGroup
-              data={bars}
-              keyAccessor={d => d.year}
-              start={d => ({
-                height: 0,
-                width: barWidth,
-                x: xScaleOld(d.year) - barWidth / 2,
-                y: yScale(0),
-                opacity: 0
-              })}
-              enter={d => [
-                {
-                  width: [barWidth],
-                  x: [xScale(d.year) - barWidth / 2],
-                  timing: { duration: animationDuration }
-                },
-                {
-                  height: [yScale(0) - yScale(d.emissions)],
-                  y: [yScale(d.emissions)],
-                  opacity: [1],
-                  timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
-                }
-              ]}
-              update={d => [
-                {
-                  width: [barWidth],
-                  x: [xScale(d.year) - barWidth / 2],
-                  timing: { duration: animationDuration }
-                },
-                {
-                  height: [yScale(0) - yScale(d.emissions)],
-                  y: [yScale(d.emissions)],
-                  opacity: [1],
-                  timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
-                }
-              ]}
-              leave={d => [
-                {
-                  width: [barWidth],
-                  x: [xScale(d.year) - barWidth / 2],
-                  timing: { duration: animationDuration }
-                },
-                {
-                  height: [0],
-                  y: [yScale(0)],
-                  opacity: [0],
-                  timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
-                }
-              ]}
-              interpolation={attribInterpolator}
-            >
-              {nodes => (
-                <>
-                  {nodes.map(({ key, data, state }) => (
-                    <rect
-                      key={key}
-                      className={styles.column}
-                      strokeWidth="0"
-                      height={state.height}
-                      width={state.width}
-                      fill={data.color}
-                      transform={`translate(${state.x}, ${state.y})`}
-                      opacity={state.opacity}
-                      data-year={data.year}
-                    />
-                  ))}
-                </>
-              )}
-            </NodeGroup>
-          </g>
-        )}
+        <g transform={`translate(${margins.left} ${margins.top})`}>
+          <NodeGroup
+            data={height ? bars : []}
+            keyAccessor={d => d.year}
+            start={d => ({
+              height: 0,
+              width: barWidth,
+              x: xScaleOld(d.year) - barWidth / 2,
+              y: yScale(0),
+              opacity: 0
+            })}
+            enter={d => [
+              {
+                width: [barWidth],
+                x: [xScale(d.year) - barWidth / 2],
+                timing: { duration: animationDuration }
+              },
+              {
+                height: [yScale(0) - yScale(d.emissions)],
+                y: [yScale(d.emissions)],
+                opacity: [1],
+                timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
+              }
+            ]}
+            update={d => [
+              {
+                width: [barWidth],
+                x: [xScale(d.year) - barWidth / 2],
+                timing: { duration: animationDuration }
+              },
+              {
+                height: [yScale(0) - yScale(d.emissions)],
+                y: [yScale(d.emissions)],
+                opacity: [1],
+                timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
+              }
+            ]}
+            leave={d => [
+              {
+                width: [barWidth],
+                x: [xScale(d.year) - barWidth / 2],
+                timing: { duration: animationDuration }
+              },
+              {
+                height: [0],
+                y: [yScale(0)],
+                opacity: [0],
+                timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
+              }
+            ]}
+            interpolation={attribInterpolator}
+          >
+            {nodes => (
+              <>
+                {nodes.map(({ key, data, state }) => (
+                  <rect
+                    key={key}
+                    className={styles.column}
+                    strokeWidth="0"
+                    height={state.height}
+                    width={state.width}
+                    fill={data.color}
+                    transform={`translate(${state.x}, ${state.y})`}
+                    opacity={state.opacity}
+                    data-year={data.year}
+                  />
+                ))}
+              </>
+            )}
+          </NodeGroup>
+        </g>
 
         <g className={styles.axisX}>
           <line
