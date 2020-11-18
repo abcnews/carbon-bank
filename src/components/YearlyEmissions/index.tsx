@@ -303,14 +303,22 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
           keyAccessor={d => d}
           start={(d, i) => ({ opacity: 0 })}
           enter={d => ({ opacity: [1], timing: { duration: animationDuration } })}
-          update={(d, i) => ({ timing: { duration: animationDuration } })}
+          update={(d, i) => ({ opacity: [1], timing: { duration: animationDuration } })}
           leave={d => ({ opacity: [0], timing: { duration: animationDuration } })}
         >
           {nodes => {
             return (
               <>
                 {nodes.map(({ key, data, state }) => (
-                  <div className={styles.label} key={key} style={{ opacity: state.opacity }}>
+                  <div
+                    className={styles.label}
+                    key={key}
+                    style={{
+                      opacity: state.opacity,
+                      left: xScale(data),
+                      top: yScale(bars.find(d => d.year === data)?.emissions || 0)
+                    }}
+                  >
                     {data}
                   </div>
                 ))}

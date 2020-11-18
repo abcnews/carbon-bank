@@ -37,6 +37,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
   const [stopAt, setStopAt] = useState<number>(2020);
   const [extend, setExtend] = useState<'steady' | 'reduce' | undefined>(undefined);
   const [steady, setSteady] = useState<number>(0);
+  const [yearLabels, setYearLabels] = useState<number[]>([]);
 
   const [progress, setProgress] = useState(0);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
@@ -82,7 +83,8 @@ const Explorer: React.FC<ExplorerProps> = () => {
           maxYear: xmax,
           extend,
           stopAt,
-          steady
+          steady,
+          labelYears: yearLabels
         }
       : undefined
   };
@@ -96,6 +98,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
     setLimits(props.limits || []);
     setLabels(props.labels || []);
     setShowChart(props.showChart || false);
+    setYearLabels(props.chart?.labelYears || []);
   };
 
   const encodedMarkerText = encode(marker);
@@ -239,6 +242,22 @@ const Explorer: React.FC<ExplorerProps> = () => {
               }}
             />
           </div>
+        </div>
+
+        <div key="labels">
+          <label>Labels</label>
+          <Checkbox
+            name="carbon"
+            label="Show 'This is carbondioxide' label"
+            value="Show 'This is carbondioxide' label"
+            isChecked={labels.includes('carbon')}
+            onChange={event => setLabel('carbon', event.target.checked)}
+          />
+          <Textfield
+            name="year-labels"
+            label="Years to label"
+            onChange={ev => setYearLabels(ev.currentTarget.value.split(',').map(d => +d.trim()))}
+          />
         </div>
 
         <div key="labels">
