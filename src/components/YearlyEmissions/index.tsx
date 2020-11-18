@@ -115,9 +115,9 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
     [height, margins]
   );
 
-  const barWidth = useMemo(() => (xScale(1) - xScale(0)) / 2, [xScale]);
+  const barWidth = useMemo(() => Math.max(1, (xScale(1) - xScale(0)) / 2), [xScale]);
 
-  const xTickValues = useMemo(() => xScale.ticks(), [xScale]);
+  const xTickValues = useMemo(() => xScale.ticks((width - margins.left - margins.right) / 60), [xScale, width]);
   const yTickValues = [15, 25, 35].map(d => d * 1000000000);
   const attribInterpolator = (begValue, endValue, attr) =>
     attr === 'transform' ? interpolateTransformSvg(begValue, endValue) : interpolate(begValue, endValue);
