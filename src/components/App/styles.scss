@@ -1,3 +1,7 @@
 :root {
   --bg: #e3fff4;
 }
+
+.container > div:first-child {
+  width: 100% !important;
+}

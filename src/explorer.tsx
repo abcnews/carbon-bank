@@ -1,7 +1,9 @@
+import './polyfill';
 import { selectMounts } from '@abcnews/mount-utils';
 import React from 'react';
 import { render } from 'react-dom';
 import Explorer from './components/Explorer';
+import { GlobalStyles } from '@abcaustralia/nucleus';
 
 let mountEl;
 export const renderExplorer = () => {
@@ -11,7 +13,12 @@ export const renderExplorer = () => {
     return;
   }
 
-  render(<Explorer />, mountEl);
+  render(
+    <GlobalStyles>
+      <Explorer />
+    </GlobalStyles>,
+    mountEl
+  );
 };
 
 if (module.hot) {

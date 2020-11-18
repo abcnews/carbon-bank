@@ -100,3 +100,7 @@ body {
 .flexRow > span {
   padding: 0 0.5em;
 }
+
+.toggle * {
+  box-sizing: content-box !important;
+}

@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from 'react';
 import { Mark } from '../../constants';
 import Scrollyteller, { PanelDefinition } from '@abcnews/scrollyteller';
-import './styles.scss';
+import styles from './styles.scss';
 import Viz from '../Viz';
 
 interface AppProps {
@@ -23,7 +23,13 @@ const App: React.FC<AppProps> = ({ panels }) => {
   const currentProgress = current?.useProgress && progress ? progress : undefined;
 
   return (
-    <Scrollyteller panels={panels} onMarker={onMarker} onProgress={onProgress} theme="light">
+    <Scrollyteller
+      className={styles.container}
+      panels={panels}
+      onMarker={onMarker}
+      onProgress={onProgress}
+      theme="light"
+    >
       {current && <Viz current={current} progress={currentProgress} />}
     </Scrollyteller>
   );

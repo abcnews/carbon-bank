@@ -1,3 +1,4 @@
+import './polyfill';
 import React from 'react';
 import { render } from 'react-dom';
 import App from './components/App';
@@ -5,6 +6,7 @@ import { loadScrollyteller, PanelDefinition, ScrollytellerDefinition } from '@ab
 import { PanelData } from './common.d';
 import { panelDataToMark } from './utils';
 import { Mark } from './constants';
+
 const PROJECT_NAME: string = 'carbon-bank';
 const tellers = ['a', 'b'];
 let scrollyData: { [key: string]: ScrollytellerDefinition<PanelData> } = {};

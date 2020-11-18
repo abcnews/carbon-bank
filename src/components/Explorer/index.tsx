@@ -161,7 +161,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
           />
         </div>
         <h2>Chart</h2>
-        <div style={{ boxSizing: 'content-box' }}>
+        <div className={styles.toggle}>
           <Toggle size="large" isChecked={showChart} onChange={() => setShowChart(prev => !prev)} /> Show chart
         </div>
         <div>
