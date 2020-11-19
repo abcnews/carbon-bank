@@ -256,13 +256,14 @@ const Explorer: React.FC<ExplorerProps> = () => {
         </div>
 
         <div key="labels">
-          <label>Labels</label>
+          <label>Comma separated list of years to label in the chart</label>
           <Textfield
             name="year-labels"
             label="Years to label"
             value={yearLabels}
             onChange={ev => setYearLabels(ev.currentTarget.value)}
           />
+          <label>Other labels</label>
           <Checkbox
             name="carbon"
             label="Show 'This is carbondioxide' label"

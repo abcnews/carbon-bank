@@ -20,6 +20,11 @@ module.exports = {
       react: resolve('./node_modules/react')
     };
 
+    // config.optimization.splitChunks = {
+    //   // include all types of chunks
+    //   chunks: 'all'
+    // };
+
     return config;
   },
 
