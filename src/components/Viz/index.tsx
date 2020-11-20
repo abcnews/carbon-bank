@@ -16,8 +16,8 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress }) => {
 
   // This is what's specified in the data
   const limits = current.limits;
-  const from = current.blobs;
-  const to = current.next?.blobs || current.blobs;
+  const from = current.blobs.filter(d => d.id !== 'future');
+  const to = current.next?.blobs.filter(d => d.id !== 'future') || from;
 
   // Handle years for the carbon blob
   from.forEach(blob => {

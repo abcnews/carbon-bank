@@ -40,6 +40,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
     .domain([0, budget * 1.2])
     .range([0, dim / 2]);
   const empty: BlobSpec[] = [];
+
   return (
     <div ref={ref} className={styles.stage}>
       <svg width={width} height={height}>
