@@ -8,6 +8,7 @@ import Viz from '../Viz';
 import { Mark, SNAPSHOTS_LOCALSTORAGE_KEY } from '../../constants';
 import styles from './styles.scss';
 import Toggle from '@atlaskit/toggle';
+import { emissionsTo } from '../../utils';
 
 interface ExplorerProps {}
 
@@ -20,7 +21,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
 
   const initialState = {
     showChart: false,
-    carbonEmissions: 20,
+    carbonEmissions: 1800,
     sinkEmissions: 0,
     futureEmissions: 0,
     ...decodeEncodedUrlParam()
@@ -125,31 +126,39 @@ const Explorer: React.FC<ExplorerProps> = () => {
       <div className={styles.controls}>
         <h2>Blobs</h2>
         <div>
-          <label>Carbon blob ({carbonEmissions})</label>
+          <label>
+            Carbon blob (
+            {carbonEmissions < 1800
+              ? 'Off'
+              : `Year: ${carbonEmissions}, Gt: ${(emissionsTo(carbonEmissions) / 1000000000).toFixed(1)}`}
+            )
+          </label>
           <FieldRange
             isDisabled={showChart}
-            min={0}
-            max={2000}
-            step={10}
+            min={1799}
+            max={2020}
+            step={1}
             value={carbonEmissions}
-            onChange={setCarbonEmissions}
+            onChange={val => setCarbonEmissions(val < 1800 ? 0 : val)}
           />
         </div>
         <div>
-          <label>Sink blob ({sinkEmissions})</label>
-          <FieldRange min={0} max={2000} step={10} value={sinkEmissions} onChange={setSinkEmissions} />
-        </div>
-        <div>
-          <label>Future blob ({futureEmissions})</label>
+          <label>
+            Sink blob (
+            {sinkEmissions < 1800
+              ? 'Off'
+              : `Year: ${sinkEmissions}, Gt: ${(emissionsTo(sinkEmissions) / 1000000000).toFixed(1)}`}
+            )
+          </label>
           <FieldRange
-            isDisabled={showChart && typeof extend !== 'undefined'}
-            min={0}
-            max={2000}
-            step={10}
-            value={futureEmissions}
-            onChange={setFutureEmissions}
+            min={1799}
+            max={2020}
+            step={1}
+            value={sinkEmissions}
+            onChange={val => setSinkEmissions(val < 1800 ? 0 : val)}
           />
         </div>
+
         <div key="limits">
           <label>Limits</label>
           <Checkbox

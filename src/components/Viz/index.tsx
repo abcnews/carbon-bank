@@ -19,6 +19,11 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress }) => {
   const from = current.blobs;
   const to = current.next?.blobs || current.blobs;
 
+  // Handle years for the carbon blob
+  from.forEach(blob => {
+    if (blob.emissions >= 1800) blob.emissions = emissionsTo(blob.emissions) / 1000000000;
+  });
+
   // If we have a chart too, we want to auto-add (or override) some blob values.
   if (current.chart && current.chart.stopAt) {
     const carbonBlob = from.find(d => d.id === 'carbon');
