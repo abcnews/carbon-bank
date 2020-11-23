@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import { Animate } from 'react-move';
 import { animationDuration } from '../../constants';
+import { easeQuadOut } from 'd3-ease';
 
 interface BankLimitProps {
   r: number;
@@ -18,6 +19,7 @@ const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true,
   const circumference = 2 * Math.PI * r;
   const dashLength = Math.ceil(circumference / 4);
   const dasharray = ['0', String(Math.ceil(circumference))].concat(new Array(dashLength).fill('2 2')).join(' ');
+  const duration = animationDuration * 1.2;
   return (
     <Animate
       show={visible}
@@ -28,17 +30,17 @@ const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true,
       enter={{
         opacity: [1],
         strokeDashoffset: [-circumference],
-        timing: { duration: animationDuration }
+        timing: { duration: duration, ease: easeQuadOut }
       }}
       update={{
         opacity: [1],
         strokeDashoffset: [-circumference],
-        timing: { duration: animationDuration }
+        timing: { duration: duration }
       }}
       leave={{
         opacity: [0],
         strokeDashoffset: [-circumference],
-        timing: { duration: animationDuration }
+        timing: { duration: duration }
       }}
     >
       {({ strokeDashoffset, opacity }) => (

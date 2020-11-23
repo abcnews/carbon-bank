@@ -6,6 +6,7 @@ import useDimensions from 'react-cool-dimensions';
 import { animationDuration, limits } from '../../constants';
 import BankLimit from '../BankLimit';
 import { NodeGroup } from 'react-move';
+import { easeQuadOut } from 'd3-ease';
 
 export type BlobSpec = {
   id: string;
@@ -50,12 +51,12 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
           start={(blob: BlobSpec) => ({
             r: scale(blob.emissions),
             opacity: 1,
-            timing: { duration: animationDuration }
+            timing: { duration: animationDuration, ease: easeQuadOut }
           })}
           enter={(blob: BlobSpec) => ({
             r: [scale(blob.emissions)],
             opacity: [1],
-            timing: { duration: animationDuration }
+            timing: { duration: animationDuration, ease: easeQuadOut }
           })}
           update={(blob: BlobSpec) => {
             const nextBlob = nextBlobs.find(d => d.id === blob.id);
@@ -65,18 +66,18 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
                 ? {
                     r: [scale(blob.emissions + (nextBlob.emissions - blob.emissions) * progress)],
                     opacity: [1],
-                    timing: { duration: animationDuration }
+                    timing: { duration: animationDuration, ease: easeQuadOut }
                   }
                 : {
                     r: [scale(blob.emissions)],
                     opacity: [1 - progress],
-                    timing: { duration: animationDuration }
+                    timing: { duration: animationDuration, ease: easeQuadOut }
                   };
             } else {
               return {
                 r: [scale(blob.emissions)],
                 opacity: [1],
-                timing: { duration: animationDuration }
+                timing: { duration: animationDuration, ease: easeQuadOut }
               };
             }
           }}
@@ -84,7 +85,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
             return {
               r: [scale(blob.emissions)],
               opacity: [0],
-              timing: { duration: animationDuration }
+              timing: { duration: animationDuration, ease: easeQuadOut }
             };
           }}
         >

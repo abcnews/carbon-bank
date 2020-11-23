@@ -9,6 +9,7 @@ import { generateSeries, max, usePrevious } from '../../utils';
 import { animationDuration, budget } from '../../constants';
 import { NodeGroup } from 'react-move';
 import { interpolate, interpolateTransformSvg } from 'd3-interpolate';
+import { easeQuadOut } from 'd3-ease';
 
 type Margins = {
   top: number;
@@ -151,26 +152,34 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
               {
                 width: [barWidth],
                 x: [xScale(d.year) - barWidth / 2],
-                timing: { duration: animationDuration }
+                timing: { duration: animationDuration, ease: easeQuadOut }
               },
               {
                 height: [yScale(0) - yScale(d.emissions)],
                 y: [yScale(d.emissions)],
                 opacity: [1],
-                timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
+                timing: {
+                  duration: animationDuration,
+                  delay: delayScale(d.year) * animationDuration,
+                  ease: easeQuadOut
+                }
               }
             ]}
             update={d => [
               {
                 width: [barWidth],
                 x: [xScale(d.year) - barWidth / 2],
-                timing: { duration: animationDuration }
+                timing: { duration: animationDuration, ease: easeQuadOut }
               },
               {
                 height: [yScale(0) - yScale(d.emissions)],
                 y: [yScale(d.emissions)],
                 opacity: [1],
-                timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
+                timing: {
+                  duration: animationDuration,
+                  delay: delayScale(d.year) * animationDuration,
+                  ease: easeQuadOut
+                }
               }
             ]}
             leave={d => [
@@ -223,17 +232,17 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
             enter={d => ({
               opacity: [1],
               transform: [`translate(${xScale(d) + margins.left}, ${height - margins.bottom})`],
-              timing: { duration: animationDuration }
+              timing: { duration: animationDuration, ease: easeQuadOut }
             })}
             update={d => ({
               opacity: [1],
               transform: [`translate(${xScale(d) + margins.left}, ${height - margins.bottom})`],
-              timing: { duration: animationDuration }
+              timing: { duration: animationDuration, ease: easeQuadOut }
             })}
             leave={d => ({
               opacity: [0],
               transform: [`translate(${xScale(d) + margins.left}, ${height - margins.bottom})`],
-              timing: { duration: animationDuration }
+              timing: { duration: animationDuration, ease: easeQuadOut }
             })}
             interpolation={attribInterpolator}
           >
@@ -300,9 +309,9 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
           data={labelYears || []}
           keyAccessor={d => d}
           start={(d, i) => ({ opacity: 0 })}
-          enter={d => ({ opacity: [1], timing: { duration: animationDuration } })}
-          update={(d, i) => ({ opacity: [1], timing: { duration: animationDuration } })}
-          leave={d => ({ opacity: [0], timing: { duration: animationDuration } })}
+          enter={d => ({ opacity: [1], timing: { duration: animationDuration, ease: easeQuadOut } })}
+          update={(d, i) => ({ opacity: [1], timing: { duration: animationDuration, ease: easeQuadOut } })}
+          leave={d => ({ opacity: [0], timing: { duration: animationDuration, ease: easeQuadOut } })}
         >
           {nodes => {
             return (
