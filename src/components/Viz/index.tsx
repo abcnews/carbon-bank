@@ -37,13 +37,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress }) => {
 
   return (
     <div className={styles.root}>
-      <Bank
-        budget={budget}
-        limits={limits}
-        blobs={from}
-        nextBlobs={to}
-        progress={current.useProgress ? progress : false}
-      />
+      <Bank budget={budget} limits={limits} blobs={from} nextBlobs={to} progress={progress} />
       <Animate
         show={!!(current.labels?.includes('carbon') && progress && progress < 0)}
         start={{ opacity: 0 }}

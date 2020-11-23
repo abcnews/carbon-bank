@@ -16,11 +16,11 @@ const App: React.FC<AppProps> = ({ panels }) => {
   const onMarker = useCallback((data: Mark) => setCurrent(data), []);
 
   const onProgress = useCallback(
-    (measurements: { pctAboveFold: number }) => current?.useProgress && setProgress(measurements.pctAboveFold),
-    [current?.useProgress]
+    (measurements: { pctAboveFold: number }) => current?.chart || setProgress(measurements.pctAboveFold),
+    [current?.chart]
   );
 
-  const currentProgress = current?.useProgress && progress ? progress : undefined;
+  const currentProgress = !current?.chart && progress ? progress : undefined;
 
   return (
     <Scrollyteller
