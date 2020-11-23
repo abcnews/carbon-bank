@@ -25,8 +25,11 @@ const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, show
   const d = useMemo(() => (tick: number) => segmentsToPathString(p(tick)), [p]);
 
   useEffect(() => {
+    const min = 0.01;
+    const max = 0.03;
+    const increment = Math.min(max, Math.max(min, -min * (r / 250) + max));
     const update = () => {
-      tickRef.current += 0.01;
+      tickRef.current += increment;
       blobRef.current.setAttribute('d', d(tickRef.current));
       frameID = requestAnimationFrame(update);
       if (showControlPoints) {
@@ -60,7 +63,7 @@ const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, show
     }
     start = seg.slice(-2) as [number, number];
   });
-  console.log('showControlPoints :>> ', showControlPoints);
+
   return (
     <>
       <path ref={blobRef} id={id} {...attrs} d={d(tickRef.current)} />
