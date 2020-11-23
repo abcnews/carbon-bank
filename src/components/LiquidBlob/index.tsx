@@ -25,8 +25,8 @@ const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, show
   const d = useMemo(() => (tick: number) => segmentsToPathString(p(tick)), [p]);
 
   useEffect(() => {
-    const min = 0.01;
-    const max = 0.03;
+    const min = 0.02;
+    const max = 0.04;
     const increment = Math.min(max, Math.max(min, -min * (r / 250) + max));
     const update = () => {
       tickRef.current += increment;
