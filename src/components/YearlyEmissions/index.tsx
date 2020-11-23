@@ -41,9 +41,9 @@ export type YearlyEmissionsProps = {
 
 const margins: Margins = {
   top: 10,
-  right: 50,
+  right: 15,
   bottom: 25,
-  left: 50
+  left: 20
 };
 
 const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, stopAt, extend, steady, labelYears }) => {
@@ -130,7 +130,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
           <line
             key={i}
             x1={margins.left}
-            x2={width - margins.left}
+            x2={width - margins.right}
             y1={yScale(tickValue) + margins.top}
             y2={yScale(tickValue) + margins.top}
             stroke="#ccc"
@@ -267,10 +267,9 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
             <g
               key={i}
               className={styles.tickY}
-              transform={`translate(${margins.left - 6}, ${yScale(tickValue) + margins.top})`}
+              transform={`translate(${margins.left - 3}, ${yScale(tickValue) + margins.top})`}
             >
-              <line x2={6} />
-              <text x="-2" dy="0.3em" textAnchor="end">
+              <text x="" dy="0.3em" textAnchor="end">
                 {String(tickValue.valueOf() / 1000000000)}
               </text>
             </g>
@@ -282,18 +281,6 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
             transform={`translate(${width - margins.right}, ${margins.top})`}
             y2={height - margins.top - margins.bottom}
           />
-          {yTickValues.map((tickValue, i) => (
-            <g
-              key={i}
-              className={styles.tickY}
-              transform={`translate(${width - margins.right}, ${yScale(tickValue) + margins.top})`}
-            >
-              <line x2={6} />
-              <text x="8" dy="0.3em" textAnchor="start">
-                {String(tickValue.valueOf() / 1000000000)}
-              </text>
-            </g>
-          ))}
         </g>
       </svg>
       <div
