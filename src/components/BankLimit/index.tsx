@@ -14,11 +14,14 @@ interface BankLimitProps {
   progress?: number | false;
 }
 
-const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true, labelOffset = 5 }) => {
+const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true, labelOffset = 8 }) => {
   const [id] = useState(nanoid);
   const circumference = 2 * Math.PI * r;
-  const dashLength = Math.ceil(circumference / 4);
-  const dasharray = ['0', String(Math.ceil(circumference))].concat(new Array(dashLength).fill('2 2')).join(' ');
+  const dashStride = 12;
+  const dashLength = Math.ceil(circumference / dashStride);
+  const dasharray = ['0', String(Math.ceil(circumference))]
+    .concat(new Array(dashLength).fill(`${dashStride / 2} ${dashStride / 2}`))
+    .join(' ');
   const duration = animationDuration * 1.2;
   return (
     <Animate
@@ -50,7 +53,7 @@ const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true,
             d={`M 0 ${-r} A ${r} ${r} 0 1 1 0 ${r} A ${r} ${r} 0 1 1 0 ${-r}`}
             strokeDasharray={dasharray}
             stroke="#444"
-            strokeWidth="2"
+            strokeWidth="3"
             fill="none"
             style={{ strokeDashoffset, opacity }}
           />

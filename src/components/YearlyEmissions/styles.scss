@@ -49,15 +49,28 @@
   bottom: -11px;
 }
 
+.scaleLine {
+  stroke: #5a5a5a;
+}
 .axisY,
 .axisX,
 .tickX {
   line {
-    stroke: #222;
+    stroke: #292929;
     stroke-width: 1px;
   }
   text {
     font-size: 0.71875rem;
     font-family: ABCSans, Arial, Helvetica, sans-serif;
+    fill: #5a5a5a;
   }
+}
+
+.title {
+  font-family: ABCSans, Arial, Helvetica, sans-serif;
+  color: #5a5a5a;
+  font-weight: normal;
+  margin-left: 0.75em;
+  font-size: 0.71875rem;
+  position: absolute;
 }

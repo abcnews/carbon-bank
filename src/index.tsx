@@ -11,12 +11,15 @@ const PROJECT_NAME: string = 'carbon-bank';
 const tellers = ['a', 'b'];
 let scrollyData: { [key: string]: ScrollytellerDefinition<PanelData> } = {};
 
+const align: 'right' = 'right';
+
 function renderApp() {
   tellers.forEach(name => {
     scrollyData[name] = scrollyData[name] || loadScrollyteller<PanelData>(name, 'u-full');
     const panels: PanelDefinition<Mark>[] = scrollyData[name].panels
       .map(d => ({
         ...d,
+        align,
         data: panelDataToMark(d.data)
       }))
       .map((d, index, arr) => ({

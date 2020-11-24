@@ -98,7 +98,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
                       cx={cx}
                       cy={cy}
                       r={r}
-                      attrs={{ fill: data.id === 'sink' ? '#0A594D' : data.id === 'future' ? 'red' : '#000' }}
+                      attrs={{ fill: data.id === 'sink' ? '#538472' : data.id === 'future' ? '#DD7936' : '#000' }}
                       showControlPoints={false}
                     />
                   </g>

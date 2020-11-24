@@ -40,10 +40,10 @@ export type YearlyEmissionsProps = {
 };
 
 const margins: Margins = {
-  top: 10,
-  right: 15,
-  bottom: 25,
-  left: 20
+  top: 28,
+  right: 17,
+  bottom: 60,
+  left: 25
 };
 
 const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, stopAt, extend, steady, labelYears }) => {
@@ -83,7 +83,8 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
           year: i + (peak?.year || 0) + 1
         }))
         .forEach(d => {
-          if (d.year <= maxYear) bars.push({ ...d, color: 'red' });
+          if (d.year <= maxYear)
+            bars.push({ ...d, color: d.year < (peak?.year || 0) + (steady || 0) ? '#599EB7' : '#DD7936' });
         });
     }
 
@@ -125,6 +126,9 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
 
   return (
     <div ref={ref} className={styles.root}>
+      <h3 className={styles.title}>
+        Gt CO<sub>2</sub>
+      </h3>
       <svg width={width} height={height}>
         {yTickValues.map((tickValue, i) => (
           <line
@@ -133,7 +137,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
             x2={width - margins.right}
             y1={yScale(tickValue) + margins.top}
             y2={yScale(tickValue) + margins.top}
-            stroke="#ccc"
+            className={styles.scaleLine}
           />
         ))}
 
@@ -250,8 +254,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
               <>
                 {nodes.map(({ key, data, state: { opacity, transform } }) => (
                   <g key={key} className={styles.tickX} transform={transform} style={{ opacity }}>
-                    <line y2={6} />
-                    <text y="17" textAnchor="middle">
+                    <text y="14" textAnchor="middle">
                       {data}
                     </text>
                   </g>
