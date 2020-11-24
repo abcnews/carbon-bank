@@ -9,9 +9,10 @@ import { Animate } from 'react-move';
 interface VizProps {
   current: Mark;
   progress?: number;
+  className?: string;
 }
 
-const Viz: React.FC<VizProps> = ({ current: _current, progress }) => {
+const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => {
   const current = JSON.parse(JSON.stringify(_current));
 
   // This is what's specified in the data
@@ -36,7 +37,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress }) => {
   }
 
   return (
-    <div className={styles.root}>
+    <div className={`${styles.root} ${className}`}>
       <Bank budget={budget} limits={limits} blobs={from} nextBlobs={to} progress={progress} />
       <Animate
         show={!!(current.labels?.includes('carbon') && progress && progress < 0)}

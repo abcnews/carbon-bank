@@ -30,7 +30,7 @@ const App: React.FC<AppProps> = ({ panels }) => {
       onProgress={onProgress}
       theme="light"
     >
-      {current && <Viz current={current} progress={currentProgress} />}
+      {current && <Viz className={styles.graphic} current={current} progress={currentProgress} />}
     </Scrollyteller>
   );
 };
