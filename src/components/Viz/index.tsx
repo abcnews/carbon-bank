@@ -19,9 +19,12 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
   const limits = current.limits;
   const from = current.blobs.filter(d => d.id !== 'future');
   const to = current.next?.blobs.filter(d => d.id !== 'future') || from;
-
+  console.log('from,to :>> ', from, to);
   // Handle years for the carbon blob
   from.forEach(blob => {
+    if (blob.emissions >= 1800) blob.emissions = emissionsTo(blob.emissions) / 1000000000;
+  });
+  to.forEach(blob => {
     if (blob.emissions >= 1800) blob.emissions = emissionsTo(blob.emissions) / 1000000000;
   });
 

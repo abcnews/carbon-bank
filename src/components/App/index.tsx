@@ -13,7 +13,9 @@ const App: React.FC<AppProps> = ({ panels }) => {
   const [current, setCurrent] = useState<Mark>(null!);
   const [progress, setProgress] = useState<number>(null!);
 
-  const onMarker = useCallback((data: Mark) => setCurrent(data), []);
+  const onMarker = useCallback((data: Mark) => {
+    setCurrent(data);
+  }, []);
 
   const onProgress = useCallback(
     (measurements: { pctAboveFold: number }) => current?.chart || setProgress(measurements.pctAboveFold),
