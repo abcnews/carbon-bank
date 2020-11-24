@@ -19,18 +19,19 @@ const Explorer: React.FC<ExplorerProps> = () => {
     return result ? decode(result[1]) : null;
   };
 
-  const initialState = {
-    showChart: false,
-    carbonEmissions: 1800,
-    sinkEmissions: 0,
-    futureEmissions: 0,
+  const initialState: Mark = {
+    blobs: [
+      { id: 'sink', emissions: 0 },
+      { id: 'future', emissions: 0 },
+      { id: 'carbon', emissions: 1800 }
+    ],
     ...decodeEncodedUrlParam()
   };
 
-  const [showChart, setShowChart] = useState(initialState.showChart);
-  const [carbonEmissions, setCarbonEmissions] = useState(initialState.carbonEmissions);
-  const [sinkEmissions, setSinkEmissions] = useState(initialState.sinkEmissions);
-  const [futureEmissions, setFutureEmissions] = useState(initialState.futureEmissions);
+  const [showChart, setShowChart] = useState<boolean>(!!initialState.chart);
+  const [carbonEmissions, setCarbonEmissions] = useState(initialState.blobs[2].emissions);
+  const [sinkEmissions, setSinkEmissions] = useState(initialState.blobs[0].emissions);
+  const [futureEmissions, setFutureEmissions] = useState(initialState.blobs[1].emissions);
   const [limits, setLimits] = useState<number[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
   const [xmin, setXmin] = useState<number>(1800);
