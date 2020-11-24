@@ -39,12 +39,9 @@ export const panelDataToMark = (panelData: PanelData) => {
   }
 
   const mark: Mark = {
-    ...{ blobs: [{ id: 'carbon', emissions: 0 }], useProgress: true },
+    ...{ blobs: [{ id: 'carbon', emissions: 0 }] },
     ...preset
   };
-
-  // Should vis be tied to scroll?
-  mark.useProgress = panelData.useprogress || mark.useProgress;
 
   // Limits
   mark.limits = panelData.limits
@@ -82,8 +79,6 @@ export const panelDataToMark = (panelData: PanelData) => {
 
   // xAxisExtent
   if (panelData.xmin || panelData.xmax) {
-    // If we have a chart, don't use progress
-    mark.useProgress = false;
     const minYear = panelData.xmin || 0;
     const maxYear = panelData.xmax || 2157;
 
