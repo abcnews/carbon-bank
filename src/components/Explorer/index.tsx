@@ -32,14 +32,14 @@ const Explorer: React.FC<ExplorerProps> = () => {
   const [carbonEmissions, setCarbonEmissions] = useState(initialState.blobs[2].emissions);
   const [sinkEmissions, setSinkEmissions] = useState(initialState.blobs[0].emissions);
   const [futureEmissions, setFutureEmissions] = useState(initialState.blobs[1].emissions);
-  const [limits, setLimits] = useState<number[]>([]);
-  const [labels, setLabels] = useState<string[]>([]);
-  const [xmin, setXmin] = useState<number>(1800);
-  const [xmax, setXmax] = useState<number>(2200);
-  const [stopAt, setStopAt] = useState<number>(2020);
-  const [extend, setExtend] = useState<'steady' | 'reduce' | undefined>(undefined);
-  const [steady, setSteady] = useState<number>(0);
-  const [yearLabels, setYearLabels] = useState<string>('');
+  const [limits, setLimits] = useState<number[]>(initialState.limits || []);
+  const [labels, setLabels] = useState<string[]>(initialState.labels || []);
+  const [xmin, setXmin] = useState<number>(initialState.chart?.minYear || 1800);
+  const [xmax, setXmax] = useState<number>(initialState.chart?.maxYear || 2200);
+  const [stopAt, setStopAt] = useState<number>(initialState.chart?.stopAt || 2020);
+  const [extend, setExtend] = useState<'steady' | 'reduce' | undefined>(initialState.chart?.extend);
+  const [steady, setSteady] = useState<number>(initialState.chart?.steady || 0);
+  const [yearLabels, setYearLabels] = useState<string>((initialState.chart?.labelYears || []).join(', '));
 
   const [progress, setProgress] = useState(0);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
