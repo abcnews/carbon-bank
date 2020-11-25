@@ -5,22 +5,17 @@
 }
 
 .carbonLabel {
-  display: block;
-  color: #ab78d9;
-  font-family: ABCSans, Arial, Helvetica, sans-serif;
-  position: absolute;
-  bottom: calc(80vh / 2 + 20vh + 4rem);
-  left: 50%;
-  font-size: clamp(1.2rem, 8vw, 2rem);
-  transform: rotate(-8deg) translate(-75%);
-  white-space: nowrap;
-}
-
-.carbonLabel::after {
-  content: '⤻';
-  transform: rotate(52deg);
-  position: absolute;
-  top: 2rem;
-  font-size: 4rem;
-  left: 33%;
+  bottom: 65%;
+  right: 55%;
+  p {
+    max-width: 100px;
+    bottom: 100%;
+    transform: translate(-50%);
+  }
+  svg {
+    // transform: rotate(-200deg);
+    path {
+      fill: red;
+    }
+  }
 }

@@ -5,6 +5,7 @@ import styles from './styles.scss';
 import { Mark, budget } from '../../constants';
 import { emissionsTo } from '../../utils';
 import { Animate } from 'react-move';
+import Label from '../Label';
 
 interface VizProps {
   current: Mark;
@@ -13,13 +14,13 @@ interface VizProps {
 }
 
 const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => {
-  const current = JSON.parse(JSON.stringify(_current));
+  const current = JSON.parse(JSON.stringify(_current)) as Mark;
 
   // This is what's specified in the data
   const limits = current.limits;
   const from = current.blobs.filter(d => d.id !== 'future');
   const to = current.next?.blobs.filter(d => d.id !== 'future') || from;
-  console.log('from,to :>> ', from, to);
+
   // Handle years for the carbon blob
   from.forEach(blob => {
     if (blob.emissions >= 1800) blob.emissions = emissionsTo(blob.emissions) / 1000000000;
@@ -38,23 +39,17 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
       if (futureBlob) futureBlob.emissions = budget;
     }
   }
-
+  console.log('current :>> ', current);
   return (
     <div className={`${styles.root} ${className}`}>
       <Bank budget={budget} limits={limits} blobs={from} nextBlobs={to} progress={progress} />
-      <Animate
-        show={!!(current.labels?.includes('carbon') && progress && progress < 0)}
-        start={{ opacity: 0 }}
-        enter={{ opacity: [1] }}
-        leave={{ opacity: [0] }}
-      >
-        {state => (
-          <div className={styles.carbonLabel} style={{ opacity: state.opacity }}>
-            This is carbon dioxide
-          </div>
-        )}
-      </Animate>
-
+      <Label
+        arrow="curved"
+        visible={!!(current.labels || []).includes('carbon')}
+        className={styles.carbonLabel}
+        text="This is carbondioxide"
+        direction={160}
+      />
       {current.chart && <YearlyEmissions {...current.chart} />}
     </div>
   );
