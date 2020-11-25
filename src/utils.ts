@@ -1,4 +1,5 @@
 import { decode } from '@abcnews/base-36-props';
+import { ScalePower } from 'd3-scale';
 import { useEffect, useRef } from 'react';
 import { PanelData } from './common.d';
 import { budget, Mark, presets } from './constants';
@@ -127,6 +128,19 @@ export const getUsedBudget = (year: number) =>
 export const getRemainingBudget = (year: number) => (budget - getUsedBudget(year)) * 1000000000;
 export const getEmissionsForYear = (year: number) =>
   data.find(d => d.year === year)?.emissions || data[data.length - 1].emissions;
+
+export const getCartesianCoordinates = (r: number, deg: number) => {
+  const deg2rad = deg => deg * (Math.PI / 180);
+  return [r * Math.cos(deg2rad(deg)), r * Math.sin(deg2rad(deg))];
+};
+
+export const getBankLabelPosition = (emissions: number, deg: number, scale: ScalePower<number, number>) => {
+  const cart = getCartesianCoordinates(scale(emissions) + 10, deg - 10);
+  return {
+    top: `calc(35% - ${cart[0]}px)`,
+    left: `calc(50% + ${cart[1]}px)`
+  };
+};
 
 // Hook
 

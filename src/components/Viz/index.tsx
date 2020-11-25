@@ -3,10 +3,18 @@ import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
 import styles from './styles.scss';
 import { Mark, budget } from '../../constants';
-import { emissionsTo, getEmissionsForYear, getRemainingBudget, timeLeft } from '../../utils';
+import {
+  emissionsTo,
+  getBankLabelPosition,
+  getCartesianCoordinates,
+  getEmissionsForYear,
+  getRemainingBudget,
+  timeLeft
+} from '../../utils';
 import Label from '../Label';
-import { greatest } from 'd3-array';
 import { Animate } from 'react-move';
+import useDimensions from 'react-cool-dimensions';
+import { scaleSqrt } from 'd3-scale';
 
 interface VizProps {
   current: Mark;
@@ -15,8 +23,10 @@ interface VizProps {
 }
 
 const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => {
+  const { ref: bankContainerRef, width: bankContainerWidth, height: bankContainerHeight } = useDimensions<
+    HTMLDivElement
+  >();
   const current = JSON.parse(JSON.stringify(_current)) as Mark;
-
   const limitReachedIn = useMemo(() => {
     if (!current.chart || !current.chart.extend) return null;
     const {
@@ -58,8 +68,12 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
     }
   }
 
+  const bankScale = scaleSqrt()
+    .domain([0, budget * 1.5])
+    .range([0, Math.min(bankContainerHeight, bankContainerWidth) / 2]);
+
   return (
-    <div className={`${styles.root} ${className}`}>
+    <div className={styles.root}>
       <Animate
         show={!!limitReachedIn}
         start={{ opacity: 1, year: limitReachedIn || 0 }}
@@ -72,15 +86,41 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
           </div>
         )}
       </Animate>
-      <Bank budget={budget} limits={limits} blobs={from} nextBlobs={to} progress={progress} />
-      <Label
-        arrow="curved"
-        visible={!!(current.labels || []).includes('carbon')}
-        className={styles.carbonLabel}
-        text="This is carbondioxide"
-        direction={160}
-      />
-      {current.chart && <YearlyEmissions {...current.chart} />}
+      <div className={`${styles.stage} ${className}`}>
+        <div ref={bankContainerRef} className={styles.bank}>
+          <Bank scale={bankScale} limits={limits} blobs={from} nextBlobs={to} progress={progress} />
+        </div>
+        <div className={styles.chart}>{current.chart && <YearlyEmissions {...current.chart} />}</div>
+      </div>
+      <div className={styles.labels}>
+        <Label
+          arrow="curved"
+          visible={!!(current.labels || []).includes('carbon')}
+          className={styles.carbonLabel}
+          direction={160}
+          style={getBankLabelPosition(current.blobs.find(d => d.id === 'carbon')?.emissions || 0, -45, bankScale)}
+        >
+          This is carbondioxide
+        </Label>
+        <Label
+          arrow="curved"
+          visible={true}
+          className={styles.limitLabel}
+          direction={45}
+          style={getBankLabelPosition(budget * 0.85, 20, bankScale)}
+        >
+          1.5 degree carbon limit
+        </Label>
+        <Label
+          arrow="curved"
+          visible={true}
+          className={styles.emissions1940Label}
+          direction={340}
+          style={getBankLabelPosition((emissionsTo(1940) / 1000000000) * 1.2, 120, bankScale)}
+        >
+          Emissions by 1940
+        </Label>
+      </div>
     </div>
   );
 };

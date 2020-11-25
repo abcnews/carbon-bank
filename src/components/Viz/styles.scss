@@ -4,19 +4,49 @@
   position: relative;
 }
 
+.stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bank {
+  height: 70%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.chart {
+  height: 30%;
+}
+
 .carbonLabel {
-  bottom: 65%;
-  right: 55%;
-  p {
-    max-width: 100px;
-    bottom: 100%;
-    transform: translate(-50%);
+  div:first-child {
+    width: 8rem;
+    bottom: 50px;
+    right: -20px;
   }
   svg {
-    // transform: rotate(-200deg);
     path {
-      fill: red;
+      fill: black;
     }
+  }
+}
+
+.limitLabel {
+  div:first-child {
+    width: 6rem;
+    top: 40px;
+    right: 20px;
+  }
+}
+.emissions1940Label {
+  div:first-child {
+    width: 6rem;
+    top: 50px;
+    left: 0px;
   }
 }
 

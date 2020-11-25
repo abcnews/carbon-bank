@@ -24,27 +24,23 @@ export type LimitSpec = {
 };
 
 export type BankProps = {
-  budget: number; // The number that defines 100% for the rendered blob
+  scale: (emissions: number) => number; // The number that defines 100% for the rendered blob
   limits: number[] | undefined;
   blobs: BlobSpec[];
   nextBlobs: BlobSpec[];
   progress?: number | false;
 };
 
-const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLimits = [], progress }) => {
+const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, scale, limits: visibleLimits = [], progress }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
-  const verticalSpaceAvailable = 0.7;
-  const dim = Math.min(width, height * verticalSpaceAvailable);
+  const dim = Math.min(width, height);
   const cx = width / 2;
-  const cy = (height * verticalSpaceAvailable) / 2;
-  const scale = scaleSqrt()
-    .domain([0, budget * 1.5])
-    .range([0, dim / 2]);
+  const cy = height / 2;
   const empty: BlobSpec[] = [];
 
   return (
     <div ref={ref} className={styles.stage}>
-      <svg width={width} height={height}>
+      <svg width="100%" height="100%">
         {limits.map(({ emissions, label }, i) => {
           return (
             <BankLimit

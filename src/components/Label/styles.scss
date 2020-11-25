@@ -2,8 +2,13 @@
   font-family: ABCSans, Arial, Helvetica, sans-serif;
   position: absolute;
   font-style: italic;
+  font-size: 1rem;
+  line-height: 1.1;
   transition: opacity ease-out 1s;
   // pointer-events: none;
+  > div {
+    position: absolute;
+  }
 
   path {
     fill: #000;

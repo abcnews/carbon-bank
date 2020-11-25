@@ -126,7 +126,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
       <h3 className={styles.title}>
         Gt CO<sub>2</sub>
       </h3>
-      <svg width={width} height={height}>
+      <svg width="100%" height="100%">
         {yTickValues.map((tickValue, i) => (
           <line
             key={i}

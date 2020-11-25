@@ -4,18 +4,23 @@ import styles from './styles.scss';
 type ArrowStyles = 'none' | 'straight' | 'curved';
 interface LabelProps {
   arrow: ArrowStyles;
-  text: string;
+
   visible: boolean;
   className?: string;
   direction?: number;
   style?: CSSProperties;
 }
 
-const Label: React.FC<LabelProps> = ({ style = {}, text, arrow, className, direction = 0, visible }) => {
+const Label: React.FC<LabelProps> = ({ children, style = {}, arrow, className, direction = 0, visible }) => {
   return (
     <div style={{ opacity: visible ? 1 : 0, ...style }} className={`${styles.label} ${className}`}>
-      <p style={{ position: 'absolute' }}>{text}</p>
-      <div style={{ transform: `rotate(${direction}deg)` }}>
+      <div style={{ position: 'absolute' }}>{children}</div>
+      <div
+        style={{
+          transform: `rotate(${direction}deg)`,
+          transformOrigin: `top ${arrow === 'straight' ? 'middle' : 'left'}`
+        }}
+      >
         <Arrow type={arrow} />
       </div>
     </div>
