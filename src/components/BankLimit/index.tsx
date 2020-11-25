@@ -52,7 +52,7 @@ const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true,
             transform={`translate(${cx} ${cy})`}
             d={`M 0 ${-r} A ${r} ${r} 0 1 1 0 ${r} A ${r} ${r} 0 1 1 0 ${-r}`}
             strokeDasharray={dasharray}
-            stroke="#444"
+            stroke="#DD7936"
             strokeWidth="3"
             fill="none"
             style={{ strokeDashoffset, opacity }}
@@ -66,7 +66,7 @@ const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true,
           />
           <text textAnchor="middle" fill="#444" style={{ opacity }}>
             <textPath startOffset="50%" href={`#label-arc-${id}`}>
-              {label}
+              {}
             </textPath>
           </text>
         </g>

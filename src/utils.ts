@@ -1,7 +1,7 @@
 import { decode } from '@abcnews/base-36-props';
 import { useEffect, useRef } from 'react';
 import { PanelData } from './common.d';
-import { Mark, presets } from './constants';
+import { budget, Mark, presets } from './constants';
 import data from './data.tsv';
 
 export const min = (data, accessor = d => d) =>
@@ -10,8 +10,12 @@ export const min = (data, accessor = d => d) =>
 export const max = (data, accessor = d => d) =>
   data.reduce((max, d) => (accessor(d) > max ? accessor(d) : max), -Infinity);
 
+export const timeLeft = (allowedEmissions: number, peak: number, reduce: boolean = true) => {
+  return reduce ? (allowedEmissions * 2) / peak : allowedEmissions / peak;
+};
+
 export const generateSeries = (allowedEmissions: number, peak: number, reduce: boolean = true) => {
-  const years = reduce ? (allowedEmissions * 2) / peak : allowedEmissions / peak;
+  const years = timeLeft(allowedEmissions, peak, reduce);
   const slope = reduce ? peak / -years : 1;
   const series: number[] = [];
   for (let i = 1; i <= years; i++) {
@@ -117,6 +121,12 @@ export const panelDataToMark = (panelData: PanelData) => {
 
   return mark;
 };
+
+export const getUsedBudget = (year: number) =>
+  data.reduce((t, d) => (d.year <= year ? t + d.emissions : t), 0) / 1000000000;
+export const getRemainingBudget = (year: number) => (budget - getUsedBudget(year)) * 1000000000;
+export const getEmissionsForYear = (year: number) =>
+  data.find(d => d.year === year)?.emissions || data[data.length - 1].emissions;
 
 // Hook
 

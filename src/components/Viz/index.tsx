@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
 import styles from './styles.scss';
 import { Mark, budget } from '../../constants';
-import { emissionsTo } from '../../utils';
-import { Animate } from 'react-move';
+import { emissionsTo, getEmissionsForYear, getRemainingBudget, timeLeft } from '../../utils';
 import Label from '../Label';
+import { greatest } from 'd3-array';
+import { Animate } from 'react-move';
 
 interface VizProps {
   current: Mark;
@@ -15,6 +16,23 @@ interface VizProps {
 
 const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => {
   const current = JSON.parse(JSON.stringify(_current)) as Mark;
+
+  const limitReachedIn = useMemo(() => {
+    if (!current.chart || !current.chart.extend) return null;
+    const {
+      chart: { stopAt, maxYear, steady, extend }
+    } = current;
+
+    const year = stopAt || maxYear;
+    const remainingBudget = getRemainingBudget(year);
+    const peak = getEmissionsForYear(year);
+    if (!peak) {
+      console.error('Error calculating when limit reached');
+      return null;
+    }
+    const budget = steady && steady > 0 ? remainingBudget - steady * peak : remainingBudget;
+    return Math.floor(timeLeft(budget, peak, extend === 'reduce')) + year;
+  }, [current]);
 
   // This is what's specified in the data
   const limits = current.limits;
@@ -39,9 +57,21 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
       if (futureBlob) futureBlob.emissions = budget;
     }
   }
-  console.log('current :>> ', current);
+
   return (
     <div className={`${styles.root} ${className}`}>
+      <Animate
+        show={!!limitReachedIn}
+        start={{ opacity: 1, year: limitReachedIn || 0 }}
+        update={{ opacity: 1, year: [limitReachedIn || 0] }}
+        leave={{ opacity: 0, year: limitReachedIn || 0 }}
+      >
+        {({ year, opacity }) => (
+          <div style={{ opacity }} className={styles.limitReached}>
+            {Math.floor(year)}
+          </div>
+        )}
+      </Animate>
       <Bank budget={budget} limits={limits} blobs={from} nextBlobs={to} progress={progress} />
       <Label
         arrow="curved"

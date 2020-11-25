@@ -1,5 +1,7 @@
 .stage {
   height: 100%;
+  position: relative;
+  z-index: 2;
   svg {
     display: block;
   }

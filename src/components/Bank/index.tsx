@@ -38,13 +38,25 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
   const cx = width / 2;
   const cy = (height * verticalSpaceAvailable) / 2;
   const scale = scaleSqrt()
-    .domain([0, budget * 1.2])
+    .domain([0, budget * 1.5])
     .range([0, dim / 2]);
   const empty: BlobSpec[] = [];
 
   return (
     <div ref={ref} className={styles.stage}>
       <svg width={width} height={height}>
+        {limits.map(({ emissions, label }, i) => {
+          return (
+            <BankLimit
+              key={`id-${i}`}
+              r={scale(emissions)}
+              cx={cx}
+              cy={cy}
+              label={label}
+              visible={visibleLimits.includes(i)}
+            />
+          );
+        })}
         <NodeGroup
           data={dim > 0 ? [...blobs] : empty}
           keyAccessor={d => d.id}
@@ -107,19 +119,6 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLi
             </>
           )}
         </NodeGroup>
-
-        {limits.map(({ emissions, label }, i) => {
-          return (
-            <BankLimit
-              key={`id-${i}`}
-              r={scale(emissions)}
-              cx={cx}
-              cy={cy}
-              label={label}
-              visible={visibleLimits.includes(i)}
-            />
-          );
-        })}
       </svg>
     </div>
   );

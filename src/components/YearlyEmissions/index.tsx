@@ -5,7 +5,7 @@ import { greatest } from 'd3-array';
 import { EmissionsData } from '../../common.d';
 import data from '../../data.tsv';
 import useDimensions from 'react-cool-dimensions';
-import { generateSeries, max, usePrevious } from '../../utils';
+import { generateSeries, getEmissionsForYear, getRemainingBudget, max, timeLeft, usePrevious } from '../../utils';
 import { animationDuration, budget } from '../../constants';
 import { NodeGroup } from 'react-move';
 import { interpolate, interpolateTransformSvg } from 'd3-interpolate';
@@ -49,11 +49,10 @@ const margins: Margins = {
 const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, stopAt, extend, steady, labelYears }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
 
-  const end = stopAt || maxYear || Infinity;
+  const end = stopAt || maxYear;
 
   // Calculate the budget
-  const budgetUsed = data.reduce((t, d) => (d.year <= end ? t + d.emissions : t), 0) / 1000000000;
-  const remainingBudget = (budget - budgetUsed) * 1000000000;
+  const remainingBudget = getRemainingBudget(end);
 
   // Create the series
   const bars = useMemo(() => {
@@ -61,7 +60,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
     const bars = data.filter(d => d.year >= minYear && d.year <= end).map(d => ({ ...d, color: '#000' }));
 
     // What's the final year of of 'real' emissions?
-    const peak = greatest(bars, d => d.year);
+    const peak = getEmissionsForYear(end);
 
     // Next extend if we want it
 
@@ -70,26 +69,24 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
       let series: number[] = [];
 
       if (steady && steady > 0) {
-        let val = peak?.emissions || 0;
-        for (let i = 0; i < steady; i++) {
-          series.push(val);
-          budget -= val;
-        }
+        let val = peak || 0;
+        budget = budget - steady * val;
+        for (let i = 0; i < steady; i++) series.push(val);
       }
+
       series
-        .concat(generateSeries(budget, peak?.emissions || 0, extend === 'reduce'))
+        .concat(generateSeries(budget, peak || 0, extend === 'reduce'))
         .map((d, i) => ({
           emissions: d,
-          year: i + (peak?.year || 0) + 1
+          year: i + end + 1
         }))
         .forEach(d => {
-          if (d.year <= maxYear)
-            bars.push({ ...d, color: d.year < (peak?.year || 0) + (steady || 0) ? '#599EB7' : '#DD7936' });
+          if (d.year <= maxYear) bars.push({ ...d, color: d.year < end + (steady || 0) ? '#599EB7' : '#DD7936' });
         });
     }
 
     return bars;
-  }, [minYear, maxYear, stopAt, extend, steady, remainingBudget, width, height]);
+  }, [minYear, maxYear, stopAt, extend, steady, remainingBudget, width, height, end]);
 
   const xScale = useMemo(
     () =>
