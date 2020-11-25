@@ -190,7 +190,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
               {
                 width: [barWidth],
                 x: [xScale(d.year) - barWidth / 2],
-                timing: { duration: animationDuration }
+                timing: { duration: animationDuration, ease: easeQuadOut }
               },
               {
                 height: [0],
@@ -254,7 +254,8 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
               <>
                 {nodes.map(({ key, data, state: { opacity, transform } }) => (
                   <g key={key} className={styles.tickX} transform={transform} style={{ opacity }}>
-                    <text y="14" textAnchor="middle">
+                    <line y2={6} />
+                    <text y="17" textAnchor="middle">
                       {data}
                     </text>
                   </g>

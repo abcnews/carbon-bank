@@ -33,7 +33,7 @@ export type BankProps = {
 
 const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, budget, limits: visibleLimits = [], progress }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
-  const verticalSpaceAvailable = 0.8;
+  const verticalSpaceAvailable = 0.7;
   const dim = Math.min(width, height * verticalSpaceAvailable);
   const cx = width / 2;
   const cy = (height * verticalSpaceAvailable) / 2;
