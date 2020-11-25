@@ -51,7 +51,11 @@ export const panelDataToMark = (panelData: PanelData) => {
     : mark.limits;
 
   // Other custom labels
-  mark.labels = Array.isArray(panelData.labels) ? panelData.labels : panelData.labels ? [panelData.labels] : [];
+  mark.labels = Array.isArray(panelData.labels)
+    ? panelData.labels
+    : panelData.labels
+    ? [panelData.labels]
+    : mark.labels;
 
   // BLOBS
 
