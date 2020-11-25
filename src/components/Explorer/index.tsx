@@ -36,7 +36,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
   const [labels, setLabels] = useState<string[]>(initialState.labels || []);
   const [xmin, setXmin] = useState<number>(initialState.chart?.minYear || 1800);
   const [xmax, setXmax] = useState<number>(initialState.chart?.maxYear || 2200);
-  const [stopAt, setStopAt] = useState<number>(initialState.chart?.stopAt || 2020);
+  const [stopAt, setStopAt] = useState<number>(initialState.chart?.stopAt || 2019);
   const [extend, setExtend] = useState<'steady' | 'reduce' | undefined>(initialState.chart?.extend);
   const [steady, setSteady] = useState<number>(initialState.chart?.steady || 0);
   const [yearLabels, setYearLabels] = useState<string>((initialState.chart?.labelYears || []).join(', '));
