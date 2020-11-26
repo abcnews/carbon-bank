@@ -70,25 +70,31 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
 
   return (
     <div className={styles.root}>
-      <Animate
-        show={!!limitReachedIn}
-        start={{ opacity: 1, year: limitReachedIn || 0 }}
-        update={{ opacity: 1, year: [limitReachedIn || 0] }}
-        leave={{ opacity: 0, year: limitReachedIn || 0 }}
-      >
-        {({ year, opacity }) => (
-          <div style={{ opacity }} className={styles.limitReached}>
-            {Math.floor(year)}
-          </div>
-        )}
-      </Animate>
       <div className={`${styles.stage} ${className}`}>
         <div ref={bankContainerRef} className={styles.bank}>
           <Bank scale={bankScale} limits={limits} blobs={from} nextBlobs={to} progress={progress} />
         </div>
+        <div className={styles.limitReached}>
+          <Animate
+            show={!!limitReachedIn && !!current.chart?.extend}
+            start={{ opacity: 1, year: limitReachedIn || 0 }}
+            update={{ opacity: 1, year: [limitReachedIn || 0] }}
+            leave={{ opacity: 0, year: limitReachedIn || 0 }}
+          >
+            {({ year, opacity }) => (
+              <span style={{ opacity }}>
+                1.5 degree limit reached in <strong>{Math.floor(year)}</strong>
+              </span>
+            )}
+          </Animate>
+        </div>
         <div className={styles.chart}>
           {chartSeries && current.chart && (
-            <YearlyEmissions data={chartSeries} labelYears={current.chart.labelYears} maxYear={current.chart.maxYear} />
+            <YearlyEmissions
+              series={chartSeries}
+              labelYears={current.chart.labelYears}
+              maxYear={current.chart.maxYear}
+            />
           )}
         </div>
         <div className={styles.labels}>
