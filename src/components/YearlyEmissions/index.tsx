@@ -2,9 +2,8 @@ import React, { useMemo } from 'react';
 import styles from './styles.scss';
 import { scaleLinear } from 'd3-scale';
 import { EmissionsData } from '../../common.d';
-import data from '../../data.tsv';
 import useDimensions from 'react-cool-dimensions';
-import { generateSeries, getEmissionsForYear, getEmissionsSeries, getRemainingBudget, usePrevious } from '../../utils';
+import { usePrevious } from '../../utils';
 import { animationDuration } from '../../constants';
 import { NodeGroup } from 'react-move';
 import { interpolate, interpolateTransformSvg } from 'd3-interpolate';
@@ -27,7 +26,7 @@ export type XAxisExtent = [number | undefined, number | undefined];
 export type ExtendMethod = 'steady' | 'reduce';
 
 export type YearlyEmissionsProps = {
-  data: EmissionsData;
+  series: EmissionsData;
   maxYear: number;
   labelYears?: number[];
 };
@@ -39,10 +38,10 @@ const margins: Margins = {
   left: 25
 };
 
-const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ data, labelYears, maxYear }) => {
+const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, maxYear }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
-  const first = data[0];
-  const last = data[data.length - 1];
+  const first = series[0];
+  const last = series[series.length - 1];
 
   const xScale = useMemo(
     () =>
@@ -96,7 +95,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ data, labelYears, max
 
         <g transform={`translate(${margins.left} ${margins.top})`}>
           <NodeGroup
-            data={height ? data.filter(d => d.year <= maxYear) : []}
+            data={height ? series.filter(d => d.year <= maxYear) : []}
             keyAccessor={d => d.year}
             start={d => ({
               height: 0,
@@ -267,7 +266,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ data, labelYears, max
                     style={{
                       opacity: state.opacity,
                       left: xScale(data),
-                      top: yScale(data.find(d => d.year === data)?.emissions || 0)
+                      top: yScale(series.find(d => d.year === data)?.emissions || 0)
                     }}
                   >
                     {data}

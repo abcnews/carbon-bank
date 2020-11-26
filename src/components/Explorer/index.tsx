@@ -103,7 +103,7 @@ const Explorer: React.FC<ExplorerProps> = () => {
           labelYears: yearLabels
             .split(',')
             .map(d => d.trim())
-            .filter(d => d.length)
+            .filter(d => d.length && +d <= xmax && +d >= xmin)
             .map(d => +d)
         }
       : undefined
