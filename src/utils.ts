@@ -142,6 +142,10 @@ export const getBankLabelPosition = (emissions: number, deg: number, scale: Scal
   };
 };
 
+export const getLabelVisibility = (labels: string[] | undefined, id: string) => {
+  return !!(labels || []).includes(id);
+};
+
 // Hook
 
 export const usePrevious = <T extends unknown>(value: T) => {

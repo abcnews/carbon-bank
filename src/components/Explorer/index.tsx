@@ -10,6 +10,12 @@ import styles from './styles.scss';
 import Toggle from '@atlaskit/toggle';
 import { emissionsTo } from '../../utils';
 
+const labelList = [
+  { id: 'carbon', label: 'This is carbondioxide' },
+  { id: 'limit', label: '1.5 degree carbon limit' },
+  { id: 'emissions1940', label: 'Emissions by 1940' }
+];
+
 interface ExplorerProps {}
 
 const Explorer: React.FC<ExplorerProps> = () => {
@@ -274,13 +280,16 @@ const Explorer: React.FC<ExplorerProps> = () => {
             onChange={ev => setYearLabels(ev.currentTarget.value)}
           />
           <label>Other labels</label>
-          <Checkbox
-            name="carbon"
-            label="Show 'This is carbondioxide' label"
-            value="Show 'This is carbondioxide' label"
-            isChecked={labels.includes('carbon')}
-            onChange={event => setLabel('carbon', event.target.checked)}
-          />
+          {labelList.map(({ id, label }) => (
+            <Checkbox
+              key={id}
+              name={id}
+              label={`Show '${label}' label`}
+              value={`Show '${label}' label`}
+              isChecked={labels.includes(id)}
+              onChange={event => setLabel(id, event.target.checked)}
+            />
+          ))}
         </div>
 
         <h2>Tools</h2>

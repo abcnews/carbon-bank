@@ -8,6 +8,7 @@ import {
   getBankLabelPosition,
   getCartesianCoordinates,
   getEmissionsForYear,
+  getLabelVisibility,
   getRemainingBudget,
   timeLeft
 } from '../../utils';
@@ -95,7 +96,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
       <div className={styles.labels}>
         <Label
           arrow="curved"
-          visible={!!(current.labels || []).includes('carbon')}
+          visible={getLabelVisibility(current.labels, 'carbon')}
           className={styles.carbonLabel}
           direction={160}
           style={getBankLabelPosition(current.blobs.find(d => d.id === 'carbon')?.emissions || 0, -45, bankScale)}
@@ -104,7 +105,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
         </Label>
         <Label
           arrow="curved"
-          visible={true}
+          visible={getLabelVisibility(current.labels, 'limit')}
           className={styles.limitLabel}
           direction={45}
           style={getBankLabelPosition(budget * 0.85, 20, bankScale)}
@@ -113,7 +114,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
         </Label>
         <Label
           arrow="curved"
-          visible={true}
+          visible={getLabelVisibility(current.labels, 'emissions1940')}
           className={styles.emissions1940Label}
           direction={340}
           style={getBankLabelPosition((emissionsTo(1940) / 1000000000) * 1.2, 120, bankScale)}
