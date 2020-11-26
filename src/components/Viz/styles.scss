@@ -9,6 +9,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .bank {
@@ -20,6 +21,12 @@
 
 .chart {
   height: 30%;
+}
+
+.labels {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .carbonLabel {

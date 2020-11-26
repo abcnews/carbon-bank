@@ -44,7 +44,6 @@ const Explorer: React.FC<ExplorerProps> = () => {
   const [xmax, setXmax] = useState<number>(initialState.chart?.maxYear || 2200);
   const [stopAt, setStopAt] = useState<number>(initialState.chart?.stopAt || 2019);
   const [extend, setExtend] = useState<'steady' | 'reduce' | undefined>(initialState.chart?.extend);
-  const [steady, setSteady] = useState<number>(initialState.chart?.steady || 0);
   const [yearLabels, setYearLabels] = useState<string>((initialState.chart?.labelYears || []).join(', '));
 
   const [progress, setProgress] = useState(0);
@@ -101,7 +100,6 @@ const Explorer: React.FC<ExplorerProps> = () => {
           maxYear: xmax,
           extend,
           stopAt,
-          steady,
           labelYears: yearLabels
             .split(',')
             .map(d => d.trim())
@@ -125,13 +123,12 @@ const Explorer: React.FC<ExplorerProps> = () => {
       setXmax(props.chart.maxYear);
       setXmin(props.chart.minYear);
       setExtend(props.chart.extend);
-      setStopAt(props.chart.stopAt || 2020);
-      setSteady(props.chart.steady || 0);
+      setStopAt(props.chart.stopAt || 2019);
     }
   };
 
   const encodedMarkerText = encode(marker);
-
+  history.replaceState(null, 'Explorer', `?encoded=${encodedMarkerText}`);
   return (
     <div className={styles.root}>
       <div className={styles.graphic}>
@@ -261,21 +258,6 @@ const Explorer: React.FC<ExplorerProps> = () => {
               onChange={event => {
                 const val = event.currentTarget.value;
                 setExtend(val === 'steady' ? 'steady' : val === 'reduce' ? 'reduce' : undefined);
-              }}
-            />
-          </div>
-        </div>
-
-        <div key="steady">
-          <label>Steady ({steady})</label>
-          <div className={styles.flexRow}>
-            <FieldRange
-              min={0}
-              max={10}
-              step={1}
-              value={steady}
-              onChange={val => {
-                setSteady(val);
               }}
             />
           </div>

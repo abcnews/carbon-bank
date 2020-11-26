@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
+import data from '../../data.tsv';
 import styles from './styles.scss';
 import { Mark, budget } from '../../constants';
 import {
@@ -8,6 +9,7 @@ import {
   getBankLabelPosition,
   getCartesianCoordinates,
   getEmissionsForYear,
+  getEmissionsSeries,
   getLabelVisibility,
   getRemainingBudget,
   timeLeft
@@ -28,22 +30,6 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
     HTMLDivElement
   >();
   const current = JSON.parse(JSON.stringify(_current)) as Mark;
-  const limitReachedIn = useMemo(() => {
-    if (!current.chart || !current.chart.extend) return null;
-    const {
-      chart: { stopAt, maxYear, steady, extend }
-    } = current;
-
-    const year = stopAt || maxYear;
-    const remainingBudget = getRemainingBudget(year);
-    const peak = getEmissionsForYear(year);
-    if (!peak) {
-      console.error('Error calculating when limit reached');
-      return null;
-    }
-    const budget = steady && steady > 0 ? remainingBudget - steady * peak : remainingBudget;
-    return Math.floor(timeLeft(budget, peak, extend === 'reduce')) + year;
-  }, [current]);
 
   // This is what's specified in the data
   const limits = current.limits;
@@ -69,6 +55,15 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
     }
   }
 
+  // Create the series
+  const chartSeries = useMemo(() => {
+    if (!current.chart) return null;
+    const { minYear, maxYear, stopAt, extend } = current.chart;
+    return getEmissionsSeries(minYear, maxYear, stopAt, extend);
+  }, [current.chart]);
+
+  const limitReachedIn = chartSeries && chartSeries[chartSeries.length - 1].year + 1;
+
   const bankScale = scaleSqrt()
     .domain([0, budget * 1.5])
     .range([0, Math.min(bankContainerHeight, bankContainerWidth) / 2]);
@@ -91,36 +86,40 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
         <div ref={bankContainerRef} className={styles.bank}>
           <Bank scale={bankScale} limits={limits} blobs={from} nextBlobs={to} progress={progress} />
         </div>
-        <div className={styles.chart}>{current.chart && <YearlyEmissions {...current.chart} />}</div>
-      </div>
-      <div className={styles.labels}>
-        <Label
-          arrow="curved"
-          visible={getLabelVisibility(current.labels, 'carbon')}
-          className={styles.carbonLabel}
-          direction={160}
-          style={getBankLabelPosition(current.blobs.find(d => d.id === 'carbon')?.emissions || 0, -45, bankScale)}
-        >
-          This is carbondioxide
-        </Label>
-        <Label
-          arrow="curved"
-          visible={getLabelVisibility(current.labels, 'limit')}
-          className={styles.limitLabel}
-          direction={45}
-          style={getBankLabelPosition(budget * 0.85, 20, bankScale)}
-        >
-          1.5 degree carbon limit
-        </Label>
-        <Label
-          arrow="curved"
-          visible={getLabelVisibility(current.labels, 'emissions1940')}
-          className={styles.emissions1940Label}
-          direction={340}
-          style={getBankLabelPosition((emissionsTo(1940) / 1000000000) * 1.2, 120, bankScale)}
-        >
-          Emissions by 1940
-        </Label>
+        <div className={styles.chart}>
+          {chartSeries && current.chart && (
+            <YearlyEmissions data={chartSeries} labelYears={current.chart.labelYears} maxYear={current.chart.maxYear} />
+          )}
+        </div>
+        <div className={styles.labels}>
+          <Label
+            arrow="curved"
+            visible={getLabelVisibility(current.labels, 'carbon')}
+            className={styles.carbonLabel}
+            direction={160}
+            style={getBankLabelPosition(current.blobs.find(d => d.id === 'carbon')?.emissions || 0, -45, bankScale)}
+          >
+            This is carbondioxide
+          </Label>
+          <Label
+            arrow="curved"
+            visible={getLabelVisibility(current.labels, 'limit')}
+            className={styles.limitLabel}
+            direction={45}
+            style={getBankLabelPosition(budget * 0.85, 20, bankScale)}
+          >
+            1.5 degree carbon limit
+          </Label>
+          <Label
+            arrow="curved"
+            visible={getLabelVisibility(current.labels, 'emissions1940')}
+            className={styles.emissions1940Label}
+            direction={340}
+            style={getBankLabelPosition((emissionsTo(1940) / 1000000000) * 1.2, 120, bankScale)}
+          >
+            Emissions by 1940
+          </Label>
+        </div>
       </div>
     </div>
   );

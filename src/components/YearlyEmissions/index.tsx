@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
 import styles from './styles.scss';
 import { scaleLinear } from 'd3-scale';
-import { greatest } from 'd3-array';
 import { EmissionsData } from '../../common.d';
 import data from '../../data.tsv';
 import useDimensions from 'react-cool-dimensions';
-import { generateSeries, getEmissionsForYear, getRemainingBudget, max, timeLeft, usePrevious } from '../../utils';
-import { animationDuration, budget } from '../../constants';
+import { generateSeries, getEmissionsForYear, getEmissionsSeries, getRemainingBudget, usePrevious } from '../../utils';
+import { animationDuration } from '../../constants';
 import { NodeGroup } from 'react-move';
 import { interpolate, interpolateTransformSvg } from 'd3-interpolate';
 import { easeQuadOut } from 'd3-ease';
@@ -18,25 +17,19 @@ type Margins = {
   left: number;
 };
 
-type EmissionsSeriesMeta = {
-  color: string;
-};
-
 export type EmissionsSeries = {
-  data: EmissionsData;
-  meta: EmissionsSeriesMeta;
+  year: number;
+  emissions: number;
+  color: string;
 };
 
 export type XAxisExtent = [number | undefined, number | undefined];
 export type ExtendMethod = 'steady' | 'reduce';
 
 export type YearlyEmissionsProps = {
-  minYear: number;
+  data: EmissionsData;
   maxYear: number;
-  stopAt?: number;
   labelYears?: number[];
-  extend?: ExtendMethod;
-  steady?: number;
 };
 
 const margins: Margins = {
@@ -46,54 +39,17 @@ const margins: Margins = {
   left: 25
 };
 
-const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, stopAt, extend, steady, labelYears }) => {
+const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ data, labelYears, maxYear }) => {
   const { ref, width, height } = useDimensions<HTMLDivElement>();
-
-  const end = stopAt || maxYear;
-
-  // Calculate the budget
-  const remainingBudget = getRemainingBudget(end);
-
-  // Create the series
-  const bars = useMemo(() => {
-    // Start with the real series trimmed to the years of interest
-    const bars = data.filter(d => d.year >= minYear && d.year <= end).map(d => ({ ...d, color: '#000' }));
-
-    // What's the final year of of 'real' emissions?
-    const peak = getEmissionsForYear(end);
-
-    // Next extend if we want it
-
-    if (extend) {
-      let budget = remainingBudget;
-      let series: number[] = [];
-
-      if (steady && steady > 0) {
-        let val = peak || 0;
-        budget = budget - steady * val;
-        for (let i = 0; i < steady; i++) series.push(val);
-      }
-
-      series
-        .concat(generateSeries(budget, peak || 0, extend === 'reduce'))
-        .map((d, i) => ({
-          emissions: d,
-          year: i + end + 1
-        }))
-        .forEach(d => {
-          if (d.year <= maxYear) bars.push({ ...d, color: d.year < end + (steady || 0) ? '#599EB7' : '#DD7936' });
-        });
-    }
-
-    return bars;
-  }, [minYear, maxYear, stopAt, extend, steady, remainingBudget, width, height, end]);
+  const first = data[0];
+  const last = data[data.length - 1];
 
   const xScale = useMemo(
     () =>
       scaleLinear()
-        .domain([Math.max(minYear || data[0].year) - 1, Math.min(maxYear || bars[bars.length - 1].year) + 1])
+        .domain([first.year - 1, maxYear + 1])
         .range([0, width - margins.right - margins.left]),
-    [minYear, maxYear, width, margins]
+    [first, last, width, margins]
   );
 
   const xScaleOld = usePrevious(xScale);
@@ -101,9 +57,9 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
   const delayScale = useMemo(
     () =>
       scaleLinear()
-        .domain([Math.max(minYear || data[0].year) - 1, Math.min(maxYear || bars[bars.length - 1].year) + 1])
+        .domain([first.year - 1, last.year + 1])
         .range([0, 1]),
-    [minYear, maxYear, bars]
+    [first, last]
   );
 
   const yScale = useMemo(
@@ -140,7 +96,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
 
         <g transform={`translate(${margins.left} ${margins.top})`}>
           <NodeGroup
-            data={height ? bars : []}
+            data={height ? data.filter(d => d.year <= maxYear) : []}
             keyAccessor={d => d.year}
             start={d => ({
               height: 0,
@@ -311,7 +267,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ minYear, maxYear, sto
                     style={{
                       opacity: state.opacity,
                       left: xScale(data),
-                      top: yScale(bars.find(d => d.year === data)?.emissions || 0)
+                      top: yScale(data.find(d => d.year === data)?.emissions || 0)
                     }}
                   >
                     {data}

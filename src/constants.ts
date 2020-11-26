@@ -1,5 +1,5 @@
 import { BlobSpec, LimitSpec } from './components/Bank';
-import { EmissionsSeries, YearlyEmissionsProps } from './components/YearlyEmissions';
+import { ExtendMethod } from './components/YearlyEmissions';
 import data from './data.tsv';
 
 type BlobUpdate = {
@@ -10,7 +10,7 @@ type BlobUpdate = {
 export type Mark = {
   blobs: BlobSpec[];
   useProgress?: boolean;
-  chart?: YearlyEmissionsProps;
+  chart?: { minYear: number; maxYear: number; stopAt?: number; labelYears?: number[]; extend?: ExtendMethod };
   limits?: number[];
   labels?: string[];
   next?: Mark;

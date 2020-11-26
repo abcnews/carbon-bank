@@ -2,6 +2,7 @@ import { decode } from '@abcnews/base-36-props';
 import { ScalePower } from 'd3-scale';
 import { useEffect, useRef } from 'react';
 import { PanelData } from './common.d';
+import { ExtendMethod } from './components/YearlyEmissions';
 import { budget, Mark, presets } from './constants';
 import data from './data.tsv';
 
@@ -16,12 +17,19 @@ export const timeLeft = (allowedEmissions: number, peak: number, reduce: boolean
 };
 
 export const generateSeries = (allowedEmissions: number, peak: number, reduce: boolean = true) => {
-  const years = timeLeft(allowedEmissions, peak, reduce);
+  const years = Math.ceil(timeLeft(allowedEmissions, peak, reduce));
+  // console.log('years :>> ', years);
   const slope = reduce ? peak / -years : 1;
+  // console.log('slope :>> ', slope);
   const series: number[] = [];
+  let used = 0;
   for (let i = 1; i <= years; i++) {
-    series.push(i * slope + peak);
+    const yr = i * slope + peak;
+    used += yr;
+    series.push(yr);
   }
+  // The remainder
+  // series.push(allowedEmissions - used);
   return series;
 };
 
@@ -115,19 +123,13 @@ export const panelDataToMark = (panelData: PanelData) => {
     mark.chart.extend = panelData.extend;
   }
 
-  // Method for auto-extending into future
-  if (panelData.steady && mark.chart) {
-    mark.chart.steady = panelData.steady;
-  }
-
   return mark;
 };
 
 export const getUsedBudget = (year: number) =>
   data.reduce((t, d) => (d.year <= year ? t + d.emissions : t), 0) / 1000000000;
 export const getRemainingBudget = (year: number) => (budget - getUsedBudget(year)) * 1000000000;
-export const getEmissionsForYear = (year: number) =>
-  data.find(d => d.year === year)?.emissions || data[data.length - 1].emissions;
+export const getEmissionsForYear = (year: number) => data.find(d => d.year === year)?.emissions;
 
 export const getCartesianCoordinates = (r: number, deg: number) => {
   const deg2rad = deg => deg * (Math.PI / 180);
@@ -144,6 +146,50 @@ export const getBankLabelPosition = (emissions: number, deg: number, scale: Scal
 
 export const getLabelVisibility = (labels: string[] | undefined, id: string) => {
   return !!(labels || []).includes(id);
+};
+
+export const getEmissionsSeries = (
+  minYear: number,
+  maxYear: number,
+  stopAt: number | undefined,
+  extend: ExtendMethod | undefined
+) => {
+  const endOfKnownEmissions = data[data.length - 1];
+  const startOfKnownEmsissions = data[0];
+  const startKnownSeries = Math.max(minYear, startOfKnownEmsissions.year);
+  const endKnownSeries = Math.min(stopAt || Infinity, maxYear, endOfKnownEmissions.year);
+  const endSeries = Math.min(stopAt || Infinity, maxYear);
+
+  // Calculate the budget
+  const remainingBudget = getRemainingBudget(endKnownSeries);
+
+  // What's the final year of of known emissions we want to chart?
+  const peak = getEmissionsForYear(endKnownSeries) || data[data.length - 1].emissions;
+
+  const knownEmissions = data
+    .filter(d => d.year >= startKnownSeries && d.year <= endKnownSeries)
+    .map(d => ({ ...d, color: '#000' }));
+
+  let futureEmissions: { year: number; emissions: number; color: string }[] = [];
+
+  // Next extend if we want it
+  if (extend) {
+    const steady = Math.min(endSeries - endKnownSeries, Math.floor(remainingBudget / peak));
+    const budget = remainingBudget - steady * peak;
+    const steadySeries = generateSeries(steady * peak, peak, false).map((d, i) => ({
+      emissions: d,
+      year: endKnownSeries + i + 1,
+      color: '#599EB7'
+    }));
+    const remainingSeries = generateSeries(budget, peak, extend === 'reduce').map((d, i) => ({
+      emissions: d,
+      year: endKnownSeries + 1 + steady + i,
+      color: '#DD7936'
+    }));
+    futureEmissions = [...steadySeries, ...remainingSeries];
+  }
+
+  return [...knownEmissions, ...futureEmissions];
 };
 
 // Hook

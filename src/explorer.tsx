@@ -3,7 +3,6 @@ import { selectMounts } from '@abcnews/mount-utils';
 import React from 'react';
 import { render } from 'react-dom';
 import Explorer from './components/Explorer';
-import { GlobalStyles } from '@abcaustralia/nucleus';
 
 let mountEl;
 export const renderExplorer = () => {
@@ -13,12 +12,7 @@ export const renderExplorer = () => {
     return;
   }
 
-  render(
-    <GlobalStyles>
-      <Explorer />
-    </GlobalStyles>,
-    mountEl
-  );
+  render(<Explorer />, mountEl);
 };
 
 if (module.hot) {
