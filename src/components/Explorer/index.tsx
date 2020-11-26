@@ -76,6 +76,16 @@ const Explorer: React.FC<ExplorerProps> = () => {
     setLabels(labels.filter(d => d !== id).concat(show ? id : []));
   };
 
+  const importMarker = (txt: string) => {
+    let marker: Mark;
+    try {
+      marker = decode(txt) as Mark;
+      replaceGraphicProps({ ...marker, showChart: !!marker.chart });
+    } catch (e) {
+      alert('There was an error with the marker code.');
+    }
+  };
+
   const marker: Mark = {
     useProgress: false,
     blobs: [
@@ -309,6 +319,19 @@ const Explorer: React.FC<ExplorerProps> = () => {
             }}
           >
             add
+          </button>
+          <button
+            onClick={() => {
+              const marker = prompt('Paste a marker here to import its configuration');
+
+              if (!marker || !marker.length) {
+                return alert('No marker was provided');
+              }
+
+              importMarker(marker);
+            }}
+          >
+            import
           </button>
         </label>
         <ul>
