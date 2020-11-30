@@ -105,7 +105,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
             direction={160}
             style={getBankLabelPosition(current.blobs.find(d => d.id === 'carbon')?.emissions || 0, -45, bankScale)}
           >
-            This is carbondioxide
+            This is carbon dioxide
           </Label>
           <Label
             arrow="curved"
