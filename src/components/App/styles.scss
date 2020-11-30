@@ -3,6 +3,10 @@
 }
 
 @media (min-width: 1023px) {
+  .container {
+    --color-panel-background: transparent;
+  }
+
   .graphic {
     width: calc(
       50% - 49.5rem / 2 + (1 / 3 * 49.5rem) / 2 - 1.5rem + ((100% - 49.5rem) / 2) - (30% - 24.75rem) - 10vw
