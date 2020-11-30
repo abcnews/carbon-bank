@@ -82,6 +82,17 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
         Gt CO<sub>2</sub>
       </h3>
       <svg width="100%" height="100%">
+        <mask id="chartArea">
+          <rect x="0" y="0" width="100%" height="100%" fill="black" />
+          <rect
+            fill="white"
+            x={0}
+            y={-100}
+            width={width - margins.right - margins.left}
+            height={height - margins.top - margins.bottom + 100}
+          />
+        </mask>
+
         {yTickValues.map((tickValue, i) => (
           <line
             key={i}
@@ -93,7 +104,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
           />
         ))}
 
-        <g transform={`translate(${margins.left} ${margins.top})`}>
+        <g transform={`translate(${margins.left} ${margins.top})`} mask="url(#chartArea)">
           <NodeGroup
             data={height ? series.filter(d => d.year <= maxYear) : []}
             keyAccessor={d => d.year}
@@ -142,12 +153,12 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
               {
                 width: [barWidth],
                 x: [xScale(d.year) - barWidth / 2],
+                height: [yScale(0) - yScale(d.emissions)],
+                y: [yScale(d.emissions)],
+                opacity: [0],
                 timing: { duration: animationDuration, ease: easeQuadOut }
               },
               {
-                height: [0],
-                y: [yScale(0)],
-                opacity: [0],
                 timing: { duration: animationDuration, delay: delayScale(d.year) * animationDuration }
               }
             ]}
@@ -249,26 +260,42 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
         }}
       >
         <NodeGroup
-          data={labelYears || []}
+          data={(height && labelYears) || []}
           keyAccessor={d => d}
-          start={(d, i) => ({ opacity: 0 })}
-          enter={d => ({ opacity: [1], timing: { duration: animationDuration, ease: easeQuadOut } })}
-          update={(d, i) => ({ opacity: [1], timing: { duration: animationDuration, ease: easeQuadOut } })}
-          leave={d => ({ opacity: [0], timing: { duration: animationDuration, ease: easeQuadOut } })}
+          start={(d, i) => ({
+            opacity: 0,
+            left: xScale(d),
+            top: yScale(series.find(y => y.year === d)?.emissions || 0)
+          })}
+          enter={d => ({
+            opacity: [1],
+            left: [xScale(d)],
+            top: [yScale(series.find(y => y.year === d)?.emissions || 0)],
+            timing: { duration: animationDuration, ease: easeQuadOut, delay: delayScale(d) * animationDuration }
+          })}
+          update={(d, i) => ({
+            opacity: [1],
+            left: [xScale(d)],
+            top: [yScale(series.find(y => y.year === d)?.emissions || 0)],
+            timing: { duration: animationDuration, ease: easeQuadOut }
+          })}
+          leave={d => [
+            {
+              opacity: [0],
+              left: [xScale(d)],
+              timing: { duration: animationDuration, ease: easeQuadOut }
+            },
+            {
+              top: [yScale(series.find(y => y.year === d)?.emissions || 0)],
+              timing: { duration: animationDuration, ease: easeQuadOut, delay: animationDuration }
+            }
+          ]}
         >
           {nodes => {
             return (
               <>
-                {nodes.map(({ key, data, state }) => (
-                  <div
-                    className={styles.label}
-                    key={key}
-                    style={{
-                      opacity: state.opacity,
-                      left: xScale(data),
-                      top: yScale(series.find(d => d.year === data)?.emissions || 0)
-                    }}
-                  >
+                {nodes.map(({ key, data, state: { top, left, opacity } }) => (
+                  <div className={styles.label} key={key} style={{ opacity, left, top }}>
                     {data}
                   </div>
                 ))}

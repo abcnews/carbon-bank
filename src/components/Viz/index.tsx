@@ -3,7 +3,7 @@ import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
 import data from '../../data.tsv';
 import styles from './styles.scss';
-import { Mark, budget } from '../../constants';
+import { Mark, budget, animationDuration } from '../../constants';
 import {
   emissionsTo,
   getBankLabelPosition,
@@ -32,11 +32,13 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
   const current = JSON.parse(JSON.stringify(_current)) as Mark;
 
   // This is what's specified in the data
+  // TODO: refactor to remove all future blob stuff
   const limits = current.limits;
   const from = current.blobs.filter(d => d.id !== 'future');
   const to = current.next?.blobs.filter(d => d.id !== 'future') || from;
 
   // Handle years for the carbon blob
+  // TODO: Take this out and just assume it's always years
   from.forEach(blob => {
     if (blob.emissions >= 1800) blob.emissions = emissionsTo(blob.emissions) / 1000000000;
   });
@@ -64,9 +66,18 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
 
   const limitReachedIn = chartSeries && chartSeries[chartSeries.length - 1].year + 1;
 
-  const bankScale = scaleSqrt()
-    .domain([0, budget * 1.5])
-    .range([0, Math.min(bankContainerHeight, bankContainerWidth) / 2]);
+  const bankScale = useMemo(
+    () =>
+      scaleSqrt()
+        .domain([0, budget * 1.5])
+        .range([0, Math.min(bankContainerHeight, bankContainerWidth) / 2]),
+    [budget, bankContainerHeight, bankContainerWidth]
+  );
+
+  const carbonEmissions =
+    (from.find(d => d.id === 'carbon')?.emissions || 0) +
+    ((to.find(d => d.id === 'carbon')?.emissions || 0) - (from.find(d => d.id === 'carbon')?.emissions || 0)) *
+      Math.max(progress || 0, 0);
 
   return (
     <div className={styles.root}>
@@ -77,9 +88,16 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
         <div className={styles.limitReached}>
           <Animate
             show={!!limitReachedIn && !!current.chart?.extend}
-            start={{ opacity: 1, year: limitReachedIn || 0 }}
-            update={{ opacity: 1, year: [limitReachedIn || 0] }}
-            leave={{ opacity: 0, year: limitReachedIn || 0 }}
+            start={{ opacity: 0, year: limitReachedIn || 0 }}
+            enter={{ opacity: [1], year: limitReachedIn || 0 }}
+            update={{ opacity: 1, year: [limitReachedIn || 0], timing: { duration: animationDuration * 2 } }}
+            leave={[
+              { opacity: [0], timing: { duration: animationDuration } },
+              {
+                year: [limitReachedIn || 0],
+                timing: { delay: animationDuration }
+              }
+            ]}
           >
             {({ year, opacity }) => (
               <span style={{ opacity }}>
@@ -103,7 +121,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
             visible={getLabelVisibility(current.labels, 'carbon')}
             className={styles.carbonLabel}
             direction={160}
-            style={getBankLabelPosition(current.blobs.find(d => d.id === 'carbon')?.emissions || 0, -45, bankScale)}
+            style={getBankLabelPosition(carbonEmissions, -45, bankScale)}
           >
             This is carbon dioxide
           </Label>

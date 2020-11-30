@@ -17,19 +17,11 @@ export const timeLeft = (allowedEmissions: number, peak: number, reduce: boolean
 };
 
 export const generateSeries = (allowedEmissions: number, peak: number, reduce: boolean = true) => {
-  const years = Math.ceil(timeLeft(allowedEmissions, peak, reduce));
-  // console.log('years :>> ', years);
-  const slope = reduce ? peak / -years : 1;
-  // console.log('slope :>> ', slope);
+  if (allowedEmissions === 0) return [];
+  const years = timeLeft(allowedEmissions, peak, reduce);
+  const slope = reduce ? -peak / years : 0;
   const series: number[] = [];
-  let used = 0;
-  for (let i = 1; i <= years; i++) {
-    const yr = i * slope + peak;
-    used += yr;
-    series.push(yr);
-  }
-  // The remainder
-  // series.push(allowedEmissions - used);
+  for (let i = 1; i <= years; i++) series.push(i * slope + peak);
   return series;
 };
 
@@ -137,7 +129,7 @@ export const getCartesianCoordinates = (r: number, deg: number) => {
 };
 
 export const getBankLabelPosition = (emissions: number, deg: number, scale: ScalePower<number, number>) => {
-  const cart = getCartesianCoordinates(scale(emissions) + 10, deg - 10);
+  const cart = getCartesianCoordinates(scale(emissions) + 10, deg - 25);
   return {
     top: `calc(35% - ${cart[0]}px)`,
     left: `calc(50% + ${cart[1]}px)`
