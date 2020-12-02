@@ -1,34 +1,30 @@
-import './polyfill';
+import 'regenerator-runtime/runtime.js';
 import { selectMounts } from '@abcnews/mount-utils';
 import React from 'react';
 import { render } from 'react-dom';
 import Explorer from './components/Explorer';
+import { whenDOMReady } from '@abcnews/env-utils';
 
-let mountEl;
-export const renderExplorer = () => {
-  mountEl = selectMounts('explorer', { exact: true })[0];
+const whenMountsReady = whenDOMReady.then(
+  () => new Promise(resolve => resolve(selectMounts('explorer', { exact: true })[0]))
+);
 
+whenMountsReady.then(renderExplorer);
+
+function renderExplorer(mountEl) {
   if (!mountEl) {
+    console.error('Mount point not found.');
     return;
   }
-
-  render(<Explorer />, mountEl);
-};
-
-if (module.hot) {
-  module.hot.accept('./components/Explorer', () => {
-    try {
-      renderExplorer();
-    } catch (err) {
-      import('./components/ErrorBox').then(({ default: ErrorBox }) => {
-        render(<ErrorBox error={err} />, mountEl);
-      });
-    }
-  });
+  try {
+    render(<Explorer />, mountEl);
+  } catch (e) {
+    import('./components/ErrorBox').then(({ default: ErrorBox }) => {
+      render(<ErrorBox error={e} />, mountEl);
+    });
+  }
 }
 
-const domready = fn => {
-  /in/.test(document.readyState) ? setTimeout(() => domready(fn), 9) : fn();
-};
-
-domready(renderExplorer);
+if (module.hot) {
+  module.hot.accept('./components/Explorer', () => whenMountsReady.then(renderExplorer));
+}

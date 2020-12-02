@@ -40,6 +40,7 @@
   "dependencies": {
     "@abcaustralia/nucleus": "^2.0.0",
     "@abcnews/base-36-props": "1.2.0",
+    "@abcnews/env-utils": "^2.1.0",
     "@abcnews/mount-utils": "^2.0.0",
     "@abcnews/scrollyteller": "^4.0.1",
     "@atlaskit/checkbox": "^11.0.8",
@@ -49,9 +50,9 @@
     "@atlaskit/textfield": "^4.0.10",
     "@atlaskit/toggle": "^12.0.1",
     "@juggle/resize-observer": "^3.2.0",
+    "@next/polyfill-nomodule": "^10.0.3",
     "@types/d3-ease": "^2.0.0",
     "@visx/axis": "^1.1.0",
-    "core-js": "^3.7.0",
     "d3-array": "^2.8.0",
     "d3-ease": "^2.0.0",
     "d3-interpolate": "^2.0.1",

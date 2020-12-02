@@ -29,9 +29,10 @@ const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, show
     const max = 0.04;
     const increment = Math.min(max, Math.max(min, -min * (r / 250) + max));
     const update = () => {
+      frameID = requestAnimationFrame(update);
+      if (!blobRef.current) return;
       tickRef.current += increment;
       blobRef.current.setAttribute('d', d(tickRef.current));
-      frameID = requestAnimationFrame(update);
       if (showControlPoints) {
         setTick(tickRef.current);
       }
