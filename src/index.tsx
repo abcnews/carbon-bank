@@ -15,7 +15,12 @@ const align: 'right' = 'right';
 
 function renderApp() {
   tellers.forEach(name => {
-    scrollyData[name] = scrollyData[name] || loadScrollyteller<PanelData>(name, 'u-full');
+    try {
+      scrollyData[name] = scrollyData[name] || loadScrollyteller<PanelData>(name, 'u-full');
+    } catch (e) {
+      return;
+    }
+
     const panels: PanelDefinition<Mark>[] = scrollyData[name].panels
       .map(d => ({
         ...d,
