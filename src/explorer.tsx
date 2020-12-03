@@ -1,4 +1,4 @@
-import 'regenerator-runtime/runtime.js';
+import './polyfill';
 import { selectMounts } from '@abcnews/mount-utils';
 import React from 'react';
 import { render } from 'react-dom';

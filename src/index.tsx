@@ -1,4 +1,5 @@
-import 'regenerator-runtime/runtime.js';
+// @ts-ignore
+import './polyfill';
 import React from 'react';
 import { render } from 'react-dom';
 import App from './components/App';
@@ -13,16 +14,10 @@ const PROJECT_NAME: string = 'carbon-bank';
 
 const align: 'right' = 'right';
 
-const whenEnvReady = new Promise<void>(resolve =>
-  getGeneration() !== GENERATIONS.P1
-    ? resolve()
-    : import(/* webpackChunkName: "env" */ './polyfill').then(() => resolve())
-);
-
 type ScrollyData = { [key: string]: ScrollytellerDefinition<Mark> };
 
 const whenScrollytellersLoaded = new Promise<ScrollyData>((resolve, reject) => {
-  Promise.all([whenOdysseyLoaded, whenEnvReady]).then(() => {
+  whenOdysseyLoaded.then(() => {
     const scrollyDatas: ScrollyData = {};
     selectMounts('scrollytellerNAME', { markAsUsed: false })
       .map(mountEl => (getMountValue(mountEl).match(/NAME([a-z]+)/) || [])[1])
