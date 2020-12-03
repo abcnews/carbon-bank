@@ -9,6 +9,7 @@ import { panelDataToMark } from './utils';
 import { getGeneration, GENERATIONS, whenOdysseyLoaded } from '@abcnews/env-utils';
 import { Mark } from './constants';
 import { getMountValue, selectMounts } from '@abcnews/mount-utils';
+import Illustration from './components/Illustration';
 
 const PROJECT_NAME: string = 'carbon-bank';
 
@@ -49,7 +50,27 @@ const whenScrollytellersLoaded = new Promise<ScrollyData>((resolve, reject) => {
   });
 });
 
+const renderIllustrations = () => {
+  const titleMount = selectMounts('cbillustration')[0];
+
+  if (!titleMount) return;
+
+  const parentEl = titleMount.parentElement;
+
+  if (!parentEl) return;
+
+  const titleEl = parentEl.querySelector('h1');
+
+  if (titleEl && titleEl.parentElement === parentEl) {
+    titleMount.removeAttribute('class');
+    parentEl.insertBefore(titleMount, titleEl);
+  }
+
+  render(<Illustration />, titleMount);
+};
+
 whenScrollytellersLoaded.then(renderApp);
+whenScrollytellersLoaded.then(renderIllustrations);
 
 function renderApp(scrollyData: ScrollyData) {
   for (let name in scrollyData) {

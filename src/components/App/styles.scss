@@ -1,3 +1,17 @@
+.container {
+  :global(.Picture .Sizer) {
+    background-color: transparent;
+  }
+
+  :global(.Picture img) {
+    object-fit: contain;
+  }
+
+  :global(.ImageEmbed.u-pull) {
+    width: 66%;
+    margin: 0 auto;
+  }
+}
 .container > div:first-child {
   width: 100% !important;
 }
@@ -5,6 +19,11 @@
 @media (min-width: 1023px) {
   .container {
     --color-panel-background: transparent;
+
+    :global(.ImageEmbed.u-pull) {
+      width: 100%;
+      margin: 0 auto;
+    }
   }
 
   .graphic {
@@ -14,4 +33,12 @@
     margin-left: 5vw;
     margin-right: 5vw;
   }
+}
+
+:global(.Header-media .Picture .Sizer) {
+  background-color: transparent;
+}
+
+:global(.Header-media .Picture img) {
+  object-fit: contain;
 }
