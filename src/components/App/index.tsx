@@ -1,15 +1,16 @@
 // This is a simple wrapper for the main <Viz> component which provides the scrollyteller data.
 import React, { useCallback, useState } from 'react';
 import { Mark } from '../../constants';
-import Scrollyteller, { PanelDefinition } from '@abcnews/scrollyteller';
+import Scrollyteller, { PanelDefinition, ScrollytellerConfig } from '@abcnews/scrollyteller';
 import styles from './styles.scss';
 import Viz from '../Viz';
 
 interface AppProps {
   panels: PanelDefinition<Mark>[];
+  config: ScrollytellerConfig;
 }
 
-const App: React.FC<AppProps> = ({ panels }) => {
+const App: React.FC<AppProps> = ({ panels, config }) => {
   const [current, setCurrent] = useState<Mark>(null!);
   const [progress, setProgress] = useState<number>(null!);
 
@@ -26,6 +27,7 @@ const App: React.FC<AppProps> = ({ panels }) => {
 
   return (
     <Scrollyteller
+      {...config}
       className={styles.container}
       panels={panels}
       onMarker={onMarker}

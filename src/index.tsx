@@ -74,9 +74,9 @@ whenScrollytellersLoaded.then(renderIllustrations);
 
 function renderApp(scrollyData: ScrollyData) {
   for (let name in scrollyData) {
-    const { panels, mountNode } = scrollyData[name];
+    const { panels, mountNode, config } = scrollyData[name];
     try {
-      render(<App panels={panels} />, mountNode);
+      render(<App config={config} panels={panels} />, mountNode);
     } catch (e) {
       import('./components/ErrorBox').then(({ default: ErrorBox }) => {
         render(<ErrorBox error={e} />, mountNode);
