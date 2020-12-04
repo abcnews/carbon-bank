@@ -9,7 +9,7 @@ import { panelDataToMark } from './utils';
 import { getGeneration, GENERATIONS, whenOdysseyLoaded } from '@abcnews/env-utils';
 import { Mark } from './constants';
 import { getMountValue, selectMounts } from '@abcnews/mount-utils';
-import Illustration from './components/Illustration';
+import Header from './components/Header';
 
 const PROJECT_NAME: string = 'carbon-bank';
 
@@ -66,7 +66,7 @@ const renderIllustrations = () => {
     parentEl.insertBefore(titleMount, titleEl);
   }
 
-  render(<Illustration />, titleMount);
+  render(<Header />, titleMount);
 };
 
 whenScrollytellersLoaded.then(renderApp);
