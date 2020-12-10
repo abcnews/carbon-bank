@@ -7,6 +7,13 @@ type BlobUpdate = {
   opacity?: number;
 };
 
+type Label = {
+  id: string;
+  text: string;
+  direction: number;
+  curved: boolean;
+};
+
 export type Mark = {
   blobs: BlobSpec[];
   useProgress?: boolean;
@@ -29,3 +36,12 @@ export const presets: { [key: string]: Mark } = {};
 export const animationDuration = 750;
 
 export const SNAPSHOTS_LOCALSTORAGE_KEY = 'bank-viz-snap';
+
+export const labelList: Label[] = [
+  { id: 'carbon', text: 'This is carbondioxide', curved: true, direction: 160 },
+  { id: 'budget', text: 'Carbon budget', curved: true, direction: 45 },
+  { id: 'limit', text: '1.5 degree carbon limit', curved: true, direction: 45 },
+  { id: 'emissions1940', text: 'Emissions by 1940', curved: true, direction: 340 },
+  { id: 'sink', text: 'Absorbed by carbon sinks', curved: true, direction: 340 },
+  { id: 'arrow', text: '', curved: false, direction: 190 }
+];

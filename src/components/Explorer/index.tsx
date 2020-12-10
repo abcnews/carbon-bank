@@ -5,16 +5,10 @@ import { RadioGroup } from '@atlaskit/radio';
 import Textfield from '@atlaskit/textfield';
 import { decode, encode } from '@abcnews/base-36-props';
 import Viz from '../Viz';
-import { Mark, SNAPSHOTS_LOCALSTORAGE_KEY } from '../../constants';
+import { labelList, Mark, SNAPSHOTS_LOCALSTORAGE_KEY } from '../../constants';
 import styles from './styles.scss';
 import Toggle from '@atlaskit/toggle';
 import { emissionsTo } from '../../utils';
-
-const labelList = [
-  { id: 'carbon', label: 'This is carbondioxide' },
-  { id: 'limit', label: '1.5 degree carbon limit' },
-  { id: 'emissions1940', label: 'Emissions by 1940' }
-];
 
 interface ExplorerProps {}
 
@@ -272,12 +266,12 @@ const Explorer: React.FC<ExplorerProps> = () => {
             onChange={ev => setYearLabels(ev.currentTarget.value)}
           />
           <label>Other labels</label>
-          {labelList.map(({ id, label }) => (
+          {labelList.map(({ id, text }) => (
             <Checkbox
               key={id}
               name={id}
-              label={`Show '${label}' label`}
-              value={`Show '${label}' label`}
+              label={`Show '${text}' label`}
+              value={`Show '${text}' label`}
               isChecked={labels.includes(id)}
               onChange={event => setLabel(id, event.target.checked)}
             />

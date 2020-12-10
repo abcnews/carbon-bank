@@ -3,7 +3,7 @@ import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
 import data from '../../data.tsv';
 import styles from './styles.scss';
-import { Mark, budget, animationDuration } from '../../constants';
+import { Mark, budget, animationDuration, labelList } from '../../constants';
 import {
   emissionsTo,
   getBankLabelPosition,
@@ -24,6 +24,13 @@ interface VizProps {
   progress?: number;
   className?: string;
 }
+
+type Label = {
+  id: string;
+  text: string;
+  direction: number;
+  curved: boolean;
+};
 
 const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => {
   const { ref: bankContainerRef, width: bankContainerWidth, height: bankContainerHeight } = useDimensions<
@@ -79,6 +86,22 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
     ((to.find(d => d.id === 'carbon')?.emissions || 0) - (from.find(d => d.id === 'carbon')?.emissions || 0)) *
       Math.max(progress || 0, 0);
 
+  const getLabelStyle = (id: string) => {
+    switch (id) {
+      case 'carbon':
+        return getBankLabelPosition(carbonEmissions, -45, bankScale);
+      case 'budget':
+      case 'limit':
+        return getBankLabelPosition(budget * 0.85, 20, bankScale);
+      case 'emissions1940':
+        return getBankLabelPosition((emissionsTo(1940) / 1000000000) * 1.2, 120, bankScale);
+      case 'sink':
+        return getBankLabelPosition(carbonEmissions * 2, 120, bankScale);
+      default:
+        return {};
+    }
+  };
+
   return (
     <div className={styles.root}>
       <div className={`${styles.stage} ${className}`}>
@@ -116,33 +139,18 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
           )}
         </div>
         <div className={styles.labels}>
-          <Label
-            arrow="curved"
-            visible={getLabelVisibility(current.labels, 'carbon')}
-            className={styles.carbonLabel}
-            direction={160}
-            style={getBankLabelPosition(carbonEmissions, -45, bankScale)}
-          >
-            This is carbon dioxide
-          </Label>
-          <Label
-            arrow="curved"
-            visible={getLabelVisibility(current.labels, 'limit')}
-            className={styles.limitLabel}
-            direction={45}
-            style={getBankLabelPosition(budget * 0.85, 20, bankScale)}
-          >
-            1.5 degree carbon limit
-          </Label>
-          <Label
-            arrow="curved"
-            visible={getLabelVisibility(current.labels, 'emissions1940')}
-            className={styles.emissions1940Label}
-            direction={340}
-            style={getBankLabelPosition((emissionsTo(1940) / 1000000000) * 1.2, 120, bankScale)}
-          >
-            Emissions by 1940
-          </Label>
+          {labelList.map(({ id, curved, direction, text }) => (
+            <Label
+              key={id}
+              arrow={curved ? 'curved' : 'straight'}
+              visible={getLabelVisibility(current.labels, id)}
+              className={styles[id + 'Label']}
+              direction={direction}
+              style={getLabelStyle(id)}
+            >
+              {text}
+            </Label>
+          ))}
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import App from './components/App';
 import { loadScrollyteller, PanelDefinition, ScrollytellerDefinition } from '@abcnews/scrollyteller';
 import { PanelData } from './common.d';
 import { panelDataToMark } from './utils';
-import { getGeneration, GENERATIONS, whenOdysseyLoaded } from '@abcnews/env-utils';
+import { whenOdysseyLoaded } from '@abcnews/env-utils';
 import { Mark } from './constants';
 import { getMountValue, selectMounts } from '@abcnews/mount-utils';
 import Header from './components/Header';
