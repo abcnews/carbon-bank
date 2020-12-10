@@ -17,17 +17,27 @@
     margin: 3rem auto;
     text-align: left;
     transform: rotate(0deg);
+    &:after,
+    &:before {
+      content: '';
+      display: block;
+      height: 20px;
+      background: url(./stroke.png) no-repeat;
+      background-size: contain;
+    }
+
     blockquote {
       padding: 0;
       margin: 0;
-      border: 4px solid black;
+      border: none;
       border-width: 3px 0;
+      padding-top: 1rem;
 
       p {
         font-size: 1.375rem;
         font-style: italic;
         width: 100%;
-        padding: 1rem 2rem;
+        padding: 0 1rem;
         color: #4d4d4d;
       }
       footer {
@@ -35,7 +45,7 @@
         font-weight: bold;
         font-size: 1rem;
         color: #090909;
-        margin-bottom: 1em;
+        margin-bottom: 0;
       }
     }
   }
