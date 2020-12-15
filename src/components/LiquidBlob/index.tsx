@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { reduceMotion } from '../../constants';
 
 export type LiquidBlobProps = {
   id?: string;
@@ -28,8 +29,12 @@ const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, show
     const min = 0.02;
     const max = 0.04;
     const increment = Math.min(max, Math.max(min, -min * (r / 250) + max));
+    let frameID: number;
     const update = () => {
-      frameID = requestAnimationFrame(update);
+      if (!reduceMotion) {
+        frameID = requestAnimationFrame(update);
+      }
+
       if (!blobRef.current) return;
       tickRef.current += increment;
       blobRef.current.setAttribute('d', d(tickRef.current));
@@ -37,9 +42,13 @@ const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, show
         setTick(tickRef.current);
       }
     };
-    let frameID = requestAnimationFrame(update);
+
+    if (!reduceMotion) {
+      frameID = requestAnimationFrame(update);
+    }
+
     return () => {
-      cancelAnimationFrame(frameID);
+      if (!reduceMotion) cancelAnimationFrame(frameID);
     };
   }, [d, showControlPoints]);
 

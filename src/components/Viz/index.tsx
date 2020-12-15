@@ -3,7 +3,7 @@ import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
 import data from '../../data.tsv';
 import styles from './styles.scss';
-import { Mark, budget, animationDuration, labelList } from '../../constants';
+import { Mark, budget, animationDuration, labelList, reduceMotion } from '../../constants';
 import {
   emissionsTo,
   getBankLabelPosition,
@@ -84,7 +84,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
   const carbonEmissions =
     (from.find(d => d.id === 'carbon')?.emissions || 0) +
     ((to.find(d => d.id === 'carbon')?.emissions || 0) - (from.find(d => d.id === 'carbon')?.emissions || 0)) *
-      Math.max(progress || 0, 0);
+      Math.max((reduceMotion ? 0 : progress) || 0, 0);
 
   const getLabelStyle = (id: string) => {
     switch (id) {
@@ -106,7 +106,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
     <div className={styles.root}>
       <div className={`${styles.stage} ${className}`}>
         <div ref={bankContainerRef} className={styles.bank}>
-          <Bank scale={bankScale} limits={limits} blobs={from} nextBlobs={to} progress={progress} />
+          <Bank scale={bankScale} limits={limits} blobs={from} nextBlobs={to} progress={reduceMotion ? 0 : progress} />
         </div>
         <div className={styles.limitReached}>
           <Animate
