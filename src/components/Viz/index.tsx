@@ -55,13 +55,18 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
 
   // If we have a chart too, we want to auto-add (or override) some blob values.
   if (current.chart && current.chart.stopAt) {
-    const carbonBlob = from.find(d => d.id === 'carbon');
-    if (carbonBlob) carbonBlob.emissions = emissionsTo(current.chart.stopAt) / 1000000000;
+    const carbonBlobFrom = from.find(d => d.id === 'carbon');
+    if (carbonBlobFrom) carbonBlobFrom.emissions = emissionsTo(current.chart.stopAt) / 1000000000;
 
     if (current.chart.extend) {
       const futureBlob = from.find(d => d.id === 'future');
       if (futureBlob) futureBlob.emissions = budget;
     }
+  }
+
+  if (current.next?.chart && current.next?.chart?.stopAt) {
+    const carbonBlobTo = to.find(d => d.id === 'carbon');
+    if (carbonBlobTo) carbonBlobTo.emissions = emissionsTo(current.next.chart.stopAt) / 1000000000;
   }
 
   // Create the series
