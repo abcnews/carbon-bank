@@ -54,7 +54,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, scale, limits: visibleLim
           );
         })}
         <NodeGroup
-          data={dim > 0 ? [...blobs] : empty}
+          data={dim > 0 ? [...blobs.filter(d => d.emissions > 0)] : empty}
           keyAccessor={d => d.id}
           start={(blob: BlobSpec) => ({
             r: scale(blob.emissions),
@@ -67,8 +67,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, scale, limits: visibleLim
             timing: { duration: animationDuration, ease: easeQuadOut }
           })}
           update={(blob: BlobSpec) => {
-            const nextBlob = nextBlobs.find(d => d.id === blob.id);
-
+            const nextBlob = nextBlobs.filter(d => d.emissions > 0).find(d => d.id === blob.id);
             if (progress && progress > 0) {
               return nextBlob
                 ? {
