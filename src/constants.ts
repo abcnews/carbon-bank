@@ -39,7 +39,7 @@ export const animationDuration = reduceMotion ? 0 : 750;
 export const SNAPSHOTS_LOCALSTORAGE_KEY = 'bank-viz-snap';
 
 export const labelList: Label[] = [
-  { id: 'carbon', text: 'This is carbondioxide', curved: true, direction: 160 },
+  { id: 'carbon', text: 'This is carbon dioxide', curved: true, direction: 160 },
   { id: 'budget', text: 'Carbon budget', curved: true, direction: 45 },
   { id: 'limit', text: '1.5 degree carbon limit', curved: true, direction: 45 },
   { id: 'emissions1940', text: 'Emissions by 1940', curved: true, direction: 340 },
