@@ -29,21 +29,22 @@
     }
 
     blockquote {
-      padding: 0;
+      padding: 1rem 0;
       margin: 0;
       border: none;
       border-width: 3px 0;
-      padding-top: 1rem;
 
       p {
         font-size: 1.375rem;
         font-style: italic;
         width: 100%;
-        padding: 0 1rem;
+        padding: 0;
         color: #4d4d4d;
       }
+
       footer {
         text-align: right;
+        padding-left: 30%;
         font-weight: bold;
         font-family: ABCSerif, Book Antiqua, Palatino Linotype, Palatino, serif;
         font-size: 1rem;
