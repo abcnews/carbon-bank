@@ -22,6 +22,8 @@
       content: '';
       display: block;
       height: 20px;
+      width: 60%;
+      margin: 0 auto;
       background: url(./stroke.png) no-repeat;
       background-size: contain;
     }
@@ -43,6 +45,7 @@
       footer {
         text-align: right;
         font-weight: bold;
+        font-family: ABCSerif, Book Antiqua, Palatino Linotype, Palatino, serif;
         font-size: 1rem;
         color: #090909;
         margin-bottom: 0;
