@@ -104,10 +104,12 @@
 .limitReached {
   text-align: center;
   font-family: ABCSans, Arial, Helvetica, sans-serif;
-  color: #d58d5a;
   margin: 0;
   font-size: 1.2rem;
   position: absolute;
   width: 100%;
   top: 64%;
+  strong {
+    color: #d58d5a;
+  }
 }
