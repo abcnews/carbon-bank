@@ -33,9 +33,11 @@ type Label = {
 };
 
 const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => {
-  const { ref: bankContainerRef, width: bankContainerWidth, height: bankContainerHeight } = useDimensions<
-    HTMLDivElement
-  >();
+  const {
+    observe: bankContainerRef,
+    width: bankContainerWidth,
+    height: bankContainerHeight
+  } = useDimensions<HTMLDivElement | null>();
   const current = JSON.parse(JSON.stringify(_current)) as Mark;
 
   // This is what's specified in the data

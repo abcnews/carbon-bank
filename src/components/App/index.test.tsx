@@ -5,7 +5,7 @@ import App from '.';
 
 describe('App', () => {
   test('It renders', () => {
-    const component = renderer.create(<App projectName="test-project" />);
+    const component = renderer.create(<App panels={[]} config={{}} />);
 
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();

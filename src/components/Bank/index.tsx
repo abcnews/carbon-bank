@@ -32,14 +32,14 @@ export type BankProps = {
 };
 
 const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, scale, limits: visibleLimits = [], progress }) => {
-  const { ref, width, height } = useDimensions<HTMLDivElement>();
+  const { observe, width, height } = useDimensions<HTMLDivElement | null>();
   const dim = Math.min(width, height);
   const cx = width / 2;
   const cy = height / 2;
   const empty: BlobSpec[] = [];
-
+  // console.log('render bank');
   return (
-    <div ref={ref} className={styles.stage}>
+    <div ref={observe} className={styles.stage}>
       <svg width="100%" height="100%">
         {limits.map(({ emissions, label }, i) => {
           return (
@@ -68,6 +68,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, scale, limits: visibleLim
           })}
           update={(blob: BlobSpec) => {
             const nextBlob = nextBlobs.filter(d => d.emissions > 0).find(d => d.id === blob.id);
+            // console.log('progress :>> ', progress);
             if (progress && progress > 0) {
               return nextBlob
                 ? {
@@ -99,6 +100,7 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, scale, limits: visibleLim
           {(nodes: { key: string; data: BlobSpec; state: { r: number; opacity: number } }[]) => (
             <>
               {nodes.map(({ key, data, state: { opacity, r } }) => {
+                // console.log('key :>> ', key);
                 return (
                   <g key={key} style={{ opacity }}>
                     <LiquidBlob

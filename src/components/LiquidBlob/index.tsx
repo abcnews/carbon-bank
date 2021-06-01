@@ -17,7 +17,9 @@ export type LiquidBlobProps = {
   };
 };
 
-const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, showControlPoints = false }) => {
+const LiquidBlob: React.FC<LiquidBlobProps> = props => {
+  const { id, cx, cy, r, attrs = {}, showControlPoints = false } = props;
+  // useTraceUpdate(props);
   const [tick, setTick] = useState(Math.PI);
   const tickRef = useRef<number>(Math.PI);
   const blobRef = useRef<SVGPathElement>(null!);

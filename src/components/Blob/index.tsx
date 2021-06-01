@@ -21,7 +21,6 @@ const Blob: React.FC<BlobProps> = props => {
   };
   const [state, setState] = useState(defaultState);
   const previousState = usePrevious(state);
-
   useEffect(() => {
     setState({ ...defaultState, ...(previousState || {}), ...props });
   }, [props]);

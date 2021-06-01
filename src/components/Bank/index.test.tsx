@@ -5,7 +5,7 @@ import Bank from '.';
 
 describe('Bank', () => {
   test('It renders', () => {
-    const component = renderer.create(<Bank />);
+    const component = renderer.create(<Bank scale={n => n} limits={[]} blobs={[]} nextBlobs={[]} />);
 
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();

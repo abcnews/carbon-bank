@@ -39,7 +39,7 @@ const margins: Margins = {
 };
 
 const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, maxYear }) => {
-  const { ref, width, height } = useDimensions<HTMLDivElement>();
+  const { observe, width, height } = useDimensions<HTMLDivElement | null>();
   const first = series[0];
   const last = series[series.length - 1];
 
@@ -77,7 +77,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
     attr === 'transform' ? interpolateTransformSvg(begValue, endValue) : interpolate(begValue, endValue);
 
   return (
-    <div ref={ref} className={styles.root}>
+    <div ref={observe} className={styles.root}>
       <h3 className={styles.title}>
         Gt CO<sub>2</sub>
       </h3>
