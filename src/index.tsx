@@ -1,4 +1,3 @@
-// @ts-ignore
 import './polyfill';
 import React from 'react';
 import { render } from 'react-dom';
@@ -10,6 +9,7 @@ import { whenOdysseyLoaded } from '@abcnews/env-utils';
 import { Mark } from './constants';
 import { getMountValue, selectMounts } from '@abcnews/mount-utils';
 import Header from './components/Header';
+import ParallaxHeader from './components/ParallaxHeader';
 
 const PROJECT_NAME: string = 'carbon-bank';
 
@@ -69,14 +69,18 @@ const renderIllustrations = () => {
   render(<Header />, titleMount);
 };
 
+whenOdysseyLoaded.then(renderIllustrations);
 whenScrollytellersLoaded.then(renderApp);
-whenScrollytellersLoaded.then(renderIllustrations);
 
 function renderApp(scrollyData: ScrollyData) {
   for (let name in scrollyData) {
     const { panels, mountNode, config } = scrollyData[name];
     try {
-      render(<App config={config} panels={panels} />, mountNode);
+      if (name === 'header') {
+        render(<ParallaxHeader config={config} panels={panels} />, mountNode);
+      } else {
+        render(<App config={config} panels={panels} />, mountNode);
+      }
     } catch (e) {
       import('./components/ErrorBox').then(({ default: ErrorBox }) => {
         render(<ErrorBox error={e} />, mountNode);

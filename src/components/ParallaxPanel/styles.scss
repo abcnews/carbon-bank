@@ -1,0 +1,32 @@
+.root {
+  width: 70vw;
+  margin: 40vh auto;
+  text-align: center;
+  z-index: 2;
+  &:nth-child(2) {
+    margin-top: 40vh;
+    margin-bottom: 640vh;
+  }
+  &:nth-child(3) {
+    margin-top: 40vh;
+    margin-bottom: 60vh;
+  }
+  &:nth-child(4) {
+    margin-top: 40vh;
+    margin-bottom: 40vh;
+  }
+  &:nth-child(5) {
+    margin-top: 40vh;
+    margin-bottom: 40vh;
+  }
+  &:nth-child(6) {
+    margin-top: 40vh;
+    margin-bottom: 40vh;
+  }
+  > p {
+    background-color: rgba(255, 255, 255, 1);
+    display: inline;
+    font-size: clamp(1rem, 8vw, 3rem);
+    font-weight: bold;
+  }
+}
