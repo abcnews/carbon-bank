@@ -3,9 +3,12 @@
   margin: 40vh auto;
   text-align: center;
   z-index: 2;
+  padding: 0 1rem;
+  background-color: rgba(249, 249, 249, 0.85);
   &:nth-child(2) {
+    background: none;
     margin-top: 40vh;
-    margin-bottom: 640vh;
+    margin-bottom: 400vh;
   }
   &:nth-child(3) {
     margin-top: 40vh;
@@ -21,12 +24,10 @@
   }
   &:nth-child(6) {
     margin-top: 40vh;
-    margin-bottom: 40vh;
+    margin-bottom: 10vh;
   }
   > p {
-    background-color: rgba(255, 255, 255, 1);
-    display: inline;
-    font-size: clamp(1rem, 8vw, 3rem);
+    font-size: 1.3rem;
     font-weight: bold;
   }
 }
