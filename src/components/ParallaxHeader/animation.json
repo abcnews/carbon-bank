@@ -450,7 +450,7 @@
         "keyframes": [
           { "id": "w7e-U50tenq0DmmiIvVha", "time": 0, "value": 0.5 },
           { "id": "FA6Ei23X9HUrNfai11yfi", "time": 0.0840843705965242, "value": 0.5 },
-          { "id": "2F_bpU03cGGag1O8PXrKo", "time": 0.637, "value": 0 },
+          { "id": "2F_bpU03cGGag1O8PXrKo", "time": 0.606, "value": 0 },
           { "id": "70FbJjcID__9TMePOvnml", "time": 1, "value": 0 }
         ]
       },
@@ -458,8 +458,8 @@
         "property": "o",
         "keyframes": [
           { "id": "PAjSN80Z_nv2IM6tUcFeT", "time": 0, "value": 1 },
-          { "id": "8fr7FisqpV2MRBBqG7PJ_", "time": 0.638, "value": 1 },
-          { "id": "4vrMTerpoInyqfDMj5RuA", "time": 0.658, "value": 0 },
+          { "id": "8fr7FisqpV2MRBBqG7PJ_", "time": 0.753, "value": 1 },
+          { "id": "4vrMTerpoInyqfDMj5RuA", "time": 0.819, "value": 0 },
           { "id": "k5s5S6nPJ-CH8wjxbKKiC", "time": 1, "value": 0 }
         ]
       }
@@ -469,7 +469,7 @@
     "widthConstraint": { "min": 0, "max": 2500, "target": 100 },
     "heightConstraint": { "min": 0, "max": 2500, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/6f943abecbe5ff9c2e64cde825607865?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/312577deed49f25a6c6262c180774b3f?src"
   },
   {
     "name": "pollies",
