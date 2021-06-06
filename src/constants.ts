@@ -21,6 +21,7 @@ export type Mark = {
   limits?: number[];
   labels?: string[];
   next?: Mark;
+  standalone?: boolean;
 };
 
 export const budget = 2118.671;

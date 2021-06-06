@@ -5,6 +5,8 @@
 }
 
 .panel {
+  --color-panel-background: rgba(249, 249, 249, 0.85);
+
   &:nth-child(2) {
     &::before {
       background: none;

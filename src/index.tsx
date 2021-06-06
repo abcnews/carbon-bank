@@ -32,8 +32,12 @@ const whenScrollytellersLoaded = new Promise<ScrollyData>((resolve, reject) => {
           const panels: PanelDefinition<Mark>[] = scrollyData.panels
             .map(d => ({
               ...d,
-              align,
-              data: panelDataToMark(d.data)
+              align: name !== 'header' ? align : undefined,
+              data: {
+                ...panelDataToMark(d.data),
+                standalone:
+                  d.nodes.length === 1 && d.nodes[0] instanceof Element && d.nodes[0].matches('.Quote') ? true : false
+              }
             }))
             .map((d, index, arr) => ({
               ...d,

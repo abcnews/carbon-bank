@@ -1,5 +1,5 @@
 // This is a simple wrapper for the main <Viz> component which provides the scrollyteller data.
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Mark } from '../../constants';
 import Scrollyteller, { PanelDefinition, ScrollytellerConfig } from '@abcnews/scrollyteller';
 import styles from './styles.scss';
@@ -13,7 +13,10 @@ interface AppProps {
 const App: React.FC<AppProps> = ({ panels, config }) => {
   const [current, setCurrent] = useState<Mark>(null!);
   const [progress, setProgress] = useState<number>(null!);
-
+  const memoedPanels = useMemo(() => {
+    return panels.map(d => ({ ...d, className: d.data.standalone ? styles.standalonePanel : undefined }));
+  }, [panels]);
+  console.log('memoedPanels :>> ', memoedPanels);
   const onMarker = useCallback((data: Mark) => {
     setCurrent(data);
   }, []);
@@ -29,7 +32,7 @@ const App: React.FC<AppProps> = ({ panels, config }) => {
     <Scrollyteller
       {...config}
       className={styles.container}
-      panels={panels}
+      panels={memoedPanels}
       onMarker={onMarker}
       onProgress={onProgress}
       theme="light"
