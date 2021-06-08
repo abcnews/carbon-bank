@@ -8,6 +8,7 @@ import Label from '../Label';
 import { Animate } from 'react-move';
 import useDimensions from 'react-cool-dimensions';
 import { scaleSqrt } from 'd3-scale';
+import { useInView } from 'react-intersection-observer';
 
 interface VizProps {
   current: Mark;
@@ -28,6 +29,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
     width: bankContainerWidth,
     height: bankContainerHeight
   } = useDimensions<HTMLDivElement | null>();
+  const { ref, inView } = useInView();
   const current = JSON.parse(JSON.stringify(_current)) as Mark;
 
   // This is what's specified in the data
@@ -100,56 +102,64 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
   };
 
   return (
-    <div className={styles.root}>
-      <div className={`${styles.stage} ${className}`}>
-        <div ref={bankContainerRef} className={styles.bank}>
-          <Bank scale={bankScale} limits={limits} blobs={from} nextBlobs={to} progress={reduceMotion ? 0 : progress} />
-        </div>
-        <div className={styles.limitReached}>
-          <Animate
-            show={!!limitReachedIn && !!current.chart?.extend}
-            start={{ opacity: 0, year: limitReachedIn || 0 }}
-            enter={{ opacity: [1], year: limitReachedIn || 0 }}
-            update={{ opacity: 1, year: [limitReachedIn || 0], timing: { duration: animationDuration * 2 } }}
-            leave={[
-              { opacity: [0], timing: { duration: animationDuration } },
-              {
-                year: [limitReachedIn || 0],
-                timing: { delay: animationDuration }
-              }
-            ]}
-          >
-            {({ year, opacity }) => (
-              <span style={{ opacity }}>
-                1.5 degree limit reached in <strong>{Math.floor(year)}</strong>
-              </span>
-            )}
-          </Animate>
-        </div>
-        <div className={styles.chart}>
-          {chartSeries && current.chart && (
-            <YearlyEmissions
-              series={chartSeries}
-              labelYears={current.chart.labelYears}
-              maxYear={current.chart.maxYear}
+    <div ref={ref} className={styles.root}>
+      {inView ? (
+        <div className={`${styles.stage} ${className}`}>
+          <div ref={bankContainerRef} className={styles.bank}>
+            <Bank
+              scale={bankScale}
+              limits={limits}
+              blobs={from}
+              nextBlobs={to}
+              progress={reduceMotion ? 0 : progress}
             />
-          )}
-        </div>
-        <div className={styles.labels}>
-          {labelList.map(({ id, curved, direction, text }) => (
-            <Label
-              key={id}
-              arrow={curved ? 'curved' : 'straight'}
-              visible={getLabelVisibility(current.labels, id)}
-              className={styles[id + 'Label']}
-              direction={direction}
-              style={getLabelStyle(id)}
+          </div>
+          <div className={styles.limitReached}>
+            <Animate
+              show={!!limitReachedIn && !!current.chart?.extend}
+              start={{ opacity: 0, year: limitReachedIn || 0 }}
+              enter={{ opacity: [1], year: limitReachedIn || 0 }}
+              update={{ opacity: 1, year: [limitReachedIn || 0], timing: { duration: animationDuration * 2 } }}
+              leave={[
+                { opacity: [0], timing: { duration: animationDuration } },
+                {
+                  year: [limitReachedIn || 0],
+                  timing: { delay: animationDuration }
+                }
+              ]}
             >
-              {text}
-            </Label>
-          ))}
+              {({ year, opacity }) => (
+                <span style={{ opacity }}>
+                  1.5 degree limit reached in <strong>{Math.floor(year)}</strong>
+                </span>
+              )}
+            </Animate>
+          </div>
+          <div className={styles.chart}>
+            {chartSeries && current.chart && (
+              <YearlyEmissions
+                series={chartSeries}
+                labelYears={current.chart.labelYears}
+                maxYear={current.chart.maxYear}
+              />
+            )}
+          </div>
+          <div className={styles.labels}>
+            {labelList.map(({ id, curved, direction, text }) => (
+              <Label
+                key={id}
+                arrow={curved ? 'curved' : 'straight'}
+                visible={getLabelVisibility(current.labels, id)}
+                className={styles[id + 'Label']}
+                direction={direction}
+                style={getLabelStyle(id)}
+              >
+                {text}
+              </Label>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 };
