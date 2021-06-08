@@ -14,7 +14,7 @@ interface BankLimitProps {
   progress?: number | false;
 }
 
-const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, label, visible = true, labelOffset = 8 }) => {
+const BankLimit: React.FC<BankLimitProps> = ({ r, cx, cy, visible = true, labelOffset = 8 }) => {
   const [id] = useState(nanoid);
   const circumference = 2 * Math.PI * r;
   const dashStride = 12;

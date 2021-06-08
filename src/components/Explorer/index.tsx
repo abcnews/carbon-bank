@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Checkbox } from '@atlaskit/checkbox';
 import FieldRange from '@atlaskit/range';
 import { RadioGroup } from '@atlaskit/radio';

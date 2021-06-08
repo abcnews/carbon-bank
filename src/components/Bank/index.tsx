@@ -36,22 +36,28 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, scale, limits: visibleLim
   const cx = width / 2;
   const cy = height / 2;
   const empty: BlobSpec[] = [];
-  // console.log('render bank');
+
+  const renderedLimits = useMemo(
+    () =>
+      limits.map(({ emissions, label }, i) => {
+        return (
+          <BankLimit
+            key={`id-${i}`}
+            r={scale(emissions)}
+            cx={cx}
+            cy={cy}
+            label={label}
+            visible={visibleLimits.includes(i)}
+          />
+        );
+      }),
+    [visibleLimits, cx, cy, scale]
+  );
+
   return (
     <div ref={observe} className={styles.stage}>
       <svg width="100%" height="100%">
-        {limits.map(({ emissions, label }, i) => {
-          return (
-            <BankLimit
-              key={`id-${i}`}
-              r={scale(emissions)}
-              cx={cx}
-              cy={cy}
-              label={label}
-              visible={visibleLimits.includes(i)}
-            />
-          );
-        })}
+        {renderedLimits}
         <NodeGroup
           data={dim > 0 ? [...blobs.filter(d => d.emissions > 0)] : empty}
           keyAccessor={d => d.id}
