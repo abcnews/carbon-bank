@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './styles.scss';
 import landscape from './landscape.jpg';
 import landscape_large from './landscape_large.jpg';
 import portrait_large from './portrait.jpg';

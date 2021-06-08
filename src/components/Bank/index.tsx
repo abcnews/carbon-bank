@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './styles.scss';
 import LiquidBlob from '../LiquidBlob';
-import { scaleSqrt } from 'd3-scale';
 import useDimensions from 'react-cool-dimensions';
 import { animationDuration, limits } from '../../constants';
 import BankLimit from '../BankLimit';
@@ -68,7 +67,6 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, scale, limits: visibleLim
           })}
           update={(blob: BlobSpec) => {
             const nextBlob = nextBlobs.filter(d => d.emissions > 0).find(d => d.id === blob.id);
-            // console.log('progress :>> ', progress);
             if (progress && progress > 0) {
               return nextBlob
                 ? {
@@ -100,7 +98,6 @@ const Bank: React.FC<BankProps> = ({ blobs, nextBlobs, scale, limits: visibleLim
           {(nodes: { key: string; data: BlobSpec; state: { r: number; opacity: number } }[]) => (
             <>
               {nodes.map(({ key, data, state: { opacity, r } }) => {
-                // console.log('key :>> ', key);
                 return (
                   <g key={key} style={{ opacity }}>
                     <LiquidBlob

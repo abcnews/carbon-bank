@@ -15,7 +15,7 @@ export type Tween = {
   keyframes: TKeyframe[];
 };
 
-export const tweenablePropertyLabel = (p: TweenableProperty) => {
+export const tweenablePropertyLabel = (p: TweenableProperty): string => {
   switch (p) {
     case TweenableProperty.X:
       return 'x position';

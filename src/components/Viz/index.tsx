@@ -1,19 +1,9 @@
 import React, { useMemo } from 'react';
 import YearlyEmissions from '../YearlyEmissions';
 import Bank from '../Bank';
-import data from '../../data.tsv';
 import styles from './styles.scss';
 import { Mark, budget, animationDuration, labelList, reduceMotion } from '../../constants';
-import {
-  emissionsTo,
-  getBankLabelPosition,
-  getCartesianCoordinates,
-  getEmissionsForYear,
-  getEmissionsSeries,
-  getLabelVisibility,
-  getRemainingBudget,
-  timeLeft
-} from '../../utils';
+import { emissionsTo, getBankLabelPosition, getEmissionsSeries, getLabelVisibility } from '../../utils';
 import Label from '../Label';
 import { Animate } from 'react-move';
 import useDimensions from 'react-cool-dimensions';
@@ -85,7 +75,7 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
       scaleSqrt()
         .domain([0, budget * 1.5])
         .range([0, Math.min(bankContainerHeight, bankContainerWidth) / 2]),
-    [budget, bankContainerHeight, bankContainerWidth]
+    [bankContainerHeight, bankContainerWidth]
   );
 
   const carbonEmissions =

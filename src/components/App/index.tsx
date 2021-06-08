@@ -11,15 +11,13 @@ interface AppProps {
 }
 
 const App: React.FC<AppProps> = ({ panels, config }) => {
-  const [current, setCurrent] = useState<Mark>(null!);
-  const [progress, setProgress] = useState<number>(null!);
+  const [current, setCurrent] = useState<Mark>();
+  const [progress, setProgress] = useState<number>();
   const memoedPanels = useMemo(() => {
     return panels.map(d => ({ ...d, className: d.data.standalone ? styles.standalonePanel : undefined }));
   }, [panels]);
-  console.log('memoedPanels :>> ', memoedPanels);
-  const onMarker = useCallback((data: Mark) => {
-    setCurrent(data);
-  }, []);
+
+  const onMarker = useCallback((data: Mark) => setCurrent(data), []);
 
   const onProgress = useCallback(
     (measurements: { pctAboveFold: number }) => current?.chart || setProgress(measurements.pctAboveFold),

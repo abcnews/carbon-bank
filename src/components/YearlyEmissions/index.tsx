@@ -48,7 +48,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
       scaleLinear()
         .domain([first.year - 1, maxYear + 1])
         .range([0, width - margins.right - margins.left]),
-    [first, last, width, margins]
+    [first, width, maxYear]
   );
 
   const xScaleOld = usePrevious(xScale);
@@ -66,14 +66,14 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
       scaleLinear()
         .domain([0, 35000000000])
         .range([height - margins.top - margins.bottom, 0]),
-    [height, margins]
+    [height]
   );
 
   const barWidth = useMemo(() => Math.max(1, (xScale(1) - xScale(0)) / 2), [xScale]);
 
   const xTickValues = useMemo(() => xScale.ticks((width - margins.left - margins.right) / 60), [xScale, width]);
   const yTickValues = [15, 25, 35].map(d => d * 1000000000);
-  const attribInterpolator = (begValue, endValue, attr) =>
+  const attribInterpolator = (begValue: string, endValue: string, attr: string | undefined) =>
     attr === 'transform' ? interpolateTransformSvg(begValue, endValue) : interpolate(begValue, endValue);
 
   return (
@@ -262,7 +262,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
         <NodeGroup
           data={(height && labelYears) || []}
           keyAccessor={d => d}
-          start={(d, i) => ({
+          start={d => ({
             opacity: 0,
             left: xScale(d),
             top: yScale(series.find(y => y.year === d)?.emissions || 0)
@@ -273,7 +273,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
             top: [yScale(series.find(y => y.year === d)?.emissions || 0)],
             timing: { duration: animationDuration, ease: easeQuadOut, delay: delayScale(d) * animationDuration }
           })}
-          update={(d, i) => ({
+          update={d => ({
             opacity: [1],
             left: [xScale(d)],
             top: [yScale(series.find(y => y.year === d)?.emissions || 0)],

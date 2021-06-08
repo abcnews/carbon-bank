@@ -17,8 +17,7 @@ export type LiquidBlobProps = {
   };
 };
 
-const LiquidBlob: React.FC<LiquidBlobProps> = props => {
-  const { id, cx, cy, r, attrs = {}, showControlPoints = false } = props;
+const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, showControlPoints = false }) => {
   // useTraceUpdate(props);
   const [tick, setTick] = useState(Math.PI);
   const tickRef = useRef<number>(Math.PI);
@@ -52,7 +51,7 @@ const LiquidBlob: React.FC<LiquidBlobProps> = props => {
     return () => {
       if (!reduceMotion) cancelAnimationFrame(frameID);
     };
-  }, [d, showControlPoints]);
+  }, [d, showControlPoints, r]);
 
   const path = p(tick);
   let points: { cx: number; cy: number }[] = [];
@@ -103,7 +102,7 @@ type CurveSegment = ['C', number, number, number, number, number, number];
 type MoveSegment = ['M', number, number];
 type Segment = CurveSegment | MoveSegment;
 
-function draw(cx: number, cy: number, r: number, tick: number, wander: number = 0) {
+function draw(cx: number, cy: number, r: number, tick: number, wander = 0) {
   const kappa = (4 * (Math.sqrt(2) - 1)) / 3;
   const min = 0.03;
   const max = 0.12;
