@@ -6,7 +6,7 @@ import ParallaxGraphic from '../ParallaxGraphic';
 import { Layer } from '../ParallaxGraphic/types';
 
 interface ParallaxHeaderProps {
-  panels: PanelDefinition<{}>[];
+  panels: PanelDefinition<Record<string, unknown>>[];
   config: ScrollytellerConfig;
 }
 
@@ -21,7 +21,7 @@ const ParallaxHeader: React.FC<ParallaxHeaderProps> = ({ config, panels }) => {
       waypoint={0}
       panels={panels}
       panelClassName={styles.panel}
-      onProgress={({ overall: { pctAboveFold }, height }) => {
+      onProgress={({ overall: { pctAboveFold } }) => {
         setProgresPct(pctAboveFold > 0 ? pctAboveFold : 0);
       }}
       theme="light"

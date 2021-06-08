@@ -2,21 +2,15 @@ import { decode } from '@abcnews/base-36-props';
 import { ScalePower } from 'd3-scale';
 import { useEffect, useRef } from 'react';
 import { PanelData } from './common.d';
-import { ExtendMethod } from './components/YearlyEmissions';
+import { EmissionsSeries, ExtendMethod } from './components/YearlyEmissions';
 import { budget, Mark, presets } from './constants';
 import data from './data.tsv';
 
-export const min = (data, accessor = d => d) =>
-  data.reduce((min, d) => (accessor(d) < min ? accessor(d) : min), Infinity);
-
-export const max = (data, accessor = d => d) =>
-  data.reduce((max, d) => (accessor(d) > max ? accessor(d) : max), -Infinity);
-
-export const timeLeft = (allowedEmissions: number, peak: number, reduce: boolean = true) => {
+export const timeLeft = (allowedEmissions: number, peak: number, reduce = true): number => {
   return reduce ? (allowedEmissions * 2) / peak : allowedEmissions / peak;
 };
 
-export const generateSeries = (allowedEmissions: number, peak: number, reduce: boolean = true) => {
+export const generateSeries = (allowedEmissions: number, peak: number, reduce = true): number[] => {
   if (allowedEmissions === 0) return [];
   const years = timeLeft(allowedEmissions, peak, reduce);
   const slope = reduce ? -peak / years : 0;
@@ -28,11 +22,12 @@ export const generateSeries = (allowedEmissions: number, peak: number, reduce: b
 export const interpolate = (start: number, end: number | undefined, progress: number): number =>
   typeof start === 'undefined' || typeof end === 'undefined' ? start : start + (end - start) * progress;
 
-export const emissionsTo = (y: number) => data.reduce((t, { year, emissions }) => (year > y ? t : t + emissions), 0);
+export const emissionsTo = (y: number): number =>
+  data.reduce((t, { year, emissions }) => (year > y ? t : t + emissions), 0);
 
-export const panelDataToMark = (panelData: PanelData) => {
+export const panelDataToMark = (panelData: PanelData): Mark => {
   // Presets
-  let preset: Mark | Object = {};
+  let preset: Mark | Record<string, unknown> = {};
   if (panelData.preset) {
     try {
       preset = decode(panelData.preset) as Mark;
@@ -118,17 +113,21 @@ export const panelDataToMark = (panelData: PanelData) => {
   return mark;
 };
 
-export const getUsedBudget = (year: number) =>
+export const getUsedBudget = (year: number): number =>
   data.reduce((t, d) => (d.year <= year ? t + d.emissions : t), 0) / 1000000000;
-export const getRemainingBudget = (year: number) => (budget - getUsedBudget(year)) * 1000000000;
-export const getEmissionsForYear = (year: number) => data.find(d => d.year === year)?.emissions;
+export const getRemainingBudget = (year: number): number => (budget - getUsedBudget(year)) * 1000000000;
+export const getEmissionsForYear = (year: number): number | undefined => data.find(d => d.year === year)?.emissions;
 
-export const getCartesianCoordinates = (r: number, deg: number) => {
+export const getCartesianCoordinates = (r: number, deg: number): [number, number] => {
   const deg2rad = deg => deg * (Math.PI / 180);
   return [r * Math.cos(deg2rad(deg)), r * Math.sin(deg2rad(deg))];
 };
 
-export const getBankLabelPosition = (emissions: number, deg: number, scale: ScalePower<number, number>) => {
+export const getBankLabelPosition = (
+  emissions: number,
+  deg: number,
+  scale: ScalePower<number, number>
+): { top: string; left: string } => {
   const cart = getCartesianCoordinates(scale(emissions) + 10, deg - 25);
   return {
     top: `calc(35% - ${cart[0]}px)`,
@@ -136,7 +135,7 @@ export const getBankLabelPosition = (emissions: number, deg: number, scale: Scal
   };
 };
 
-export const getLabelVisibility = (labels: string[] | undefined, id: string) => {
+export const getLabelVisibility = (labels: string[] | undefined, id: string): boolean => {
   return !!(labels || []).includes(id);
 };
 
@@ -145,7 +144,7 @@ export const getEmissionsSeries = (
   maxYear: number,
   stopAt: number | undefined,
   extend: ExtendMethod | undefined
-) => {
+): EmissionsSeries[] => {
   const endOfKnownEmissions = data[data.length - 1];
   const startOfKnownEmsissions = data[0];
   const startKnownSeries = Math.max(minYear, startOfKnownEmsissions.year);
@@ -158,11 +157,11 @@ export const getEmissionsSeries = (
   // What's the final year of of known emissions we want to chart?
   const peak = getEmissionsForYear(endKnownSeries) || data[data.length - 1].emissions;
 
-  const knownEmissions = data
+  const knownEmissions: EmissionsSeries[] = data
     .filter(d => d.year >= startKnownSeries && d.year <= endKnownSeries)
     .map(d => ({ ...d, color: '#000' }));
 
-  let futureEmissions: { year: number; emissions: number; color: string }[] = [];
+  let futureEmissions: EmissionsSeries[] = [];
 
   // Next extend if we want it
   if (extend) {
@@ -186,7 +185,7 @@ export const getEmissionsSeries = (
 
 // Hook
 
-export const usePrevious = <T extends unknown>(value: T) => {
+export const usePrevious = <T extends unknown>(value: T): T => {
   const ref = useRef(value);
 
   useEffect(() => {
@@ -196,7 +195,7 @@ export const usePrevious = <T extends unknown>(value: T) => {
   return ref.current;
 };
 
-export const useTraceUpdate = (props: any) => {
+export const useTraceUpdate = (props: Record<string, unknown>): void => {
   const prev = useRef(props);
   useEffect(() => {
     const changedProps = Object.entries(props).reduce((ps, [k, v]) => {

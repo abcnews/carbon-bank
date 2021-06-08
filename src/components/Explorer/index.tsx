@@ -10,9 +10,7 @@ import styles from './styles.scss';
 import Toggle from '@atlaskit/toggle';
 import { emissionsTo } from '../../utils';
 
-interface ExplorerProps {}
-
-const Explorer: React.FC<ExplorerProps> = () => {
+const Explorer: React.FC = () => {
   const decodeEncodedUrlParam = () => {
     const result = /[?&]encoded=([^&#]*)/i.exec(String(window.location));
 
@@ -40,7 +38,6 @@ const Explorer: React.FC<ExplorerProps> = () => {
   const [extend, setExtend] = useState<'steady' | 'reduce' | undefined>(initialState.chart?.extend);
   const [yearLabels, setYearLabels] = useState<string>((initialState.chart?.labelYears || []).join(', '));
 
-  const [progress, setProgress] = useState(0);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
 
   const createSnapshot = (name: string, marker: Mark) => {
@@ -62,10 +59,10 @@ const Explorer: React.FC<ExplorerProps> = () => {
     setSnapshots(nextSnapshots);
   };
 
-  const setLimit = (idx: number, show: Boolean) => {
+  const setLimit = (idx: number, show: boolean) => {
     setLimits(limits.filter(d => d !== idx).concat(show ? idx : []));
   };
-  const setLabel = (id: string, show: Boolean) => {
+  const setLabel = (id: string, show: boolean) => {
     setLabels(labels.filter(d => d !== id).concat(show ? id : []));
   };
 

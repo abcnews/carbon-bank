@@ -3,9 +3,7 @@ import landscape from './landscape.jpg';
 import landscape_large from './landscape_large.jpg';
 import portrait_large from './portrait.jpg';
 
-interface IllustrationProps {}
-
-const Illustration: React.FC<IllustrationProps> = () => {
+const Illustration: React.FC = () => {
   return (
     <picture>
       <source

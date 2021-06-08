@@ -21,6 +21,7 @@ const LiquidBlob: React.FC<LiquidBlobProps> = ({ id, cx, cy, r, attrs = {}, show
   // useTraceUpdate(props);
   const [tick, setTick] = useState(Math.PI);
   const tickRef = useRef<number>(Math.PI);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const blobRef = useRef<SVGPathElement>(null!);
 
   const p = useMemo(() => (tick: number) => draw(cx, cy, r, tick, 0.02), [cx, cy, r]);
@@ -119,7 +120,7 @@ function draw(cx: number, cy: number, r: number, tick: number, wander = 0) {
 
   // 0-90
   controlOffset = kappa + perturbation * Math.sin(tick);
-  let c2 = perturbation * Math.cos(tick);
+
   segments.push([
     'C', // It's a curve
     x + controlOffset * r, // start control x

@@ -105,8 +105,6 @@ const AnimationLayer: React.FC<AnimationLayerProps> = ({ progress, layer, stageW
     style.objectFit = layer.objectFit;
   }
 
-  const invisible = x <= -0.5 || x >= 0.5 || y <= -0.5 || y >= 0.5 || o === 0 || s === 0;
-
   return layer.src ? (
     <div className={styles.layer} ref={observe}>
       <img style={style} src={layer.src} alt={layer.name} />

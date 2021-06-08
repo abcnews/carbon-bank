@@ -4,12 +4,21 @@ import React from 'react';
 import { render } from 'react-dom';
 import Explorer from './components/Explorer';
 import { whenDOMReady } from '@abcnews/env-utils';
+import { proxy } from '@abcnews/dev-proxy';
 
-const whenMountsReady = whenDOMReady.then(
-  () => new Promise(resolve => resolve(selectMounts('explorer', { exact: true })[0]))
-);
+const init = () => {
+  const whenMountsReady = whenDOMReady.then(
+    () => new Promise(resolve => resolve(selectMounts('explorer', { exact: true })[0]))
+  );
 
-whenMountsReady.then(renderExplorer);
+  whenMountsReady.then(renderExplorer);
+
+  if (module.hot) {
+    module.hot.accept('./components/Explorer', () => whenMountsReady.then(renderExplorer));
+  }
+};
+
+proxy('carbon-bank').then(init);
 
 function renderExplorer(mountEl) {
   if (!mountEl) {
@@ -23,8 +32,4 @@ function renderExplorer(mountEl) {
       render(<ErrorBox error={e} />, mountEl);
     });
   }
-}
-
-if (module.hot) {
-  module.hot.accept('./components/Explorer', () => whenMountsReady.then(renderExplorer));
 }

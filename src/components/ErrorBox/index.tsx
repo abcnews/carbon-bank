@@ -6,7 +6,7 @@ interface ErrorBoxProps {
 }
 
 const ErrorBox: React.FC<ErrorBoxProps> = ({ error }) => {
-  useEffect(() => console.log(error), []);
+  useEffect(() => console.log(error), [error]);
 
   return <pre className={styles.root}>{`${String(error)}\n\n${error.stack}`}</pre>;
 };

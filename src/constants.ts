@@ -1,11 +1,5 @@
 import { BlobSpec, LimitSpec } from './components/Bank';
 import { ExtendMethod } from './components/YearlyEmissions';
-import data from './data.tsv';
-
-type BlobUpdate = {
-  emissions?: number;
-  opacity?: number;
-};
 
 type Label = {
   id: string;
