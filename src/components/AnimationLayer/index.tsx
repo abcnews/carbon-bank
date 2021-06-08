@@ -38,32 +38,22 @@ export const getTweenKeyframes = (
   return getKeyframes(tween, time, defaultValue);
 };
 
-export const getKeyframes = (
-  tween: Tween | undefined,
-  time: number,
-  defaultValue: number = 0
-): [TKeyframe, TKeyframe] => {
+export const getKeyframes = (tween: Tween | undefined, time: number, defaultValue = 0): [TKeyframe, TKeyframe] => {
+  let from: TKeyframe = { id: 'tmp', time: 0, value: defaultValue };
+  let to: TKeyframe = { id: 'tmp', time: 1, value: defaultValue };
+
   // If there is no tween of this type, return the default keyframes
   if (typeof tween === 'undefined') {
-    return [
-      { id: 'tmp', time: 0, value: defaultValue },
-      { id: 'tmp', time: 1, value: defaultValue }
-    ];
+    return [from, to];
   }
 
-  const from = tween.keyframes
-    .filter(d => d.time <= time)
-    .reduce<TKeyframe | undefined>(
-      (max, d) => (typeof max === 'undefined' ? d : max.time > d.time ? max : d),
-      undefined
-    ) || { id: 'tmp', time: 0, value: defaultValue };
-
-  const to = tween.keyframes
-    .filter(d => d.time >= time)
-    .reduce<TKeyframe | undefined>(
-      (min, d) => (typeof min === 'undefined' ? d : min.time < d.time ? min : d),
-      undefined
-    ) || { id: 'tmp', time: 1, value: defaultValue };
+  for (const keyframe of tween.keyframes) {
+    if (keyframe.time <= time) from = keyframe;
+    if (keyframe.time >= time) {
+      to = keyframe;
+      break;
+    }
+  }
 
   return [from, to];
 };
@@ -80,6 +70,7 @@ export const interpolate = (time: number, [from, to]: [TKeyframe, TKeyframe]): n
 
 const AnimationLayer: React.FC<AnimationLayerProps> = ({ progress, layer, stageWidth, stageHeight }) => {
   const { observe, width: layerWidth, height: layerHeight } = useDimensions<HTMLDivElement | null>();
+
   const x = interpolate(progress, getTweenKeyframes(layer.tweens, TweenableProperty.X, progress));
   const y = interpolate(progress, getTweenKeyframes(layer.tweens, TweenableProperty.Y, progress));
   const o = interpolate(progress, getTweenKeyframes(layer.tweens, TweenableProperty.O, progress));
