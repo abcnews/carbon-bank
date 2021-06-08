@@ -19,17 +19,15 @@
     margin: 2rem auto;
     text-align: left;
     border: 30px solid transparent;
-    border-image: url(./whole.png);
+    border-image: url(./p.png);
     border-image-slice: 100 fill;
-    border-image-repeat: round repeat;
-    // transform: rotate(-1.6deg);
+    border-image-repeat: round;
 
     blockquote {
       padding: 0;
       margin: 0;
       border: none;
       border-width: 3px 0;
-      // transform: rotate(1deg);
 
       p {
         font-size: 1rem;
