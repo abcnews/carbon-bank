@@ -10,6 +10,8 @@ interface ParallaxHeaderProps {
   config: ScrollytellerConfig;
 }
 
+layers.reverse();
+
 const ParallaxHeader: React.FC<ParallaxHeaderProps> = ({ config, panels }) => {
   const [progressPct, setProgresPct] = useState<number>(0);
 

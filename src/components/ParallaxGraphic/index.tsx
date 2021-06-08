@@ -13,12 +13,9 @@ const ParallaxGraphic: React.FC<ParallaxGraphicProps> = ({ pct, layers }) => {
   const { observe, width, height } = useDimensions<HTMLDivElement | null>();
   return (
     <div className={styles.root} ref={observe}>
-      {layers
-        .slice()
-        .reverse()
-        .map(layer => (
-          <AnimationLayer key={layer.id} layer={layer} stageWidth={width} stageHeight={height} progress={pct} />
-        ))}
+      {layers.map(layer => (
+        <AnimationLayer key={layer.id} layer={layer} stageWidth={width} stageHeight={height} progress={pct} />
+      ))}
     </div>
   );
 };
