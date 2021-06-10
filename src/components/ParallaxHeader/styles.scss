@@ -1,7 +1,18 @@
 :global {
   .Header.u-full {
-    display: none;
+    display: block;
   }
+
+  .Main.u-layout > .u-full:nth-child(2) {
+    margin-top: 0;
+  }
+}
+
+:global(.Header.u-full).hidden {
+  display: none;
+}
+:global(.Header.u-full).visible {
+  display: block;
 }
 
 .panel {

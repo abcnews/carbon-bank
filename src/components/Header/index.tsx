@@ -1,6 +1,6 @@
 import React from 'react';
-import landscape from './landscape.jpg';
-import landscape_large from './landscape_large.jpg';
+import landscape from './landscape.png';
+import landscape_large from './landscape_large.png';
 import portrait_large from './portrait.jpg';
 
 const Illustration: React.FC = () => {

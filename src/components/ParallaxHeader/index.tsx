@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import layers from './animation.json';
 import Scrollyteller, { PanelDefinition, ScrollytellerConfig } from '@abcnews/scrollyteller';
 import styles from './styles.scss';
 import ParallaxGraphic from '../ParallaxGraphic';
 import { Layer } from '../ParallaxGraphic/types';
+import { reduceMotion } from '../../constants';
 
 interface ParallaxHeaderProps {
   panels: PanelDefinition<Record<string, unknown>>[];
@@ -14,6 +15,24 @@ layers.reverse();
 
 const ParallaxHeader: React.FC<ParallaxHeaderProps> = ({ config, panels }) => {
   const [progressPct, setProgresPct] = useState<number>(0);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const header = document.querySelector('.Header.u-full');
+    if (header) {
+      header.classList.remove(styles.visible, styles.hidden);
+      header.classList.add(reduceMotion ? styles.visible : styles.hidden);
+    }
+  }, []);
+
+  useEffect(() => {
+    const parent = ref.current?.parentElement;
+    panels.forEach(p => p.nodes.forEach(n => parent?.parentElement?.insertBefore(n, parent)));
+  }, [panels]);
+
+  if (reduceMotion) {
+    return <div ref={ref} />;
+  }
 
   return (
     <Scrollyteller

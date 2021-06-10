@@ -6,7 +6,7 @@ import { loadScrollyteller, PanelDefinition, ScrollytellerDefinition } from '@ab
 import { PanelData } from './common.d';
 import { panelDataToMark } from './utils';
 import { whenOdysseyLoaded } from '@abcnews/env-utils';
-import { Mark } from './constants';
+import { Mark, reduceMotion } from './constants';
 import { getMountValue, selectMounts } from '@abcnews/mount-utils';
 import Header from './components/Header';
 import ParallaxHeader from './components/ParallaxHeader';
@@ -27,7 +27,7 @@ const init = () => {
         .forEach(name => {
           try {
             // Load scrollytellers
-            const scrollyData = loadScrollyteller<PanelData>(name, 'u-full');
+            const scrollyData = loadScrollyteller<PanelData>(name, name === 'header' && reduceMotion ? '' : 'u-full');
 
             // Convert panel data
             const panels: PanelDefinition<Mark>[] = scrollyData.panels
