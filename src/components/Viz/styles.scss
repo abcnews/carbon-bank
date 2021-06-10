@@ -13,7 +13,7 @@
 }
 
 .bank {
-  height: 70%;
+  height: 60%;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -21,6 +21,7 @@
 
 .chart {
   height: 30%;
+  min-height: 140px;
 }
 
 .labels {
@@ -61,9 +62,8 @@
 .budgetLabel {
   color: #d58d5a;
   div:first-child {
-    width: 6rem;
     top: 40px;
-    right: 0px;
+    right: 40px;
   }
   svg path {
     fill: #d58d5a;
@@ -106,9 +106,8 @@
   font-family: ABCSans, Arial, Helvetica, sans-serif;
   margin: 0;
   font-size: 1.2rem;
-  position: absolute;
-  width: 100%;
-  top: 64%;
+  height: 10%;
+  align-content: center;
   strong {
     color: #d58d5a;
   }

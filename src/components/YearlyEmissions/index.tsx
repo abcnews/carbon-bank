@@ -43,6 +43,8 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
   const first = series[0];
   const last = series[series.length - 1];
 
+  const bottomMargin = height > 140 ? margins.bottom : margins.bottom - 30;
+
   const xScale = useMemo(
     () =>
       scaleLinear()
@@ -65,8 +67,8 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
     () =>
       scaleLinear()
         .domain([0, 35000000000])
-        .range([height - margins.top - margins.bottom, 0]),
-    [height]
+        .range([height - margins.top - bottomMargin, 0]),
+    [height, bottomMargin]
   );
 
   const barWidth = useMemo(() => Math.max(1, (xScale(1) - xScale(0)) / 2), [xScale]);
@@ -89,7 +91,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
             x={0}
             y={-100}
             width={width - margins.right - margins.left}
-            height={height - margins.top - margins.bottom + 100}
+            height={height - margins.top - bottomMargin + 100}
           />
         </mask>
 
@@ -186,7 +188,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
 
         <g className={styles.axisX}>
           <line
-            transform={`translate(${margins.left}, ${height - margins.bottom})`}
+            transform={`translate(${margins.left}, ${height - bottomMargin})`}
             x1={width - margins.left - margins.right}
           />
           <NodeGroup
@@ -194,21 +196,21 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
             keyAccessor={d => d}
             start={d => ({
               opacity: 0,
-              transform: `translate(${xScaleOld(d) + margins.left}, ${height - margins.bottom})`
+              transform: `translate(${xScaleOld(d) + margins.left}, ${height - bottomMargin})`
             })}
             enter={d => ({
               opacity: [1],
-              transform: [`translate(${xScale(d) + margins.left}, ${height - margins.bottom})`],
+              transform: [`translate(${xScale(d) + margins.left}, ${height - bottomMargin})`],
               timing: { duration: animationDuration, ease: easeQuadOut }
             })}
             update={d => ({
               opacity: [1],
-              transform: [`translate(${xScale(d) + margins.left}, ${height - margins.bottom})`],
+              transform: [`translate(${xScale(d) + margins.left}, ${height - bottomMargin})`],
               timing: { duration: animationDuration, ease: easeQuadOut }
             })}
             leave={d => ({
               opacity: [0],
-              transform: [`translate(${xScale(d) + margins.left}, ${height - margins.bottom})`],
+              transform: [`translate(${xScale(d) + margins.left}, ${height - bottomMargin})`],
               timing: { duration: animationDuration, ease: easeQuadOut }
             })}
             interpolation={attribInterpolator}
@@ -229,7 +231,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
         </g>
 
         <g className={styles.axisY}>
-          <line transform={`translate(${margins.left}, ${margins.top})`} y2={height - margins.top - margins.bottom} />
+          <line transform={`translate(${margins.left}, ${margins.top})`} y2={height - margins.top - bottomMargin} />
           {yTickValues.map((tickValue, i) => (
             <g
               key={i}
@@ -246,7 +248,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
         <g className={styles.axisY}>
           <line
             transform={`translate(${width - margins.right}, ${margins.top})`}
-            y2={height - margins.top - margins.bottom}
+            y2={height - margins.top - bottomMargin}
           />
         </g>
       </svg>
@@ -254,7 +256,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
         style={{
           position: 'absolute',
           width: `${width - margins.left - margins.right}px`,
-          height: `${height - margins.top - margins.bottom}px`,
+          height: `${height - margins.top - bottomMargin}px`,
           top: `${margins.top}px`,
           left: `${margins.left}px`
         }}

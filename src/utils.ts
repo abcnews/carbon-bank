@@ -126,11 +126,12 @@ export const getCartesianCoordinates = (r: number, deg: number): [number, number
 export const getBankLabelPosition = (
   emissions: number,
   deg: number,
-  scale: ScalePower<number, number>
+  scale: ScalePower<number, number>,
+  bankdHeight: number
 ): { top: string; left: string } => {
   const cart = getCartesianCoordinates(scale(emissions) + 10, deg - 25);
   return {
-    top: `calc(35% - ${cart[0]}px)`,
+    top: `calc(${bankdHeight / 2}px - ${cart[0]}px)`,
     left: `calc(50% + ${cart[1]}px)`
   };
 };

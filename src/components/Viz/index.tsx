@@ -88,14 +88,14 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
   const getLabelStyle = (id: string) => {
     switch (id) {
       case 'carbon':
-        return getBankLabelPosition(carbonEmissions, -45, bankScale);
+        return getBankLabelPosition(carbonEmissions, -45, bankScale, bankContainerHeight);
       case 'budget':
       case 'limit':
-        return getBankLabelPosition(budget * 0.85, 20, bankScale);
+        return getBankLabelPosition(budget * 0.85, 20, bankScale, bankContainerHeight);
       case 'emissions1940':
-        return getBankLabelPosition((emissionsTo(1940) / 1000000000) * 1.2, 120, bankScale);
+        return getBankLabelPosition((emissionsTo(1940) / 1000000000) * 1.2, 120, bankScale, bankContainerHeight);
       case 'sink':
-        return getBankLabelPosition(carbonEmissions * 2, 120, bankScale);
+        return getBankLabelPosition(carbonEmissions * 2, 120, bankScale, bankContainerHeight);
       default:
         return {};
     }
@@ -106,13 +106,21 @@ const Viz: React.FC<VizProps> = ({ current: _current, progress, className }) => 
       {inView ? (
         <div className={`${styles.stage} ${className}`}>
           <div ref={bankContainerRef} className={styles.bank}>
-            <Bank
-              scale={bankScale}
-              limits={limits}
-              blobs={from}
-              nextBlobs={to}
-              progress={reduceMotion ? 0 : progress}
-            />
+            <div
+              style={{
+                margin: '0 auto',
+                width: bankScale.range()[1] * 2 + 'px',
+                height: bankScale.range()[1] * 2 + 'px'
+              }}
+            >
+              <Bank
+                scale={bankScale}
+                limits={limits}
+                blobs={from}
+                nextBlobs={to}
+                progress={reduceMotion ? 0 : progress}
+              />
+            </div>
           </div>
           <div className={styles.limitReached}>
             <Animate
