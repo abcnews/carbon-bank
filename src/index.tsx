@@ -56,6 +56,8 @@ const init = () => {
   });
 
   const renderIllustrations = () => {
+    if (!reduceMotion) return;
+
     const titleMount = selectMounts('cbillustration')[0];
 
     if (!titleMount) return;
