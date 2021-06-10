@@ -14,6 +14,19 @@
     margin: 0 auto;
   }
 
+  :global(.Quote + .Quote) {
+    position: relative;
+    left: 15px;
+    margin-top: -3.5rem;
+    z-index: 2;
+  }
+
+  :global(.Quote + .Quote + .Quote) {
+    position: relative;
+    left: 4px;
+    z-index: 1;
+  }
+
   :global(.Quote) {
     width: 75%;
     margin: 2rem auto;
@@ -34,6 +47,17 @@
         width: 100%;
         padding: 0;
         color: #4d4d4d;
+        font-style: italic;
+        margin-bottom: 0.6em;
+        line-height: 1.4;
+        font-family: ABCSans, Arial, Helvetica, sans-serif;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        > strong,
+        > em {
+          font-style: normal;
+        }
       }
 
       footer {
