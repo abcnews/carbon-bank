@@ -28,70 +28,6 @@
     "src": ""
   },
   {
-    "name": "But strip away the politics and the maths tell a different story: Reducing emissions now buys us more time to get to zero, but inaction drastically cuts the time we have to act.  ",
-    "id": "KXRPkvcVLT-KaH0xS5b-G",
-    "tweens": [
-      {
-        "property": "y",
-        "keyframes": [
-          { "id": "AJ8McpHjZ9tM0CWqvnCLs", "time": 0, "value": 0.5 },
-          { "id": "gxBQYqkHwDGq58Ll3lyfE", "time": 0.795, "value": 0.5 },
-          { "id": "8gEBkDrItfhAg56-WSQuz", "time": 0.824, "value": 0.5 },
-          { "id": "wEBwexitGD8h-h86YC2pm", "time": 0.909, "value": -0.5 },
-          { "id": "m7CvzJuITSYlpV9kJ6e6P", "time": 1, "value": -0.5 }
-        ]
-      }
-    ],
-    "constrainWidth": true,
-    "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 600, "target": 80 },
-    "heightConstraint": { "min": 0, "max": 100, "target": 100 },
-    "objectFit": "fill",
-    "src": ""
-  },
-  {
-    "name": "The federal government  says it wants action on climate change as fast as possible,  but warns that speeding up  will result in job losses and disruption to the australian  way of life. ",
-    "id": "qCUVvIwdUlhIc9iCa0LMa",
-    "tweens": [
-      {
-        "property": "y",
-        "keyframes": [
-          { "id": "7bFGDLx54hefDtidJu8m7", "time": 0, "value": 0.5 },
-          { "id": "pxWbhZhlZWVGm2jJsaAYm", "time": 0.704, "value": 0.5 },
-          { "id": "Dht8OWmsQ3vgRCUJKEEiy", "time": 0.847, "value": -0.5 },
-          { "id": "6KRhSK9jMNfcEwAot5CSq", "time": 1, "value": -0.5 }
-        ]
-      }
-    ],
-    "constrainWidth": true,
-    "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 600, "target": 80 },
-    "heightConstraint": { "min": 0, "max": 100, "target": 100 },
-    "objectFit": "fill",
-    "src": ""
-  },
-  {
-    "name": "While emissions go up  and decades go by, we’ve been told that acting on climate change will come at a  huge economic cost",
-    "id": "HmBfLFheoyhpnwMLiKd-4",
-    "tweens": [
-      {
-        "property": "y",
-        "keyframes": [
-          { "id": "WriCcO-FnzOrHmGfiGzxd", "time": 0, "value": 0.5 },
-          { "id": "4gVjjkd9ADJA5XaaZorh_", "time": 0.463, "value": 0.5 },
-          { "id": "EYwnPI4x-kN_fj3Py40s6", "time": 0.61, "value": -0.5 },
-          { "id": "6Re82CR6k8xhIq9_rLPOo", "time": 1, "value": -0.5 }
-        ]
-      }
-    ],
-    "constrainWidth": true,
-    "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 640, "target": 80 },
-    "heightConstraint": { "min": 0, "max": 100, "target": 100 },
-    "objectFit": "fill",
-    "src": ""
-  },
-  {
     "name": "We've been talking about it for over a century...",
     "id": "bxeC56K9a_b-o-6wYJGwA",
     "tweens": [
@@ -126,7 +62,7 @@
       {
         "property": "y",
         "keyframes": [
-          { "id": "7nxKStq3UvFG3Dg1JSPKq", "time": 0, "value": 0.3 },
+          { "id": "7nxKStq3UvFG3Dg1JSPKq", "time": 0, "value": 0.2 },
           { "id": "uCLk2f5TfzjbJOM_hNXZd", "time": 0.147, "value": -0.5 },
           { "id": "Ntt_7AUBDhsxA6e3Kh7hd", "time": 0.503, "value": -0.5 },
           { "id": "xO8MzNe8hX-KpQPwQ816s", "time": 1, "value": -0.5 }
@@ -258,7 +194,7 @@
     "widthConstraint": { "min": 0, "max": 600, "target": 100 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/6d17d32572ed26b5ed7f6040db141109?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/4121607ed294ae974794041eb13e1bc5?src"
   },
   {
     "name": "illo",
@@ -458,8 +394,8 @@
         "property": "o",
         "keyframes": [
           { "id": "PAjSN80Z_nv2IM6tUcFeT", "time": 0, "value": 1 },
-          { "id": "8fr7FisqpV2MRBBqG7PJ_", "time": 0.8, "value": 1 },
-          { "id": "4vrMTerpoInyqfDMj5RuA", "time": 0.87, "value": 0 },
+          { "id": "8fr7FisqpV2MRBBqG7PJ_", "time": 0.81, "value": 1 },
+          { "id": "4vrMTerpoInyqfDMj5RuA", "time": 0.85, "value": 0 },
           { "id": "k5s5S6nPJ-CH8wjxbKKiC", "time": 1, "value": 0 }
         ]
       }
@@ -495,8 +431,8 @@
         "property": "o",
         "keyframes": [
           { "id": "rXRsyQFl-rY9cYM1rqfda", "time": 0, "value": 1 },
-          { "id": "ZqRh1l68Y-k4fR7A3vex7", "time": 0.82, "value": 1 },
-          { "id": "PcP_CYg5_Igxm6GRaKO4y", "time": 0.87, "value": 0 },
+          { "id": "ZqRh1l68Y-k4fR7A3vex7", "time": 0.81, "value": 1 },
+          { "id": "PcP_CYg5_Igxm6GRaKO4y", "time": 0.85, "value": 0 },
           { "id": "-b_yyTyMg0M8745-2na5N", "time": 1, "value": 0 }
         ]
       }
@@ -517,8 +453,8 @@
         "keyframes": [
           { "id": "eqIMNjpBJxnu6nea42Ti8", "time": 0, "value": 0.5 },
           { "id": "TzGAKUD2LjY6_8r2xFaHK", "time": 0.004864541106111903, "value": 0.5 },
-          { "id": "wYLtTMw6QGYmLw16PAU9B", "time": 0.678, "value": 0.5 },
-          { "id": "huXIJi8w6re7vMgXTdnyt", "time": 0.769, "value": 0.05 },
+          { "id": "wYLtTMw6QGYmLw16PAU9B", "time": 0.623, "value": 0.5 },
+          { "id": "huXIJi8w6re7vMgXTdnyt", "time": 0.745, "value": 0.05 },
           { "id": "PES6OP5cdIoHJjoyRHo6M", "time": 1, "value": -0.2 }
         ]
       },
@@ -528,8 +464,8 @@
           { "id": "fFO8atiIErijWaki-ctW9", "time": 0, "value": 0 },
           { "id": "OmxlfXn7RtVvd7VnOqs4p", "time": 0.619, "value": 0 },
           { "id": "SCqvOxOOgtdCm2RLpm2Jy", "time": 0.674, "value": 1 },
-          { "id": "p0Y-qU_hyVpcvXJTUMuEX", "time": 0.82, "value": 1 },
-          { "id": "vrzgWNjf9qd6mpJx8-K8J", "time": 0.87, "value": 0 },
+          { "id": "p0Y-qU_hyVpcvXJTUMuEX", "time": 0.81, "value": 1 },
+          { "id": "vrzgWNjf9qd6mpJx8-K8J", "time": 0.85, "value": 0 },
           { "id": "8F7BoJ5RcjkTZzhAN4JFY", "time": 1, "value": 0 }
         ]
       },
@@ -537,18 +473,17 @@
         "property": "x",
         "keyframes": [
           { "id": "W9PJR_s562taiMgfjRfjn", "time": 0, "value": 0 },
-          { "id": "iwIfeOAA4xZK11I56jsth", "time": 0.004584985580389329, "value": -0.0003846464413078297 },
-          { "id": "NwZy6V2BS01l3AmVoCnPM", "time": 0.596, "value": -0.05 },
-          { "id": "2-5-M19QS0W4gQ8oTLuze", "time": 0.999, "value": -0.05 }
+          { "id": "NwZy6V2BS01l3AmVoCnPM", "time": 0.599, "value": -0.08 },
+          { "id": "2-5-M19QS0W4gQ8oTLuze", "time": 0.999, "value": -0.08 }
         ]
       }
     ],
     "constrainWidth": true,
     "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 250, "target": 70 },
+    "widthConstraint": { "min": 0, "max": 350, "target": 70 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/63e5169f8508b40d505202aab31436ea?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/69c612f9adb91ed04659b016cda148e1?src"
   },
   {
     "name": "gillard",
@@ -558,8 +493,8 @@
         "property": "y",
         "keyframes": [
           { "id": "LNfMJixqkvG3nUb2jYVOw", "time": 0, "value": 0.5 },
-          { "id": "-F7uwRMv_TSOkwiKFiNUm", "time": 0.6, "value": 0.5 },
-          { "id": "wFJrSShf9AEJjR7yKJQk_", "time": 0.703, "value": 0.039613097113044504 },
+          { "id": "-F7uwRMv_TSOkwiKFiNUm", "time": 0.532, "value": 0.5 },
+          { "id": "wFJrSShf9AEJjR7yKJQk_", "time": 0.653, "value": 0.039613097113044504 },
           { "id": "484f8nfu0wZuNHqzuhM35", "time": 0.96, "value": -0.3 },
           { "id": "DrLZM_2dOeI26JBLs21eT", "time": 1, "value": 0 }
         ]
@@ -570,8 +505,8 @@
           { "id": "4PI6EpLB_rOJIBqCUDpr8", "time": 0, "value": 0 },
           { "id": "X93-lEIZlfFN3VrjIdWbt", "time": 0.559, "value": 0 },
           { "id": "EtCIyppjw6hMP3Xm8DRN4", "time": 0.582, "value": 1 },
-          { "id": "hZvVRTFen4W5idsAj7cc7", "time": 0.82, "value": 1 },
-          { "id": "baj2Rn6AZCRHWw8ix1e4p", "time": 0.87, "value": 0 },
+          { "id": "hZvVRTFen4W5idsAj7cc7", "time": 0.81, "value": 1 },
+          { "id": "baj2Rn6AZCRHWw8ix1e4p", "time": 0.85, "value": 0 },
           { "id": "5l2LEWR5HuyLPL0uRmdkZ", "time": 1, "value": 0 }
         ]
       },
@@ -585,10 +520,10 @@
     ],
     "constrainWidth": true,
     "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 300, "target": 80 },
+    "widthConstraint": { "min": 0, "max": 400, "target": 80 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/9e4665eb5203581ae65e4b8573cfe81e?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/ea63032456e6389bd65f2e7b32cceab7?src"
   },
   {
     "name": "Abbott",
@@ -598,8 +533,8 @@
         "property": "y",
         "keyframes": [
           { "id": "nnEerG5PrfRO9YkRax6lM", "time": 0, "value": 0.5 },
-          { "id": "2pFK62MScUYJQbuxjD54r", "time": 0.471, "value": 0.5 },
-          { "id": "nLD8scXtO95BUCNOjS8C1", "time": 0.615, "value": 0 },
+          { "id": "2pFK62MScUYJQbuxjD54r", "time": 0.454, "value": 0.5 },
+          { "id": "nLD8scXtO95BUCNOjS8C1", "time": 0.569, "value": 0 },
           { "id": "R1ehmMAz6KIaw3XCFERTw", "time": 0.9980198421280276, "value": -0.4 }
         ]
       },
@@ -607,20 +542,20 @@
         "property": "o",
         "keyframes": [
           { "id": "6ZIr4zIKOSrsJd36jKAw0", "time": 0, "value": 0 },
-          { "id": "8FdsluZCnYL0sJoHA75GV", "time": 0.422, "value": 0 },
-          { "id": "eGlPGudT5FboHxMtM0ryT", "time": 0.482, "value": 1 },
-          { "id": "Dpf-ojXBHhy0wf9-VdIBI", "time": 0.82, "value": 1 },
-          { "id": "6Ue1FGiYuLlCt6wokCN-v", "time": 0.87, "value": 0 },
+          { "id": "8FdsluZCnYL0sJoHA75GV", "time": 0.409, "value": 0 },
+          { "id": "eGlPGudT5FboHxMtM0ryT", "time": 0.452, "value": 1 },
+          { "id": "Dpf-ojXBHhy0wf9-VdIBI", "time": 0.81, "value": 1 },
+          { "id": "6Ue1FGiYuLlCt6wokCN-v", "time": 0.85, "value": 0 },
           { "id": "RtQrj3Eh0TN9w_0U6jIyr", "time": 1, "value": 0 }
         ]
       }
     ],
     "constrainWidth": true,
     "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 400, "target": 90 },
+    "widthConstraint": { "min": 0, "max": 500, "target": 90 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/dc62747d2212ec28c713e570b4b524b1?impolicy=wcms_crop_resize&cropH=437&cropW=777&xPos=0&yPos=37&width=862&height=485"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/e5114e16d5649ca458711b34f530a460?src"
   },
   {
     "name": "small smoke",
@@ -640,11 +575,19 @@
         "property": "o",
         "keyframes": [
           { "id": "dKlxkfUAYFAKtwHjj2x-F", "time": 0, "value": 1 },
-          { "id": "p_6jv-ZHWm-oKVS4SP1UP", "time": 0.447, "value": 0 },
+          { "id": "p_6jv-ZHWm-oKVS4SP1UP", "time": 0.445, "value": 0 },
           { "id": "FRvlQyChaq7Esoy0bmwb-", "time": 0.477, "value": 1 },
-          { "id": "axHrXGltDql0bb3bJVryi", "time": 0.82, "value": 1 },
-          { "id": "w9k9Qfs-aH3kK9sqFO99W", "time": 0.871, "value": 0 },
+          { "id": "axHrXGltDql0bb3bJVryi", "time": 0.81, "value": 1 },
+          { "id": "w9k9Qfs-aH3kK9sqFO99W", "time": 0.85, "value": 0 },
           { "id": "ccTAeN0jEgvy6UufW-6Z6", "time": 1, "value": 0 }
+        ]
+      },
+      {
+        "property": "s",
+        "keyframes": [
+          { "id": "FFuyaFned--OhoSUZOVhi", "time": 0, "value": 0.8 },
+          { "id": "Do9vzIkcLszEpk9-7PEaw", "time": 0.445, "value": 0.8 },
+          { "id": "NGktAubwVtSC4UkIdknTk", "time": 0.853, "value": 1.6 }
         ]
       }
     ],
@@ -653,7 +596,7 @@
     "widthConstraint": { "min": 0, "max": 900, "target": 100 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/a5b360fa4e108f85b9fc2601e79b0e26?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/740364a2ad114ec7276b62e39dfd1793?src"
   },
   {
     "name": "smoke behind",
@@ -672,7 +615,7 @@
         "keyframes": [
           { "id": "CrL7aTuJIrxMqb08IiQ-K", "time": 0, "value": 0.5 },
           { "id": "9HWmHFMJ10ekQy9KUb1UK", "time": 0.045, "value": 0.5856929504759396 },
-          { "id": "8CLB2luxz93gr5hdk3dFP", "time": 0.403, "value": 1.8 },
+          { "id": "8CLB2luxz93gr5hdk3dFP", "time": 0.551, "value": 1.7 },
           { "id": "VViP2F-6uVbxT6eB_dG60", "time": 1, "value": 1.2 }
         ]
       },
@@ -681,8 +624,8 @@
         "keyframes": [
           { "id": "i3Ugn0uHhk3TXAsve_iQn", "time": 0, "value": 0 },
           { "id": "i1yUQZLdegajjuCJ0oeDS", "time": 0.037, "value": 1 },
-          { "id": "c0uRS9hvcvO71qW3cYedN", "time": 0.369, "value": 0.5258922685963097 },
-          { "id": "PlGhLO-qwMC9ARXqTNA4o", "time": 0.405, "value": 0 },
+          { "id": "c0uRS9hvcvO71qW3cYedN", "time": 0.492, "value": 0.5258922685963097 },
+          { "id": "PlGhLO-qwMC9ARXqTNA4o", "time": 0.549, "value": 0 },
           { "id": "tLKw1u_VEVwxREcTf8Z1c", "time": 1, "value": 0 }
         ]
       }
@@ -692,6 +635,6 @@
     "widthConstraint": { "min": 0, "max": 1000, "target": 100 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/7e52ba9de0f2098cb9323887a9e94c7f?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/e832aefce1aebdd3876de24b7313b05c?src"
   }
 ]
