@@ -1,61 +1,5 @@
 [
   {
-    "name": "Here's why the nexxt 5 years are most important. ",
-    "id": "5R7MGSMFdSb91bCZzDxuO",
-    "tweens": [
-      {
-        "property": "y",
-        "keyframes": [
-          { "id": "zjJfaItuARru8wZUKQDkh", "time": 0, "value": -0.1 },
-          { "id": "qLSFBbHabBYx2hZmJ4cAk", "time": 1, "value": -0.1 }
-        ]
-      },
-      {
-        "property": "o",
-        "keyframes": [
-          { "id": "WAsvNa2RYAzcxAivmneob", "time": 0, "value": 0 },
-          { "id": "i5fDmEfvYMmbrNIlRNxqe", "time": 0.92, "value": 0 },
-          { "id": "ofYEiddbWiwoOX7InecqW", "time": 0.959, "value": 1 },
-          { "id": "zARdmWQubbBGjYVYKN1Zf", "time": 1, "value": 1 }
-        ]
-      }
-    ],
-    "constrainWidth": true,
-    "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 800, "target": 80 },
-    "heightConstraint": { "min": 0, "max": 100, "target": 100 },
-    "objectFit": "fill",
-    "src": ""
-  },
-  {
-    "name": "We've been talking about it for over a century...",
-    "id": "bxeC56K9a_b-o-6wYJGwA",
-    "tweens": [
-      {
-        "property": "s",
-        "keyframes": [
-          { "id": "o6wOOGA5r4iGYC9Fpi49r", "time": 0, "value": 1 },
-          { "id": "8LV4jkRC0vk5i3oZ5J3Ip", "time": 1, "value": 1 }
-        ]
-      },
-      {
-        "property": "y",
-        "keyframes": [
-          { "id": "QffFDmftvmMYkGkjm5-L2", "time": 0, "value": 0 },
-          { "id": "uKtQ66phdWgW40YTIfmfb", "time": 0.112, "value": -0.5 },
-          { "id": "WrOefGA6ZzlwtUZCZfyU7", "time": 0.2337962962962963, "value": -0.5 },
-          { "id": "K9Fu2rvvpbsno_XH4qXHd", "time": 1, "value": -0.5 }
-        ]
-      }
-    ],
-    "constrainWidth": true,
-    "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 640, "target": 80 },
-    "heightConstraint": { "min": 0, "max": 100, "target": 100 },
-    "objectFit": "fill",
-    "src": ""
-  },
-  {
     "name": "1912",
     "id": "B84mXQ9JZuz6B1YdSPqez",
     "tweens": [
@@ -92,7 +36,7 @@
     "widthConstraint": { "min": 0, "max": 500, "target": 100 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/91a604d65af212ba4ff22dade86f1164?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/d9926a43da3c432f7fb1c174e82bcb1c?src"
   },
   {
     "name": "1993",
@@ -139,10 +83,10 @@
     ],
     "constrainWidth": true,
     "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 500, "target": 100 },
+    "widthConstraint": { "min": 0, "max": 550, "target": 100 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/fe8bc85f7452576598ccaec48479a865?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/e42d19d55f6069c76e4757451e241beb?src"
   },
   {
     "name": "19 40",
@@ -191,10 +135,10 @@
     ],
     "constrainWidth": true,
     "constrainHeight": false,
-    "widthConstraint": { "min": 0, "max": 600, "target": 100 },
+    "widthConstraint": { "min": 0, "max": 650, "target": 100 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/4121607ed294ae974794041eb13e1bc5?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/967dd6b4b8cbbb2c7900b7a0c1c60a89?src"
   },
   {
     "name": "illo",
@@ -204,10 +148,10 @@
         "property": "o",
         "keyframes": [
           { "id": "xsLbdgEI3ePGULNuAt2rC", "time": 0, "value": 0 },
-          { "id": "PNOv1VRiGvY5LCiqLcQ3l", "time": 0.23, "value": 0 },
-          { "id": "n5uPv9FzAummRU6ehI3qA", "time": 0.272, "value": 1 },
-          { "id": "NF0h7QuT0nQ_-g5cemUDJ", "time": 0.539, "value": 0.6576525821596244 },
-          { "id": "VapcKMetj2CdUUx8wYLhn", "time": 0.554, "value": 0 },
+          { "id": "PNOv1VRiGvY5LCiqLcQ3l", "time": 0.185, "value": 0 },
+          { "id": "n5uPv9FzAummRU6ehI3qA", "time": 0.216, "value": 1 },
+          { "id": "NF0h7QuT0nQ_-g5cemUDJ", "time": 0.424, "value": 0.6576525821596244 },
+          { "id": "VapcKMetj2CdUUx8wYLhn", "time": 0.442, "value": 0 },
           { "id": "1lHfyS1f4zmvxn-tPxCck", "time": 1, "value": 0 }
         ]
       },
@@ -222,9 +166,8 @@
         "property": "y",
         "keyframes": [
           { "id": "4n7k_VrDgUBFXQt5P8Rwn", "time": 0, "value": 0.5 },
-          { "id": "EKHmU4S64b8KwvL_Bg7Gi", "time": 0.19744318181818182, "value": 0.5 },
-          { "id": "fA4Utab-FzKz6f95S-q72", "time": 0.423, "value": 0 },
-          { "id": "y5uVXxG2vO5l6Vp9OmRdx", "time": 0.603, "value": -0.3 }
+          { "id": "EKHmU4S64b8KwvL_Bg7Gi", "time": 0.176, "value": 0.5 },
+          { "id": "y5uVXxG2vO5l6Vp9OmRdx", "time": 0.478, "value": -0.5 }
         ]
       }
     ],
@@ -233,7 +176,7 @@
     "widthConstraint": { "min": 0, "max": 700, "target": 100 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/7267415ab4b8d115ceb78195d8244f46?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/d3557e319246c42c1249eefbb8d84e8c?src"
   },
   {
     "name": "30",
@@ -243,7 +186,8 @@
         "property": "y",
         "keyframes": [
           { "id": "CYOdvH0tcC0RluBBsmz77", "time": 0, "value": 0.5 },
-          { "id": "hubZtxltK2nMp_8MRaTd-", "time": 0.447, "value": -0.4 },
+          { "id": "wvFbcezxMjYuC1Kpk-hXF", "time": 0.011, "value": 0.5 },
+          { "id": "hubZtxltK2nMp_8MRaTd-", "time": 0.416, "value": -0.4 },
           { "id": "GhBOCLhOZiTw9MTys-peS", "time": 1, "value": 0 }
         ]
       },
@@ -281,7 +225,7 @@
     "widthConstraint": { "min": 0, "max": 600, "target": 100 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/f5dd9ef4d6954446d22cc05b64158d70?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/9dfb7a250e1df872597ecd9f4e5eb63e?src"
   },
   {
     "name": "reef",
@@ -337,8 +281,8 @@
         "property": "y",
         "keyframes": [
           { "id": "p5rJJnWSda3I-VlIRmXIz", "time": 0, "value": 0.2 },
-          { "id": "dny2lgwIzVc5fvMRrB38Q", "time": 0.11790306481916393, "value": -0.04202975182819574 },
-          { "id": "mpkwjPcEu50dlwl79Bxes", "time": 0.238, "value": -0.5 },
+          { "id": "dny2lgwIzVc5fvMRrB38Q", "time": 0.117, "value": -0.04202975182819574 },
+          { "id": "mpkwjPcEu50dlwl79Bxes", "time": 0.281, "value": -0.5 },
           { "id": "8lraIu_rdK-zXlSo1AWiH", "time": 1, "value": -0.5 }
         ]
       },
@@ -375,7 +319,7 @@
     "widthConstraint": { "min": 0, "max": 700, "target": 100 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/aa264515ab7c1821d1b3048c718fdf1a?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/7f5970ff813c2f7fdfaf40316a91a19f?src"
   },
   {
     "name": "graph",
@@ -484,7 +428,7 @@
     "widthConstraint": { "min": 0, "max": 350, "target": 70 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/69c612f9adb91ed04659b016cda148e1?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/428fc55a25e175a2f0e83267854fdb67?src"
   },
   {
     "name": "gillard",
@@ -524,7 +468,7 @@
     "widthConstraint": { "min": 0, "max": 400, "target": 80 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/ea63032456e6389bd65f2e7b32cceab7?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/5db17ccab0fa2d7ef94639f991f4cfa6?src"
   },
   {
     "name": "Abbott",
@@ -556,7 +500,7 @@
     "widthConstraint": { "min": 0, "max": 500, "target": 90 },
     "heightConstraint": { "min": 0, "max": 100, "target": 100 },
     "objectFit": "fill",
-    "src": "https://preview-production.wcms.abc-cdn.net.au/e5114e16d5649ca458711b34f530a460?src"
+    "src": "https://preview-production.wcms.abc-cdn.net.au/fcb05b21e7ec5f1670bfb04193bfa6b7?src"
   },
   {
     "name": "small smoke",
