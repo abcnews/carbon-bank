@@ -36,8 +36,7 @@ const init = () => {
                 align: name !== 'header' ? align : undefined,
                 data: {
                   ...panelDataToMark(d.data),
-                  standalone:
-                    d.nodes.length === 1 && d.nodes[0] instanceof Element && d.nodes[0].matches('.Quote') ? true : false
+                  standalone: d.nodes.every(d => d instanceof Element && d.matches('.Quote')) ? true : false
                 }
               }))
               .map((d, index, arr) => ({
