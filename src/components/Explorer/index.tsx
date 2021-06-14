@@ -123,7 +123,7 @@ const Explorer: React.FC = () => {
   return (
     <div className={styles.root}>
       <div className={styles.graphic}>
-        <div style={{ background: 'white', height: '100%' }}>
+        <div className="viz-container" style={{ background: 'white', height: '100%' }}>
           <Viz current={marker} />
         </div>
       </div>
@@ -344,7 +344,9 @@ const Explorer: React.FC = () => {
         </details>
         <p>
           <a
-            href={`https://fallback-automation.drzax.now.sh/api?url=${document.location.href}&selector=%5Bdata-preset%5D&width=600`}
+            href={`https://fallback-automation.drzax.now.sh/api?url=${encodeURIComponent(
+              document.location.href
+            )}&selector=.viz-container&width=600`}
             download="fallback.png"
           >
             Download Fallback Image
