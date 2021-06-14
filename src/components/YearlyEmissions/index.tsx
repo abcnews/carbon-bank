@@ -34,7 +34,7 @@ export type YearlyEmissionsProps = {
 const margins: Margins = {
   top: 28,
   right: 17,
-  bottom: 100,
+  bottom: 110,
   left: 25
 };
 
