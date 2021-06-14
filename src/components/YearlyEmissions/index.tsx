@@ -43,7 +43,7 @@ const YearlyEmissions: React.FC<YearlyEmissionsProps> = ({ series, labelYears, m
   const first = series[0];
   const last = series[series.length - 1];
 
-  const bottomMargin = height > 140 ? margins.bottom : margins.bottom - 30;
+  const bottomMargin = margins.bottom;
 
   const xScale = useMemo(
     () =>
