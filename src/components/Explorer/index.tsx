@@ -123,7 +123,7 @@ const Explorer: React.FC = () => {
   return (
     <div className={styles.root}>
       <div className={styles.graphic}>
-        <div className="viz-container" style={{ background: 'white', height: '100%' }}>
+        <div className="viz-container" style={{ background: '#F9F9F9', height: '100%' }}>
           <Viz current={marker} />
         </div>
       </div>
