@@ -5,6 +5,10 @@
     background-color: transparent;
   }
 
+  :global([data-key='remove']) {
+    display: none;
+  }
+
   :global(.Picture img) {
     object-fit: contain;
   }

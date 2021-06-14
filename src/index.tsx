@@ -20,7 +20,6 @@ const align = 'right' as const;
 const init = () => {
   const whenScrollytellersLoaded = new Promise<ScrollyData>((resolve, reject) => {
     whenOdysseyLoaded.then(() => {
-      Array.from(document.querySelectorAll('[data-key="remove"]')).forEach(d => d.remove());
       const scrollyDatas: ScrollyData = {};
       selectMounts('scrollytellerNAME', { markAsUsed: false })
         .map(mountEl => (getMountValue(mountEl).match(/NAME([a-z]+)/) || [])[1])
