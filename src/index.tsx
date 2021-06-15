@@ -10,7 +10,6 @@ import { Mark, reduceMotion } from './constants';
 import { getMountValue, selectMounts } from '@abcnews/mount-utils';
 import Header from './components/Header';
 import ParallaxHeader from './components/ParallaxHeader';
-import { proxy } from '@abcnews/dev-proxy';
 
 type ScrollyData = { [key: string]: ScrollytellerDefinition<Mark> };
 
@@ -106,4 +105,4 @@ const init = () => {
   }
 };
 
-proxy(PROJECT_NAME).then(init);
+init();
