@@ -18,7 +18,7 @@ export type Mark = {
   standalone?: boolean;
 };
 
-export const budget = 2118.671;
+export const budget = 2159.78;
 
 export const limits: LimitSpec[] = [
   { emissions: (budget * 1) / 3, label: '0.5 degrees' },
