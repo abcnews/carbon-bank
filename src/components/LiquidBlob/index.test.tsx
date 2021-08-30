@@ -7,7 +7,7 @@ describe('LiquidBlob', () => {
   test('It renders', () => {
     const component = renderer.create(<LiquidBlob cy={0} cx={0} r={1} />);
 
-    let tree = component.toJSON();
+    const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

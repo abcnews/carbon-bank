@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import styles from './styles.scss';
 import { Layer } from './types';
 import AnimationLayer from '../AnimationLayer';

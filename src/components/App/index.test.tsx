@@ -7,7 +7,7 @@ describe('App', () => {
   test('It renders', () => {
     const component = renderer.create(<App panels={[]} config={{}} />);
 
-    let tree = component.toJSON();
+    const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

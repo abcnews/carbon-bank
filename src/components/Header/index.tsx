@@ -1,7 +1,7 @@
 import React from 'react';
 import landscape from './landscape.jpg';
 import portrait from './portrait.jpg';
-import styles from './styles.scss';
+import './styles.scss';
 
 const Illustration: React.FC = () => {
   return (

@@ -7,7 +7,7 @@ describe('Bank', () => {
   test('It renders', () => {
     const component = renderer.create(<Bank scale={n => n} limits={[]} blobs={[]} nextBlobs={[]} />);
 
-    let tree = component.toJSON();
+    const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
 });
