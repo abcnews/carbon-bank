@@ -1,6 +1,6 @@
 # carbon-bank
 
-A project generated from [aunty](https://github.com/abcnews/aunty)'s `react` project template.
+Code for the story [**Acting now can buy us time on climate change**](https://www.abc.net.au/news/2021-06-15/acting-now-can-buy-us-time-on-climate-change/100020944).
 
 ## Authors
 
